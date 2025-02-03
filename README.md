@@ -117,3 +117,11 @@ This action uses three secrets that must be configured in the repository:
 - DEPLOY_KEY: key to authenticate the user in the remote machine.
 
 Note that this action logs in the remote machine and downloads the docker-compose file from the repository and launches it. Obviously, previous actions have been executed which have uploaded the docker images to the GitHub Packages repository.
+## Contributors
+Contributor | Contact
+-- | -- 
+Miguel Álvarez Hernández | <a href="https://github.com/MiguelAlvarezHernandez"><img src="https://img.shields.io/badge/UO295368-Miguel_Alvarez-red"></a>
+Marcos Losada García | <a href="https://github.com/losadgm"><img src="https://img.shields.io/badge/UO295106-Marcos_Losada-purple"></a>
+Javier Carrasco Arango | <a href="https://github.com/Slavencer"><img src="https://img.shields.io/badge/UO294532-Javier_Carrasco-green"></a>
+María Rodríguez Gómara| <a href="https://github.com/uo294039"><img src="https://img.shields.io/badge/UO294039-María_Rodríguez-blue"></a>
+Vicente Megido García | <a href="https://github.com/uo294013"><img src="https://img.shields.io/badge/UO294013-Vicente_Megido-white"></a>
