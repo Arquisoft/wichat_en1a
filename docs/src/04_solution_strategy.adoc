@@ -32,3 +32,14 @@ See https://docs.arc42.org/section-4/[Solution Strategy] in the arc42 documentat
 
 ****
 endif::arc42help[]
+
+=== Technologies used
+- React is used for the front-end of the application. This framework, at the time of the decision, was highly popular, and its demmand in the market, as well as the familiarity of part of the front-end team, influenced the decision.
+- MongoDB is used, due to the base project already supporting it and the interest of the team to learn how to use it.
+- NodeJs supports the backend, at the time of writing this, due to the base project using it by default, and its relatively low complexity to begin compared to springboot.
+- Swagger is a TODO
+- Commit messages are written following the convention described here: https://www.conventionalcommits.org/en/v1.0.0/
+- Branch names follow a simplification of the strategy described here: https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534
+- Use of semantic versioning (https://semver.org/) for specifying versions meaningfully.
+
+/TODO rest of key points
