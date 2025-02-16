@@ -10,8 +10,8 @@ AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
 'Containers
 Person(player, Player,"A logged player that wants to play the game offered by wichat application", $tags="Person")
 Container(wichat, "Wichat application system", "System that allows the users to register, play the game and interact with the application", $tags="Internal system")
-System_ext(wikidata, "WikiData API", "API that contains the information used for the image quiz generation", $tags="External system")
-System_ext(llm_chat, "LLM AI Chat", "LLM helper that provides an AI to help the player, providing clues about the images", $tags="External system")
+System_Ext(wikidata, "WikiData API", "API that contains the information used for the image quiz generation", $tags="External system")
+System_Ext(llm_chat, "LLM AI Chat", "LLM helper that provides an AI to help the player, providing clues about the images", $tags="External system")
 
 'RELATIONS
 Rel(player, wichat, "Logs in and plays")
