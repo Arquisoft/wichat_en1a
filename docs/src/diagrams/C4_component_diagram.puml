@@ -1,0 +1,57 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+!include <c4/C4_Container.puml>
+!include <c4/C4_Component.puml>
+
+title Container Diagram for the Wichat System (C4 Level 3)
+
+AddElementTag("Person", $bgColor="#darkgreen", $fontColor="#white")
+AddElementTag("Internal system", $bgColor="#darkseagreen", $fontColor="#003300")
+AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
+AddElementTag("Database", $bgColor="#darkgreen", $fontColor="#white")
+AddElementTag("Component", $bgColor="#darkolivegreen", $fontColor="#white")
+
+' Containers
+Person(player, Player's Browser, "Preferred browser (Firefox, Chrome, Opera...)")
+
+System_Boundary(wichat, "Wichat Application Server") {
+    Container(proxy, "Proxy", "TO BE DEFINED", "TO BE DEFINED web server", $tags="Internal system")
+    Container(web_app, "Wichat Application Client", "React, JavaScript", "TO BE DEFINED web server", $tags="Internal system")
+
+    System_Boundary(backend_api, "Wichat REST API") {
+        Component(auth_module, "Authenticated Module", "Java", "Handles authenticated requests and session management", $tags="<<componente>>")
+        Component(game_module, "Game Module", "Java", "Handles game-related requests and updates", $tags="<<componente>>")
+        Component(statistics_module, "Statistics Module", "Java", "Manages player statistics and performance tracking", $tags="<<componente>>")
+        Component(question_module, "Question Module", "Java", "Manages question generation and retrieval", $tags="<<componente>>")
+    }
+
+    Container(question_generator, "Question Generator", "TO BE DEFINED", ".jar file", $tags="Internal system")
+    ContainerDb(database, "Wichat Application Database", "MongoDB", "MongoDB docker container", $tags="Database")
+}
+
+System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
+System_Ext(llm, "LLM AI Chat", "REST API", $tags="External system")
+
+' Relations
+Rel(player, proxy, "Uses", "HTTPS")
+Rel(proxy, web_app, "Serves", "HTTPS")
+Rel(web_app, backend_api, "Asks for user/game information", "JSON, HTTPS")
+Rel(question_generator, wikidata, "Asks for data", "MQL, HTTPS")
+Rel(llm, wikidata, "Asks for data", "MQL, HTTPS")
+Rel(player, llm, "Uses", "HTTPS")
+
+Rel(question_generator, database, "Stores questions", "TO BE DEFINED")
+
+' Relations for modules
+Rel(web_app, auth_module, "Ask for login and register", "JSON, HTTPS")
+Rel(web_app, game_module, "Plays a game", "JSON, HTTPS")
+Rel(web_app, statistics_module, "Asks for statistics", "JSON, HTTPS")
+Rel(web_app, question_module, "Asks for question information", "JSON, HTTPS")
+
+
+Rel(game_module,question_module,"Gets questions")
+Rel(question_module,database,"Stores game/user information","JPA")
+Rel(statistics_module,database,"Stores game/user information","JPA")
+Rel(auth_module,database,"Stores game/user information","JPA")
+@enduml
+
