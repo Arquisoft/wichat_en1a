@@ -40,7 +40,7 @@ endif::arc42help[]
 - Git is used as a version control, implemented in github, due to the common use of this web page and the toolset it provides. Focusing on git, this technology is used due to the familiarity all team members share with it.
 - Swagger is a tool used in the API's design and documentation. It was used due to a constraint of the employers.
 - Commit messages are written following the convention described https://www.conventionalcommits.org/en/v1.0.0/[here] to ensure meaningful commit names.
-- Branch names follow a simplification of the strategy described https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534[here] and it is used to ease the documentation, identification and meaninful naming of development branches. 
+- Branch names follow a simplification of the strategy described https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534[here] and it is used to ease the documentation, identification and meaningful naming of development branches. 
 - Github Flow is followed as a branch strategy, as the size of the project is expected to be medium and we deemed a hotfix branch and a release branch excessive overhead. 
 - Use of semantic versioning (https://semver.org/) for specifying versions meaningfully.
 
