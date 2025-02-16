@@ -12,8 +12,8 @@ AddElementTag("Database", $bgColor="#darkgreen", $fontColor="#white")
 Person(player, Player's Browser, "Preferred browser (Firefox, Chrome, Opera...)")
 
 System_Boundary(wichat, "Wichat application server"){
-    Container(proxy, "Proxy", "Nginx", "Nginx web server", $tags="Internal system")
-    Container(web_app, "Wichat application client", "React, JavScript", "Nginx web server", $tags="Internal system")
+    Container(proxy, "Proxy", "TO BE DEFINED", "TO BE DEFINED web server", $tags="Internal system")
+    Container(web_app, "Wichat application client", "React, JavScript", "TO BE DEFINED web server", $tags="Internal system")
     Container(backend_api, "Wichat REST API", "TO BE DEFINED", ".jar file", $tags="Internal system")
     Container(question_generator, "Question generator", "TO BE DEFINED", ".jar file", $tags="Internal system")
     ContainerDb(database, "Wichat application database", "MongoDB", "MongoDB docker container", $tags="Database")
