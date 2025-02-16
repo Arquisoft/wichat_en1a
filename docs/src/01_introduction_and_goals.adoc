@@ -45,6 +45,52 @@ See https://docs.arc42.org/section-1/[Introduction and Goals] in the arc42 docum
 ****
 endif::arc42help[]
 
+The software development company **ChattySw** has been hired by **RTVE** to update an online experimental version of the *Saber y Ganar* quiz show. The previous version, developed by **HappySw**, allowed users to answer quiz questions based on displayed images. The updated version, named **WIChat**, will introduce a new hint system powered by an external **Large Language Model (LLM)**, enabling users to obtain hints about the answers in a conversational way.
+
+==== Core Features (Required for a Functional Application)
+
+The following features are **essential** to have a working quiz game, even if not fully polished:
+
+- A **Web frontend** to display images, questions, and a hint interaction system.
+- **User registration** and historical tracking of participation data.
+- **Automatic question and image generation** based on **Wikidata**, an external API that serves as the main source for all presented data.
+- A **hint system** using an LLM accessible via an API.
+- Mechanisms to **prevent the LLM from revealing the correct answer directly**.
+- **Timed questions** with a correct answer and distractors, both generated automatically.
+- APIs to provide access to **user data** and **question information**, with proper documentation.
+- **Basic logging and monitoring** to track errors and system performance.
+
+
+==== Planned Features (Future Enhancements & Prioritization)
+
+The following features are **not necessary for the initial release** but will improve the game experience. Features are **prioritized** based on their impact and feasibility.
+
+**Priority 1 – High Impact, Early Expansion**
+
+- Support for multiple **question subjects** (expands game variety significantly).
+- **Internationalization** (multi-language support to reach more users).
+- **Mobile version** (ensures accessibility on different devices).
+- More interactive **LLM integrations**, such as:
+  - A virtual assistant that interacts beyond hints.
+  - AI-generated responses that guide players.
+
+**Priority 2 – Medium Impact, Recommended for Second Iteration**
+
+- Different **game modes**, such as:
+
+  - Each wise man with his subject
+  - Travel with us
+  - The hot question
+  - Discovering cities
+- **Customizable game settings** (time limits, number of questions, topic selection).
+- **Group play** with statistics and leaderboards.
+
+**Priority 3 – Long-Term, Enhances Engagement**
+
+- **Live multiplayer mode** with competitive play.
+- Additional gamification elements (badges, achievements, in-game rewards).
+
+
 === Quality Goals
 
 ifdef::arc42help[]
@@ -68,6 +114,18 @@ If you as an architect do not know how the quality of your work will be judged..
 A table with quality goals and concrete scenarios, ordered by priorities
 ****
 endif::arc42help[]
+
+The top quality goals for the architecture include:
+
+|===
+| Quality Goal    | Description 
+| **Scalability** | The system should support at least **100 simultaneous players** with a crash ratio below **1%**. 
+| **Usability**   | The interface should be intuitive, engaging, and accessible. 
+| **Accuracy**    | The LLM hints and question generation should minimize incorrect or misleading information. 
+| **Performance** | The game should have minimal latency in interactions, especially for real-time play. 
+| **Security**    | User data and game integrity must be protected against unauthorized access. 
+|===
+
 
 === Stakeholders
 
@@ -93,9 +151,14 @@ Table with role names, person names, and their expectations with respect to the 
 ****
 endif::arc42help[]
 
+The following stakeholders are involved in the development and operation of the system:
+
 [options="header",cols="1,2,2"]
 |===
-|Role/Name|Contact|Expectations
-| _<Role-1>_ | _<Contact-1>_ | _<Expectation-1>_
-| _<Role-2>_ | _<Contact-2>_ | _<Expectation-2>_
+| Role/Name                       | Contact             | Expectations
+| **RTVE Management**             | RTVE Contact        | Ensures the game aligns with business objectives and audience engagement. 
+| **End Users (Players)**         | Game Users          | Expect an engaging, fair, and enjoyable quiz experience. 
+| **Development Team (ChattySw)** | Development Leads   | Responsible for building and maintaining the system. 
+| **Wikidata Contributors**       | Open Data Community | Provide the dataset for question generation. 
+| **LLM API Provider**            | AI Service Vendor   | Ensures reliable and accurate hint generation. 
 |===
