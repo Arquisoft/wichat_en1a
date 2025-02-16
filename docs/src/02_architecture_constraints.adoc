@@ -31,13 +31,14 @@ endif::arc42help[]
 === Technical Constraints
 
 |===
-| Constraint                      | Description
-| **Web-based system**            | The application must be accessible via web browsers.
-| **LLM Integration**             | Hints must be generated using an external Large Language Model (LLM) via API.
-| **Wikidata for Questions**      | All questions and images must be sourced from Wikidata.
-| **Automated Answer Generation** | Correct answers and distractors must be generated algorithmically.
-| **Time-limited Questions**      | Players must answer within a predefined time.
-| **APIs for Data Access**        | User and question data must be accessible through well-documented APIs.
+| Constraint                                  | Description
+| **Web-based system**                        | The application must be accessible via web browsers.
+| **LLM Integration**                         | Hints must be generated using an external Large Language Model (LLM) via API.
+| **Wikidata for Questions**                  | All questions and images must be sourced from Wikidata.
+| **Automated Answer Generation**             | Correct answers and distractors must be generated algorithmically.
+| **Time-limited Questions**                  | Players must answer within a predefined time.
+| **APIs for Data Access**                    | User and question data must be accessible through well-documented APIs.
+| **Prevention of Correct Answer Disclosure** | The system must prevent the LLM from directly revealing the correct answer in hints. 
 |===
 
 === Organizational Constraints
@@ -46,6 +47,11 @@ endif::arc42help[]
 | Constraint                           | Description
 | **RTVE Requirements**                | The system must align with RTVE’s branding and content guidelines.
 | **Development by ChattySw**          | Only the ChattySw team is responsible for development and maintenance.
+| **Regular Meetings**                 | A weekly meeting must be held to discuss progress and issues. 
+| **Defined Deliverables**             | The project must meet the following milestone deadlines: 
+| - **Documentation Completion**       | The initial system documentation must be finalized by the first milestone. 
+| - **Prototype Development**          | A working prototype must be ready by the second milestone. 
+| - **Minimum Requirement Implementation** | The core features must be implemented by the third milestone, though continuous integration will continue beyond this point. 
 |===
 
 === Conventions and Guidelines
@@ -56,4 +62,5 @@ endif::arc42help[]
 | **Version Control**              | All source code must be managed in a repository with clear commit messages.
 | **Monitoring and Observability** | The system must provide logging and performance monitoring.
 | **Testing Standards**            | Unit, integration, and end-to-end tests must be included to ensure software quality.
+| **Documentation Format**         | All project documentation must adhere to the arc42 standard. 
 |===
