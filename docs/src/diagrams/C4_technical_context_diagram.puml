@@ -1,0 +1,33 @@
+@startuml C4_Technical_Context_Diagram
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+!include <c4/C4_Context.puml>
+
+title Container Diagram of the technical context for the System (C4 Diagram - Level 2)
+AddElementTag("Person", $bgColor="#darkgreen", $fontColor="#white")
+AddElementTag("Internal system", $bgColor="#darkseagreen", $fontColor="#003300")
+AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
+AddElementTag("Database", $bgColor="#darkgreen", $fontColor="#white")
+
+'Containers
+Person(player, Player's Browser, "Preferred browser (Firefox, Chrome, Opera...)")
+
+System_Boundary(wichat, "Wichat application server"){
+    Container(proxy, "Proxy", "Nginx", "Nginx web server", $tags="Internal system")
+    Container(web_app, "Wichat application client", "React, JavScript", "Nginx web server", $tags="Internal system")
+    Container(backend_api, "Wichat REST API", "TO BE DEFINED", ".jar file", $tags="Internal system")
+    Container(question_generator, "Question generator", "TO BE DEFINED", ".jar file", $tags="Internal system")
+    ContainerDb(database, "Wichat application database", "MongoDB", "MongoDB docker container", $tags="Database")
+}
+System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
+System_Ext(llm, "LLM AI Chat", "REST API", $tags="External system")
+
+'RELATIONS
+Rel(player, proxy, "Uses", "HTTPS")
+Rel(player, llm, "Uses", "HTTPS")
+Rel(proxy, web_app, "Serves", "HTTPS")
+Rel(question_generator, wikidata, "Asks for data", "MQL, HTTPS")
+Rel(llm, wikidata, "Asks for data", "MQL, HTTPS")
+Rel(web_app, backend_api, "Asks for user/game information", "JSON, HTTPS")
+Rel(question_generator, database, "Stores questions", "TO BE DEFINED")
+Rel(backend_api, database, "Stores game/user information", "TO BE DEFINED")
+@enduml

@@ -1,0 +1,24 @@
+@startuml C4_Business_Model_Diagram
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+!include <c4/C4_Context.puml>
+
+title Context Diagram of the Business Model for the System of the application (C4 Diagram - Level 1)
+AddElementTag("Person", $bgColor="#darkgreen", $fontColor="#white")
+AddElementTag("Internal system", $bgColor="#darkseagreen", $fontColor="#003300")
+AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
+
+'Containers
+Person(player, Player,"A logged player that wants to play the game offered by wichat application", $tags="Person")
+
+Container(wichat, "Wichat application system", "System that allows the users to register, play the game and interact with the application", $tags="Internal system")
+
+External_sys(wikidata, "WikiData API", "API that contains the information used for the image quiz generation", $tags="External system")
+
+LLM_helper(llm_chat, "LLM AI Chat", "LLM helper that provides an AI to help the player, providing clues about the images", $tags="External system")
+
+'RELATIONS
+Rel(player, wichat, "Logs in and plays")
+Rel(player, llm_chat, "Asks for help")
+Rel(llm_chat, wikidata, "Looks for clues about the image to provide help")
+Rel(wichat, wikidata, "Asks for data for image quiz generation")
+@enduml
