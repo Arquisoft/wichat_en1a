@@ -452,13 +452,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_stakeholders">1.3. Stakeholders</a></li>
 </ul>
 </li>
-<li><a href="#section-architecture-constraints">2. Architecture Constraints</a>
-<ul class="sectlevel2">
-<li><a href="#_technical_constraints">2.1. Technical Constraints</a></li>
-<li><a href="#_organizational_constraints">2.2. Organizational Constraints</a></li>
-<li><a href="#_conventions_and_guidelines">2.3. Conventions and Guidelines</a></li>
-</ul>
-</li>
+<li><a href="#section-architecture-constraints">2. Architecture Constraints</a></li>
 <li><a href="#section-context-and-scope">3. Context and Scope</a>
 <ul class="sectlevel2">
 <li><a href="#_business_context">3.1. Business Context</a></li>
@@ -476,40 +470,47 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#section-building-block-view">5. Building Block View</a>
 <ul class="sectlevel2">
 <li><a href="#_whitebox_overall_system">5.1. Whitebox Overall System</a></li>
-<li><a href="#_level_2">5.2. Level 2</a></li>
-<li><a href="#_level_3">5.3. Level 3</a></li>
+<li><a href="#_container_diagram_c4_level_2">5.2. Container Diagram (C4 Level 2)</a></li>
 </ul>
 </li>
-<li><a href="#section-runtime-view">6. Runtime View</a>
+<li><a href="#_component_diagram_c4_level_3">6. Component Diagram (C4 Level 3)</a>
+<ul class="sectlevel3">
+<li><a href="#_authenticated_module">6.1. Authenticated Module</a></li>
+<li><a href="#_game_module">6.2. Game Module</a></li>
+<li><a href="#_statistics_module">6.3. Statistics Module</a></li>
+<li><a href="#_question_module">6.4. Question Module</a></li>
+</ul>
+</li>
+<li><a href="#section-runtime-view">7. Runtime View</a>
 <ul class="sectlevel2">
-<li><a href="#_runtime_scenario_1">6.1. &lt;Runtime Scenario 1&gt;</a></li>
-<li><a href="#_runtime_scenario_2">6.2. &lt;Runtime Scenario 2&gt;</a></li>
-<li><a href="#">6.3. &#8230;&#8203;</a></li>
-<li><a href="#_runtime_scenario_n">6.4. &lt;Runtime Scenario n&gt;</a></li>
+<li><a href="#_runtime_scenario_1">7.1. &lt;Runtime Scenario 1&gt;</a></li>
+<li><a href="#_runtime_scenario_2">7.2. &lt;Runtime Scenario 2&gt;</a></li>
+<li><a href="#">7.3. &#8230;&#8203;</a></li>
+<li><a href="#_runtime_scenario_n">7.4. &lt;Runtime Scenario n&gt;</a></li>
 </ul>
 </li>
-<li><a href="#section-deployment-view">7. Deployment View</a>
+<li><a href="#section-deployment-view">8. Deployment View</a>
 <ul class="sectlevel2">
-<li><a href="#_infrastructure_level_1">7.1. Infrastructure Level 1</a></li>
-<li><a href="#_infrastructure_level_2">7.2. Infrastructure Level 2</a></li>
+<li><a href="#_infrastructure_level_1">8.1. Infrastructure Level 1</a></li>
+<li><a href="#_infrastructure_level_2">8.2. Infrastructure Level 2</a></li>
 </ul>
 </li>
-<li><a href="#section-concepts">8. Cross-cutting Concepts</a>
+<li><a href="#section-concepts">9. Cross-cutting Concepts</a>
 <ul class="sectlevel2">
-<li><a href="#_concept_1">8.1. <em>&lt;Concept 1&gt;</em></a></li>
-<li><a href="#_concept_2">8.2. <em>&lt;Concept 2&gt;</em></a></li>
-<li><a href="#_concept_n">8.3. <em>&lt;Concept n&gt;</em></a></li>
+<li><a href="#_concept_1">9.1. <em>&lt;Concept 1&gt;</em></a></li>
+<li><a href="#_concept_2">9.2. <em>&lt;Concept 2&gt;</em></a></li>
+<li><a href="#_concept_n">9.3. <em>&lt;Concept n&gt;</em></a></li>
 </ul>
 </li>
-<li><a href="#section-design-decisions">9. Architecture Decisions</a></li>
-<li><a href="#section-quality-scenarios">10. Quality Requirements</a>
+<li><a href="#section-design-decisions">10. Architecture Decisions</a></li>
+<li><a href="#section-quality-scenarios">11. Quality Requirements</a>
 <ul class="sectlevel2">
-<li><a href="#_quality_tree">10.1. Quality Tree</a></li>
-<li><a href="#_quality_scenarios">10.2. Quality Scenarios</a></li>
+<li><a href="#_quality_tree">11.1. Quality Tree</a></li>
+<li><a href="#_quality_scenarios">11.2. Quality Scenarios</a></li>
 </ul>
 </li>
-<li><a href="#section-technical-risks">11. Risks and Technical Debts</a></li>
-<li><a href="#section-glossary">12. Glossary</a></li>
+<li><a href="#section-technical-risks">12. Risks and Technical Debts</a></li>
+<li><a href="#section-glossary">13. Glossary</a></li>
 </ul>
 </div>
 </div>
@@ -621,115 +622,6 @@ If requirements documents exist this overview should refer to these documents.</
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p>The software development company <strong>ChattySw</strong> has been hired by <strong>RTVE</strong> to update an online experimental version of the <strong>Saber y Ganar</strong> quiz show. The previous version, developed by <strong>HappySw</strong>, allowed users to answer quiz questions based on displayed images. The updated version, named <strong>WIChat</strong>, will introduce a new hint system powered by an external <strong>Large Language Model (LLM)</strong>, enabling users to obtain hints about the answers in a conversational way.</p>
-</div>
-<div class="sect3">
-<h4 id="_core_features_required_for_a_functional_application">1.1.1. Core Features (Required for a Functional Application)</h4>
-<div class="paragraph">
-<p>The following features are <strong>essential</strong> to have a working quiz game, even if not fully polished:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>A <strong>Web frontend</strong> to display images, questions, and a hint interaction system.</p>
-</li>
-<li>
-<p><strong>User registration</strong> and historical tracking of participation data.</p>
-</li>
-<li>
-<p><strong>Automatic question and image generation</strong> based on <strong>Wikidata</strong>, an external API that serves as the main source for all presented data.</p>
-</li>
-<li>
-<p>A <strong>hint system</strong> using an LLM accessible via an API.</p>
-</li>
-<li>
-<p>Mechanisms to <strong>prevent the LLM from revealing the correct answer directly</strong>.</p>
-</li>
-<li>
-<p><strong>Timed questions</strong> with a correct answer and distractors, both generated automatically.</p>
-</li>
-<li>
-<p>APIs to provide access to <strong>user data</strong> and <strong>question information</strong>, with proper documentation.</p>
-</li>
-<li>
-<p><strong>Basic logging and monitoring</strong> to track errors and system performance.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_planned_features_future_enhancements_prioritization">1.1.2. Planned Features (Future Enhancements &amp; Prioritization)</h4>
-<div class="paragraph">
-<p>The following features are <strong>not necessary for the initial release</strong> but will improve the game experience. Features are <strong>prioritized</strong> based on their impact and feasibility.</p>
-</div>
-<div class="paragraph">
-<p><strong>Priority 1 – High Impact, Early Expansion</strong></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Support for multiple <strong>question subjects</strong> (expands game variety significantly).</p>
-</li>
-<li>
-<p><strong>Internationalization</strong> (multi-language support to reach more users).</p>
-</li>
-<li>
-<p><strong>Mobile version</strong> (ensures accessibility on different devices).</p>
-</li>
-<li>
-<p>More interactive <strong>LLM integrations</strong>, such as:</p>
-</li>
-<li>
-<p>A virtual assistant that interacts beyond hints.</p>
-</li>
-<li>
-<p>AI-generated responses that guide players.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Priority 2 – Medium Impact, Recommended for Second Iteration</strong></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Different <strong>game modes</strong>, such as:</p>
-</li>
-<li>
-<p>Each wise man with his subject</p>
-</li>
-<li>
-<p>Travel with us</p>
-</li>
-<li>
-<p>The hot question</p>
-</li>
-<li>
-<p>Discovering cities</p>
-</li>
-<li>
-<p><strong>Customizable game settings</strong> (time limits, number of questions, topic selection).</p>
-</li>
-<li>
-<p><strong>Group play</strong> with statistics and leaderboards.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Priority 3 – Long-Term, Enhances Engagement</strong></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Live multiplayer mode</strong> with competitive play.</p>
-</li>
-<li>
-<p>Additional gamification elements (badges, achievements, in-game rewards).</p>
-</li>
-</ul>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_quality_goals">1.2. Quality Goals</h3>
@@ -761,41 +653,6 @@ If you as an architect do not know how the quality of your work will be judged&#
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p>The top quality goals for the architecture include:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quality Goal</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Scalability</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The system should support at least <strong>100 simultaneous players</strong> with a crash ratio below <strong>1%</strong>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Usability</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The interface should be intuitive, engaging, and accessible.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Accuracy</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The LLM hints and question generation should minimize incorrect or misleading information.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Performance</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The game should have minimal latency in interactions, especially for real-time play.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Security</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User data and game integrity must be protected against unauthorized access.</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect2">
 <h3 id="_stakeholders">1.3. Stakeholders</h3>
@@ -836,9 +693,6 @@ These stakeholders determine the extent and the level of detail of your work and
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p>The following stakeholders are involved in the development and operation of the system:</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 20%;">
@@ -854,29 +708,14 @@ These stakeholders determine the extent and the level of detail of your work and
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>RTVE Management</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">RTVE Contact</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ensures the game aligns with business objectives and audience engagement.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Role-1&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Contact-1&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Expectation-1&gt;</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>End Users (Players)</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Game Users</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Expect an engaging, fair, and enjoyable quiz experience.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Development Team (ChattySw)</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Development Leads</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Responsible for building and maintaining the system.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Wikidata Contributors</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Open Data Community</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Provide the dataset for question generation.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LLM API Provider</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AI Service Vendor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ensures reliable and accurate hint generation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Role-2&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Contact-2&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Expectation-2&gt;</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -911,128 +750,7 @@ conventions (e.g. programming or versioning guidelines, documentation or naming 
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_technical_constraints">2.1. Technical Constraints</h3>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Constraint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Web-based system</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The application must be accessible via web browsers.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LLM Integration</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Hints must be generated using an external Large Language Model (LLM) via API.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Wikidata for Questions</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All questions and images must be sourced from Wikidata.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Automated Answer Generation</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Correct answers and distractors must be generated algorithmically.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Time-limited Questions</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Players must answer within a predefined time.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>APIs for Data Access</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User and question data must be accessible through well-documented APIs.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Prevention of Correct Answer Disclosure</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The system must prevent the LLM from directly revealing the correct answer in hints.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="_organizational_constraints">2.2. Organizational Constraints</h3>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Constraint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>RTVE Requirements</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The system must align with RTVE’s branding and content guidelines.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Development by ChattySw</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Only the ChattySw team is responsible for development and maintenance.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Regular Meetings</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A weekly meeting must be held to discuss progress and issues.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Defined Deliverables</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project must meet the following milestone deadlines:</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- <strong>Documentation Completion</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The initial system documentation must be finalized by the first milestone.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- <strong>Prototype Development</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A working prototype must be ready by the second milestone.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- <strong>Minimum Requirement Implementation</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The core features must be implemented by the third milestone, though continuous integration will continue beyond this point.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="_conventions_and_guidelines">2.3. Conventions and Guidelines</h3>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Constraint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Coding Standards</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The project must follow industry best practices for maintainable code.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Version Control</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All source code must be managed in a repository with clear commit messages.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Monitoring and Observability</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The system must provide logging and performance monitoring.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Testing Standards</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unit, integration, and end-to-end tests must be included to ensure software quality.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Documentation Format</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All project documentation must adhere to the arc42 standard.</p></td>
-</tr>
-</tbody>
-</table>
 <div style="page-break-after: always;"></div>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -1097,7 +815,7 @@ The title of the table is the name of your system, the three columns contain the
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%201)%20-%20Business%20context%20diagram.png" alt="C4 Diagram (Level 1)   Business context diagram" width="1010" height="638">
+<img src="./images/C4%20Diagram%20(Level%201)%20-%20Business%20context%20diagram.png" alt="C4 Diagram (Level 1)   Business context diagram" width="1025" height="638">
 </div>
 <div class="title">Figure 1. Overall view of the business context</div>
 </div>
@@ -1127,7 +845,7 @@ together with a mapping table showing the relationships between channels and inp
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%202)%20-%20Container%20context%20diagram.png" alt="C4 Diagram (Level 2)   Container context diagram" width="1025" height="638">
+<img src="./images/C4%20Diagram%20(Level%202)%20-%20Container%20context%20diagram.png" alt="C4 Diagram (Level 2)   Container context diagram" width="1078" height="638">
 </div>
 <div class="title">Figure 2. Overall view of the technical context</div>
 </div>
@@ -1391,41 +1109,26 @@ Depending on your choice of tool this list could be sub-chapters (in text files)
 <li>
 <p>(optional:) important interfaces, that are not explained in the black box templates of a building block, but are very important for understanding the white box.
 Since there are so many ways to specify interfaces why do not provide a specific template for them.
- In the worst case you have to specify and describe syntax, semantics, protocols, error handling,
- restrictions, versions, qualities, necessary compatibilities and many things more.
+In the worst case you have to specify and describe syntax, semantics, protocols, error handling,
+restrictions, versions, qualities, necessary compatibilities and many things more.
 In the best case you will get away with examples or simple signatures.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p><em><strong>&lt;Overview Diagram&gt;</strong></em></p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">Motivation</dt>
-<dd>
-<p><em>&lt;text explanation&gt;</em></p>
-</dd>
-<dt class="hdlist1">Contained Building Blocks</dt>
-<dd>
-<p><em>&lt;Description of contained building block (black boxes)&gt;</em></p>
-</dd>
-<dt class="hdlist1">Important Interfaces</dt>
-<dd>
-<p><em>&lt;Description of important interfaces&gt;</em></p>
-</dd>
-</dl>
-</div>
-<div class="sidebarblock arc42help">
+<div class="imageblock text-center">
 <div class="content">
-<div class="paragraph">
-<p>Insert your explanations of black boxes from level 1:</p>
+<img src="./images/C4%20Diagram%20(Level%201)%20-%20Business%20context%20diagram.png" alt="C4 Diagram (Level 1)   Business context diagram" width="1025" height="638">
+</div>
+<div class="title">Figure 3. Overall view of the business context</div>
 </div>
 <div class="paragraph">
-<p>If you use tabular form you will only describe your black boxes with name and
-responsibility according to the following schema:</p>
+<p><strong>Motivation:</strong>
+The purpose of this section is to provide a high-level view of the system and its primary components. This diagram focuses on how the different elements of the system interact and how the player, application, external services like the WikiData API, and the LLM AI Chat function together to support the game.</p>
+</div>
+<div class="paragraph">
+<p><strong>Contained Building Blocks:</strong></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1440,182 +1143,725 @@ responsibility according to the following schema:</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;black box 1&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"> <em>&lt;Text&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Player</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The player interacts with the system, answering questions and obtaining hints through the interface.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;black box 2&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"> <em>&lt;Text&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WIChat Application</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The central application that facilitates player interaction, communication with external services, and question generation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides hints to the player when requested.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WikiData API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Supplies data and information used to generate questions about images and concepts.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>If you use a list of black box descriptions then you fill in a separate black box template for every important building block .
-Its headline is the name of the black box.</p>
+<p><strong>Important Interfaces:</strong></p>
 </div>
-</div>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Interface</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Purpose</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Player-Application Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines the interaction between the player and the application, including how questions are presented and how the player submits answers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application-LLM Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages communication between the application and the LLM AI Chat to request hints.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application-WikiData Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages the interaction between the application and the WikiData API to retrieve information for generating questions.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="sect3">
-<h4 id="_name_black_box_1">5.1.1. &lt;Name black box 1&gt;</h4>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>Here you describe &lt;black box 1&gt;
-according the the following black box template:</p>
-</div>
+<h4 id="_player">5.1.1. Player</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Purpose/Responsibility</p>
+<p>Purpose/Responsibility: The player interacts with the game by answering questions about images and concepts. The player can request hints when needed.</p>
 </li>
 <li>
-<p>Interface(s), when they are not extracted as separate paragraphs. This interfaces may include qualities and performance characteristics.</p>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Interaction with the WIChat Application through a user interface (UI) that displays questions and accepts answers.</p>
 </li>
 <li>
-<p>(Optional) Quality-/Performance characteristics of the black box, e.g.availability, run time behavior, &#8230;&#8203;.</p>
+<p>Interaction with the LLM AI Chat for hints when requested.</p>
+</li>
+</ul>
+</div>
 </li>
 <li>
-<p>(Optional) directory/file location</p>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Smooth, responsive UI with minimal delays.</p>
+</li>
+</ul>
+</div>
 </li>
 <li>
-<p>(Optional) Fulfilled requirements (if you need traceability to requirements).</p>
+<p>(Optional) Directory/File Location: src/client</p>
 </li>
 <li>
-<p>(Optional) Open issues/problems/risks</p>
+<p>(Optional) Fulfilled Requirements: Real-time gameplay experience with clear and engaging UI.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: No critical risks identified.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_wichat_application">5.1.2. WIChat Application</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: The main system that handles the gameplay, question generation, interaction with external services (WikiData API, LLM AI Chat), and player progression.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Communication with the Player through the user interface.</p>
+</li>
+<li>
+<p>Interaction with the WikiData API to retrieve information and generate questions.</p>
+</li>
+<li>
+<p>Communication with the LLM AI Chat to provide hints to the player.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Scalable, with efficient routing of requests to the relevant components.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/application</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Real-time interaction and data handling.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: Performance under high traffic (large number of players simultaneously).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_llm_ai_chat">5.1.3. LLM AI Chat</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Provides AI-generated hints to players based on their interactions within the game.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Receives requests from the WIChat Application to provide hints based on player progress.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Fast response time and contextually relevant hints.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: External to the system.</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: High-quality hint generation.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: Dependency on external AI service reliability.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_wikidata_api">5.1.4. WikiData API</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: External service that provides detailed information about images and concepts for generating game-related questions.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Receives requests from the WIChat Application to retrieve image-related data.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Relevant, accurate, and up-to-date information.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: External to the system.</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Sufficient data to generate accurate and diverse questions.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: Limited data availability and consistency in the API&#8217;s responses.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p><em>&lt;Purpose/Responsibility&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;Interface(s)&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;(Optional) Quality/Performance Characteristics&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;(Optional) Directory/File Location&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;(Optional) Fulfilled Requirements&gt;</em></p>
-</div>
-<div class="paragraph">
-<p><em>&lt;(optional) Open Issues/Problems/Risks&gt;</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_name_black_box_2">5.1.2. &lt;Name black box 2&gt;</h4>
-<div class="paragraph">
-<p><em>&lt;black box template&gt;</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_name_black_box_n">5.1.3. &lt;Name black box n&gt;</h4>
-<div class="paragraph">
-<p><em>&lt;black box template&gt;</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_name_interface_1">5.1.4. &lt;Name interface 1&gt;</h4>
-<div class="paragraph">
-<p>&#8230;&#8203;</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_name_interface_m">5.1.5. &lt;Name interface m&gt;</h4>
-
-</div>
-</div>
 <div class="sect2">
-<h3 id="_level_2">5.2. Level 2</h3>
-<div class="sidebarblock arc42help">
+<h3 id="_container_diagram_c4_level_2">5.2. Container Diagram (C4 Level 2)</h3>
+<div class="imageblock text-center">
 <div class="content">
-<div class="paragraph">
-<p>Here you can specify the inner structure of (some) building blocks from level 1 as white boxes.</p>
+<img src="./images/C4%20Diagram%20(Level%202)%20-%20Container%20context%20diagram.png" alt="C4 Diagram (Level 2)   Container context diagram" width="1078" height="638">
+</div>
+<div class="title">Figure 4. Overall view of the technical context</div>
 </div>
 <div class="paragraph">
-<p>You have to decide which building blocks of your system are important enough to justify such a detailed description.
-Please prefer relevance over completeness. Specify important, surprising, risky, complex or volatile building blocks.
-Leave out normal, simple, boring or standardized parts of your system</p>
+<p><strong>Motivation:</strong>
+The system decomposition has been done to efficiently divide responsibilities, ensure scalability, and facilitate understanding of the system in terms of components and their interactions. The system is broken down into key blocks that interact with each other and with external systems, such as the LLM and the WikiData API.</p>
 </div>
+<div class="paragraph">
+<p><strong>Contained Building Blocks:</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Responsibility</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WIChat Application Proxy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages communication between the client and system services.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User interface that interacts with the application.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REST API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API that handles requests and responses between the client and server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database for storing user histories, questions, answers, etc.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Question Generator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Automatic question generator based on the WikiData API.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WikiData API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">External service providing data for generating questions about images and concepts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">External service that generates hints for players.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Important Interfaces:</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Interface</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Purpose</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WIChat Application Proxy Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines communication between the client and system services.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REST API Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interface for managing interactions between the client and the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WikiData API Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interface for retrieving information about images and questions for the game.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interface for generating hints and assisting players based on their interactions.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_wichat_application_proxy">5.2.1. WIChat Application Proxy</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Acts as the intermediary between the client and other system services. It manages incoming requests from the client and routes them to the appropriate services.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Communication with the client to receive requests.</p>
+</li>
+<li>
+<p>Routing of requests to the backend services (e.g., Question Generator, LLM AI Chat).</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>High availability and low latency in request routing.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/proxy/WIChatProxy</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: The architecture supports application scalability.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: No identified risks so far.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_white_box_building_block_1">5.2.1. White Box <em>&lt;building block 1&gt;</em></h4>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>&#8230;&#8203;describes the internal structure of <em>building block 1</em>.</p>
+<h4 id="_client">5.2.2. Client</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Provides the user interface that allows players to interact with the system, answer questions, and get hints using the LLM.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Connection with the REST API to send responses and get questions.</p>
+</li>
+<li>
+<p>Interaction with the LLM to get hints for the game.</p>
+</li>
+</ul>
 </div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Smooth and fast user interface with real-time updates.</p>
+</li>
+</ul>
 </div>
-</div>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_white_box_building_block_2">5.2.2. White Box <em>&lt;building block 2&gt;</em></h4>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
-</div>
-<div class="paragraph">
-<p>&#8230;&#8203;</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_white_box_building_block_m">5.2.3. White Box <em>&lt;building block m&gt;</em></h4>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_level_3">5.3. Level 3</h3>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.</p>
-</div>
-<div class="paragraph">
-<p>When you need more detailed levels of your architecture please copy this
-part of arc42 for additional levels.</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_white_box_building_block_x_1">5.3.1. White Box &lt;_building block x.1_&gt;</h4>
-<div class="sidebarblock arc42help">
-<div class="content">
-<div class="paragraph">
-<p>Specifies the internal structure of <em>building block x.1</em>.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/client</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Accessible and responsive design for various devices.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: No critical risks identified.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_white_box_building_block_x_2">5.3.2. White Box &lt;_building block x.2_&gt;</h4>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
+<h4 id="_rest_api">5.2.3. REST API</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Manages communication between the client and the database, allowing queries, inserts, and updates of data.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Endpoint to get questions from the Question Generator.</p>
+</li>
+<li>
+<p>Endpoint to record responses and retrieve results from the database.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Fast response time and security for API calls.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/api</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Meets security and efficiency requirements.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: Scalability for handling large traffic volumes in the future.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_white_box_building_block_y_1">5.3.3. White Box &lt;_building block y.1_&gt;</h4>
-<div class="paragraph">
-<p><em>&lt;white box template&gt;</em></p>
+<h4 id="_database">5.2.4. Database</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Stores persistent system data, including user histories, generated questions, answers, and scores.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Communication with the REST API to store and retrieve data (e.g., player answers and scores).</p>
+</li>
+</ul>
 </div>
-<div style="page-break-after: always;"></div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>High availability, query performance, and backup/recovery systems.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/database</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Data backup and recovery ensured.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: Data security considerations for sensitive information.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_question_generator">5.2.5. Question Generator</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Uses the WikiData API to automatically generate questions related to images and concepts.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Connection with the WikiData API to retrieve information and generate questions.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Accuracy and relevance of the generated questions based on the WikiData knowledge base.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/question_generator</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Efficient and accurate question generation.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: No identified risks.</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-runtime-view">6. Runtime View</h2>
+<h2 id="_component_diagram_c4_level_3">6. Component Diagram (C4 Level 3)</h2>
+<div class="sectionbody">
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/C4%20Diagram%20(Level%203)%20-%20Component%20diagram.png" alt="C4 Diagram (Level 3)   Component diagram" width="990" height="638">
+</div>
+<div class="title">Figure 5. Overall view of the component context</div>
+</div>
+<div class="paragraph">
+<p><strong>Motivation:</strong>
+The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal components within the WIChat Application, focusing specifically on the division of the REST API into four modules for better organization and management of the system&#8217;s functionalities.</p>
+</div>
+<div class="paragraph">
+<p><strong>Contained Components:</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Component</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Responsibility</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authenticated Module</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages authenticated requests, ensuring secure access to the system for registered users.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Game Module</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages game-related requests, such as starting a game, updating progress, and storing player responses.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Statistics Module</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Handles the tracking and reporting of player statistics, such as scores and performance over time.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Question Module</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages requests for generating and retrieving questions, interacting with the WikiData API.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Modules Overview:</strong></p>
+</div>
+<div class="sect3">
+<h4 id="_authenticated_module">6.1. Authenticated Module</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Handles authentication and authorization processes for users to securely access the system.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>API endpoints for login, registration, and session management.</p>
+</li>
+<li>
+<p>Interacts with the Database to store and verify user credentials.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Ensures secure handling of sensitive user data with encryption.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/rest_api/authenticated</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Secure login, registration, and session management.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_game_module">6.2. Game Module</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Handles interactions related to gameplay, such as starting the game, submitting answers, and tracking game progress.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>API endpoints for starting the game, submitting responses, and tracking progress.</p>
+</li>
+<li>
+<p>Interacts with the Database to store player progress.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Efficient state management with low-latency updates.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/rest_api/game</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Manage game flow and player data efficiently.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_statistics_module">6.3. Statistics Module</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Tracks player performance and generates reports on their gameplay statistics.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>API endpoints for retrieving statistics and generating reports.</p>
+</li>
+<li>
+<p>Interacts with the Database to store and retrieve player statistics.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>High-performance data retrieval for real-time reports.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/rest_api/statistics</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Accurate and timely reporting of player statistics.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_question_module">6.4. Question Module</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Manages the generation and retrieval of questions based on data from the WikiData API.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>API endpoints for retrieving questions for the game.</p>
+</li>
+<li>
+<p>Communication with the Question Management component to generate and serve questions.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Relevant and contextually accurate questions.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/rest_api/questions</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements: Relevant question retrieval and accurate question generation.</p>
+</li>
+</ul>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="section-runtime-view">7. Runtime View</h2>
 <div class="sectionbody">
 <div class="sidebarblock arc42help">
 <div class="content">
@@ -1680,7 +1926,7 @@ You will mainly capture scenarios in your documentation to communicate your arch
 </div>
 </div>
 <div class="sect2">
-<h3 id="_runtime_scenario_1">6.1. &lt;Runtime Scenario 1&gt;</h3>
+<h3 id="_runtime_scenario_1">7.1. &lt;Runtime Scenario 1&gt;</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1702,21 +1948,21 @@ building block instances depicted in this diagram.&gt;</em></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_runtime_scenario_2">6.2. &lt;Runtime Scenario 2&gt;</h3>
+<h3 id="_runtime_scenario_2">7.2. &lt;Runtime Scenario 2&gt;</h3>
 
 </div>
 <div class="sect2">
-<h3 id="">6.3. &#8230;&#8203;</h3>
+<h3 id="">7.3. &#8230;&#8203;</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_runtime_scenario_n">6.4. &lt;Runtime Scenario n&gt;</h3>
+<h3 id="_runtime_scenario_n">7.4. &lt;Runtime Scenario n&gt;</h3>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-deployment-view">7. Deployment View</h2>
+<h2 id="section-deployment-view">8. Deployment View</h2>
 <div class="sectionbody">
 <div class="sidebarblock arc42help">
 <div class="content">
@@ -1773,7 +2019,7 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_infrastructure_level_1">7.1. Infrastructure Level 1</h3>
+<h3 id="_infrastructure_level_1">8.1. Infrastructure Level 1</h3>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -1821,7 +2067,7 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_infrastructure_level_2">7.2. Infrastructure Level 2</h3>
+<h3 id="_infrastructure_level_2">8.2. Infrastructure Level 2</h3>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -1833,13 +2079,13 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_infrastructure_element_1">7.2.1. <em>&lt;Infrastructure Element 1&gt;</em></h4>
+<h4 id="_infrastructure_element_1">8.2.1. <em>&lt;Infrastructure Element 1&gt;</em></h4>
 <div class="paragraph">
 <p><em>&lt;diagram + explanation&gt;</em></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_infrastructure_element_2">7.2.2. <em>&lt;Infrastructure Element 2&gt;</em></h4>
+<h4 id="_infrastructure_element_2">8.2.2. <em>&lt;Infrastructure Element 2&gt;</em></h4>
 <div class="paragraph">
 <p><em>&lt;diagram + explanation&gt;</em></p>
 </div>
@@ -1848,7 +2094,7 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_infrastructure_element_n">7.2.3. <em>&lt;Infrastructure Element n&gt;</em></h4>
+<h4 id="_infrastructure_element_n">8.2.3. <em>&lt;Infrastructure Element n&gt;</em></h4>
 <div class="paragraph">
 <p><em>&lt;diagram + explanation&gt;</em></p>
 </div>
@@ -1858,7 +2104,7 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-concepts">8. Cross-cutting Concepts</h2>
+<h2 id="section-concepts">9. Cross-cutting Concepts</h2>
 <div class="sectionbody">
 <div class="sidebarblock arc42help">
 <div class="content">
@@ -1960,13 +2206,13 @@ on this list.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_1">8.1. <em>&lt;Concept 1&gt;</em></h3>
+<h3 id="_concept_1">9.1. <em>&lt;Concept 1&gt;</em></h3>
 <div class="paragraph">
 <p><em>&lt;explanation&gt;</em></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_2">8.2. <em>&lt;Concept 2&gt;</em></h3>
+<h3 id="_concept_2">9.2. <em>&lt;Concept 2&gt;</em></h3>
 <div class="paragraph">
 <p><em>&lt;explanation&gt;</em></p>
 </div>
@@ -1975,7 +2221,7 @@ on this list.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_n">8.3. <em>&lt;Concept n&gt;</em></h3>
+<h3 id="_concept_n">9.3. <em>&lt;Concept n&gt;</em></h3>
 <div class="paragraph">
 <p><em>&lt;explanation&gt;</em></p>
 </div>
@@ -1984,7 +2230,7 @@ on this list.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-design-decisions">9. Architecture Decisions</h2>
+<h2 id="section-design-decisions">10. Architecture Decisions</h2>
 <div class="sectionbody">
 <div class="sidebarblock arc42help">
 <div class="content">
@@ -2034,7 +2280,7 @@ There you will find links and examples about ADR.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-quality-scenarios">10. Quality Requirements</h2>
+<h2 id="section-quality-scenarios">11. Quality Requirements</h2>
 <div class="sectionbody">
 <div class="sidebarblock arc42help">
 <div class="content">
@@ -2059,7 +2305,7 @@ concrete and measurable.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_quality_tree">10.1. Quality Tree</h3>
+<h3 id="_quality_tree">11.1. Quality Tree</h3>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -2091,7 +2337,7 @@ concrete and measurable.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_quality_scenarios">10.2. Quality Scenarios</h3>
+<h3 id="_quality_scenarios">11.2. Quality Scenarios</h3>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -2135,7 +2381,7 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-technical-risks">11. Risks and Technical Debts</h2>
+<h2 id="section-technical-risks">12. Risks and Technical Debts</h2>
 <div class="sectionbody">
 <div class="sidebarblock arc42help">
 <div class="content">
@@ -2164,7 +2410,7 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </div>
 </div>
 <div class="sect1">
-<h2 id="section-glossary">12. Glossary</h2>
+<h2 id="section-glossary">13. Glossary</h2>
 <div class="sectionbody">
 <div class="sidebarblock arc42help">
 <div class="content">
