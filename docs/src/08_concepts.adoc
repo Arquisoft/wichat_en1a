@@ -3,7 +3,6 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-concepts]]
 == Cross-cutting Concepts
 
-
 ifdef::arc42help[]
 [role="arc42help"]
 ****
@@ -18,13 +17,11 @@ They can include many different topics, such as
 * principal, often technical decisions of an overarching (= cross-cutting) nature
 * implementation rules
 
-
 .Motivation
 Concepts form the basis for _conceptual integrity_ (consistency, homogeneity) of the architecture. 
 Thus, they are an important contribution to achieve inner qualities of your system.
 
 Some of these concepts cannot be assigned to individual building blocks, e.g. security or safety. 
-
 
 .Form
 The form can be varied:
@@ -50,7 +47,6 @@ on this list.
 
 image::08-concepts-EN.drawio.png["Possible topics for crosscutting concepts"]
 
-
 .Further Information
 
 See https://docs.arc42.org/section-8/[Concepts] in the arc42 documentation.
@@ -61,7 +57,7 @@ endif::arc42help[]
 
 _<explanation>_
 
-
+...
 
 === _<Concept 2>_
 
