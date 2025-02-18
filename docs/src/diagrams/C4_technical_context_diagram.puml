@@ -23,11 +23,11 @@ System_Ext(llm, "LLM AI Chat", "REST API", $tags="External system")
 
 'RELATIONS
 Rel(player, proxy, "Uses", "HTTPS")
-Rel(player, llm, "Uses", "HTTPS")
 Rel(proxy, web_app, "Serves", "HTTPS")
 Rel(question_generator, wikidata, "Asks for data", "MQL, HTTPS")
 Rel(llm, wikidata, "Asks for data", "MQL, HTTPS")
 Rel(web_app, backend_api, "Asks for user/game information", "JSON, HTTPS")
+Rel(web_app, llm, "Uses", "HTTPS")
 Rel(question_generator, database, "Stores questions", "TO BE DEFINED")
 Rel(backend_api, database, "Stores game/user information", "TO BE DEFINED")
 @enduml

@@ -14,8 +14,8 @@ System_Ext(wikidata, "WikiData API", "API that contains the information used for
 System_Ext(llm_chat, "LLM AI Chat", "LLM helper that provides an AI to help the player, providing clues about the images", $tags="External system")
 
 'RELATIONS
-Rel(player, wichat, "Logs in and plays")
-Rel(player, llm_chat, "Asks for help")
+Rel(player, wichat, "Logs in and plays / interacts with the system")
+Rel(wichat, llm_chat, "Asks for hints")
 Rel(llm_chat, wikidata, "Looks for clues about the image to provide help")
 Rel(wichat, wikidata, "Asks for data for image quiz generation")
 @enduml

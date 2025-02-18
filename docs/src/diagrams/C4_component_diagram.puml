@@ -38,7 +38,7 @@ Rel(proxy, web_app, "Serves", "HTTPS")
 Rel(web_app, backend_api, "Asks for user/game information", "JSON, HTTPS")
 Rel(question_generator, wikidata, "Asks for data", "MQL, HTTPS")
 Rel(llm, wikidata, "Asks for data", "MQL, HTTPS")
-Rel(player, llm, "Uses", "HTTPS")
+Rel(web_app, llm, "Uses", "HTTPS")
 
 Rel(question_generator, database, "Stores questions", "TO BE DEFINED")
 

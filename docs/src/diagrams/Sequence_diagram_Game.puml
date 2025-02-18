@@ -26,10 +26,14 @@ loop #MediumSeaGreen Round
     deactivate DB
     API --> User : Return question (image) & possible answers
     deactivate API
-    User -> LLM: Ask for hint
+    User -> API: Ask for hint
+    activate API #DarkOliveGreen
+    API -> LLM : Request hint
     activate LLM #DarkOliveGreen
-    LLM --> User : Return hint
+    LLM --> API : Return hint
     deactivate LLM
+    API --> User : Return hint
+    deactivate API
     User -> API : Send chosen answer
     activate API #DarkOliveGreen
     API -> API : Check answer is correct
