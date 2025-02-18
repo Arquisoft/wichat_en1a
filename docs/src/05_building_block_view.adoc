@@ -243,7 +243,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 * (Optional) Open Issues/Problems/Risks: No identified risks.
 
 
-== Component Diagram (C4 Level 3)
+=== Component Diagram (C4 Level 3)
 
 [plantuml,"C4 Diagram (Level 3) - Component diagram", png, align="center", title="Overall view of the component context"]
 ----

@@ -1,0 +1,33 @@
+@startuml register
+title Registration Sequence Diagram
+
+actor User #DarkGreen
+participant API as "API" #DarkOliveGreen
+database DB as "Database" #LightGray
+
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+User -> API : Input account details
+activate API #DarkOliveGreen
+API -> API : Validate account details
+API -> DB : Check email account is unused
+alt #MediumSeaGreen Email is available
+    activate DB #LightGray
+    DB --> API : Available email
+    deactivate DB
+    API -> DB : Register user
+    activate DB #LightGray
+    DB --> API : User registered
+    deactivate DB
+    API --> User : Return confirmation
+    deactivate API
+else Email already in use
+    activate DB #LightGray
+    DB --> API : Email is used
+    deactivate DB
+    activate API #DarkOliveGreen
+    API --> User : Return error ("400 Bad Request")
+    deactivate API
+end
+@enduml

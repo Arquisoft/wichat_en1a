@@ -1,0 +1,33 @@
+@startuml login
+title Login Sequence Diagram
+
+actor User #DarkGreen
+participant API as "API" #DarkOliveGreen
+database DB as "Database" #LightGray
+
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+User -> API : Enter credentials
+activate API #DarkOliveGreen
+API -> DB : Check credentials
+activate DB #LightGray
+alt #MediumSeaGreen Credentials are valid
+    DB --> API : Return result ("Valid")
+    deactivate DB
+    API -> API : Generate JWT and refresh tokens
+    API -> DB : Store session tokens
+    activate DB #LightGray
+    DB --> API : Tokens saved
+    deactivate DB
+    API --> User : Return JWT DTO
+    deactivate API
+else Credentials are invalid
+    activate DB #LightGray
+    DB --> API : Return error ("Invalid credentials")
+    deactivate DB
+    activate API #DarkOliveGreen
+    API --> User : Return error ("403 Forbidden")
+    deactivate API
+end
+@enduml

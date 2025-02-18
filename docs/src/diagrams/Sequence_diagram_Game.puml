@@ -1,0 +1,52 @@
+@startuml game
+title Game's lifecycle Sequence Diagram
+
+actor User #DarkGreen
+participant API as "API" #DarkOliveGreen
+participant LLM as "LLM" #DarkOliveGreen
+database DB as "Database" #LightGray
+
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+User -> API : Start game
+activate API #DarkOliveGreen
+API -> DB : Obtain game info
+activate DB #LightGray
+DB --> API : Return game context
+deactivate DB
+API --> User : Display game info
+deactivate API
+loop #MediumSeaGreen Round
+    User -> API : Start round (question)
+    activate API #DarkOliveGreen
+    API -> DB : Ask for question
+    activate DB  #LightGray
+    DB --> API : Return question (image)
+    deactivate DB
+    API --> User : Return question (image) & possible answers
+    deactivate API
+    User -> API: Ask for hint
+    activate API #DarkOliveGreen
+    API -> LLM : Request hint
+    activate LLM #DarkOliveGreen
+    LLM --> API : Return hint
+    deactivate LLM
+    API --> User : Return hint
+    deactivate API
+    User -> API : Send chosen answer
+    activate API #DarkOliveGreen
+    API -> API : Check answer is correct
+    API -> DB : Update game context
+    activate DB #LightGray
+    DB --> API : Return game info updated
+    deactivate DB
+    API --> User : Inform user if answered right
+end loop Round
+API -> DB : [After last question] Update ranking
+activate DB #LightGray
+DB --> API : Ranking updated
+deactivate DB
+API --> User : Display results
+deactivate API
+@enduml
