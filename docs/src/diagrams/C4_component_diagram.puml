@@ -19,10 +19,10 @@ System_Boundary(wichat, "Wichat Application Server") {
     Container(web_app, "Wichat Application Client", "React, JavaScript", "TO BE DEFINED web server", $tags="Internal system")
 
     System_Boundary(backend_api, "Wichat REST API") {
-        Component(auth_module, "Authenticated Module", "Java", "Handles authenticated requests and session management", $tags="<<componente>>")
-        Component(game_module, "Game Module", "Java", "Handles game-related requests and updates", $tags="<<componente>>")
-        Component(statistics_module, "Statistics Module", "Java", "Manages player statistics and performance tracking", $tags="<<componente>>")
-        Component(question_module, "Question Module", "Java", "Manages question generation and retrieval", $tags="<<componente>>")
+        Component(auth_module, "Authenticated Module", "TO BE DEFINED", "Handles authenticated requests and session management", $tags="<<componente>>")
+        Component(game_module, "Game Module", "TO BE DEFINED", "Handles game-related requests and updates", $tags="<<componente>>")
+        Component(statistics_module, "Statistics Module", "TO BE DEFINED", "Manages player statistics and performance tracking", $tags="<<componente>>")
+        Component(question_module, "Question Module", "TO BE DEFINED", "Manages question generation and retrieval", $tags="<<componente>>")
     }
 
     Container(question_generator, "Question Generator", "TO BE DEFINED", ".jar file", $tags="Internal system")
@@ -50,8 +50,8 @@ Rel(web_app, question_module, "Asks for question information", "JSON, HTTPS")
 
 
 Rel(game_module,question_module,"Gets questions")
-Rel(question_module,database,"Stores game/user information","JPA")
-Rel(statistics_module,database,"Stores game/user information","JPA")
-Rel(auth_module,database,"Stores game/user information","JPA")
+Rel(question_module,database,"Stores game/user information","TO BE DEFINED")
+Rel(statistics_module,database,"Stores game/user information","TO BE DEFINED")
+Rel(auth_module,database,"Stores game/user information","TO BE DEFINED")
 @enduml
 

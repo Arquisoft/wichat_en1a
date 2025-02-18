@@ -106,15 +106,14 @@ The purpose of this section is to provide a high-level view of the system and it
 * Interface(s):
 - Interaction with the WIChat Application through a user interface (UI) that displays questions and accepts answers.
 - Interaction with the LLM AI Chat for hints when requested.
-* (Optional) Quality-/Performance Characteristics:
-- Smooth, responsive UI with minimal delays.
+* (Optional) Quality-/Performance Characteristics: Smooth, responsive UI with minimal delays.
 * (Optional) Directory/File Location: src/client
 * (Optional) Fulfilled Requirements: Real-time gameplay experience with clear and engaging UI.
-* (Optional) Open Issues/Problems/Risks: No critical risks identified.
+* (Optional) Open Issues/Problems/Risks: The player should not have access to some internal parts of the application, neither should know how the application is coded.
 
 ==== WIChat Application
 
-* Purpose/Responsibility: The main system that handles the gameplay, question generation, interaction with external services (WikiData API, LLM AI Chat), and player progression.
+* Purpose/Responsibility: The main system that handles the gameplay, image-based question generation, interaction with external services (WikiData API, LLM AI Chat), and player progression.
 * Interface(s):
 - Communication with the Player through the user interface.
 - Interaction with the WikiData API to retrieve information and generate questions.
@@ -134,7 +133,7 @@ The purpose of this section is to provide a high-level view of the system and it
 - Fast response time and contextually relevant hints.
 * (Optional) Directory/File Location: External to the system.
 * (Optional) Fulfilled Requirements: High-quality hint generation.
-* (Optional) Open Issues/Problems/Risks: Dependency on external AI service reliability.
+* (Optional) Open Issues/Problems/Risks: Dependency on external AI service reliability. Since this component consists on an AI-based chat, it is important to maintain the integrity of its responses, limiting the queries that the users may perform so that the goal of the LLM doesn't get blurred and it doesn't get influenced by any behaviour that the user tries to introduce. It should only work as a clue generator, and ensuring that this behaviour persists must be a primary focus.
 
 ==== WikiData API
 
@@ -223,11 +222,14 @@ The system decomposition has been done to efficiently divide responsibilities, e
 * Purpose/Responsibility: Stores persistent system data, including user histories, generated questions, answers, and scores.
 * Interface(s):
 - Communication with the REST API to store and retrieve data (e.g., player answers and scores).
+- Interacts with the Question Generator for managing generated questions.
 * (Optional) Quality-/Performance Characteristics:
 - High availability, query performance, and backup/recovery systems.
+- Backup and recovery systems to prevent data loss.
+- ACID compliance for consistency and durability.
 * (Optional) Directory/File Location: src/database
-* (Optional) Fulfilled Requirements: Data backup and recovery ensured.
-* (Optional) Open Issues/Problems/Risks: Data security considerations for sensitive information.
+* (Optional) Fulfilled Requirements: Secure data storage, backup, and recovery.
+* (Optional) Open Issues/Problems/Risks: Ensuring data security, scalability, and ACID compliance is crucial to maintain consistency and performance. The system must also protect user data and comply with privacy regulations.
 
 ==== Question Generator
 
@@ -300,7 +302,7 @@ The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal
 
 ==== Question Module
 
-* Purpose/Responsibility: Manages the generation and retrieval of questions based on data from the WikiData API.
+* Purpose/Responsibility: Manages the generation and retrieval of image-based questions based on data from the WikiData API.
 * Interface(s):
 - API endpoints for retrieving questions for the game.
 - Communication with the Question Management component to generate and serve questions.
