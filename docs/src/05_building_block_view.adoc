@@ -44,182 +44,270 @@ endif::arc42help[]
 
 === Whitebox Overall System
 
+
+
 ifdef::arc42help[]
 [role="arc42help"]
 ****
 Here you describe the decomposition of the overall system using the following white box template. It contains
 
- * an overview diagram
- * a motivation for the decomposition
- * black box descriptions of the contained building blocks. For these we offer you alternatives:
+* an overview diagram
+* a motivation for the decomposition
+* black box descriptions of the contained building blocks. For these we offer you alternatives:
 
-   ** use _one_ table for a short and pragmatic overview of all contained building blocks and their interfaces
-   ** use a list of black box descriptions of the building blocks according to the black box template (see below).
-   Depending on your choice of tool this list could be sub-chapters (in text files), sub-pages (in a Wiki) or nested elements (in a modeling tool).
+** use _one_ table for a short and pragmatic overview of all contained building blocks and their interfaces
+** use a list of black box descriptions of the building blocks according to the black box template (see below).
+Depending on your choice of tool this list could be sub-chapters (in text files), sub-pages (in a Wiki) or nested elements (in a modeling tool).
 
 
- * (optional:) important interfaces, that are not explained in the black box templates of a building block, but are very important for understanding the white box.
+* (optional:) important interfaces, that are not explained in the black box templates of a building block, but are very important for understanding the white box.
 Since there are so many ways to specify interfaces why do not provide a specific template for them.
- In the worst case you have to specify and describe syntax, semantics, protocols, error handling,
- restrictions, versions, qualities, necessary compatibilities and many things more.
+In the worst case you have to specify and describe syntax, semantics, protocols, error handling,
+restrictions, versions, qualities, necessary compatibilities and many things more.
 In the best case you will get away with examples or simple signatures.
 
 ****
 endif::arc42help[]
 
-_**<Overview Diagram>**_
+[plantuml,"C4 Diagram (Level 1) - Business context diagram", png, align="center", title="Overall view of the business context"]
+----
+include::./diagrams/C4_business_model_diagram.puml[]
+----
 
-Motivation::
+**Motivation:**
+The purpose of this section is to provide a high-level view of the system and its primary components. This diagram focuses on how the different elements of the system interact and how the player, application, external services like the WikiData API, and the LLM AI Chat function together to support the game.
 
-_<text explanation>_
-
-
-Contained Building Blocks::
-_<Description of contained building block (black boxes)>_
-
-Important Interfaces::
-_<Description of important interfaces>_
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Insert your explanations of black boxes from level 1:
-
-If you use tabular form you will only describe your black boxes with name and
-responsibility according to the following schema:
+**Contained Building Blocks:**
 
 [cols="1,2" options="header"]
 |===
 | **Name** | **Responsibility**
-| _<black box 1>_ | _<Text>_
-| _<black box 2>_ | _<Text>_
+| Player | The player interacts with the system, answering questions and obtaining hints through the interface.
+| WIChat Application | The central application that facilitates player interaction, communication with external services, and question generation.
+| LLM AI Chat | Provides hints to the player when requested.
+| WikiData API | Supplies data and information used to generate questions about images and concepts.
+
 |===
 
+**Important Interfaces:**
+
+[cols="1,2" options="header"]
+|===
+| **Interface** | **Purpose**
+| Player-Application Interface | Defines the interaction between the player and the application, including how questions are presented and how the player submits answers.
+| Application-LLM Interface | Manages communication between the application and the LLM AI Chat to request hints.
+| Application-WikiData Interface | Manages the interaction between the application and the WikiData API to retrieve information for generating questions.
+
+|===
+
+==== Player
+
+* Purpose/Responsibility: The player interacts with the game by answering questions about images and concepts. The player can request hints when needed.
+* Interface(s):
+- Interaction with the WIChat Application through a user interface (UI) that displays questions and accepts answers.
+- Interaction with the LLM AI Chat for hints when requested.
+* (Optional) Quality-/Performance Characteristics: Smooth, responsive UI with minimal delays.
+* (Optional) Directory/File Location: src/client
+* (Optional) Fulfilled Requirements: Real-time gameplay experience with clear and engaging UI.
+* (Optional) Open Issues/Problems/Risks: The player should not have access to some internal parts of the application, neither should know how the application is coded.
+
+==== WIChat Application
+
+* Purpose/Responsibility: The main system that handles the gameplay, image-based question generation, interaction with external services (WikiData API, LLM AI Chat), and player progression.
+* Interface(s):
+- Communication with the Player through the user interface.
+- Interaction with the WikiData API to retrieve information and generate questions.
+- Communication with the LLM AI Chat to provide hints to the player.
+* (Optional) Quality-/Performance Characteristics:
+- Scalable, with efficient routing of requests to the relevant components.
+* (Optional) Directory/File Location: src/application
+* (Optional) Fulfilled Requirements: Real-time interaction and data handling.
+* (Optional) Open Issues/Problems/Risks: Performance under high traffic (large number of players simultaneously).
+
+==== LLM AI Chat
+
+* Purpose/Responsibility: Provides AI-generated hints to players based on their interactions within the game.
+* Interface(s):
+- Receives requests from the WIChat Application to provide hints based on player progress.
+* (Optional) Quality-/Performance Characteristics:
+- Fast response time and contextually relevant hints.
+* (Optional) Directory/File Location: External to the system.
+* (Optional) Fulfilled Requirements: High-quality hint generation.
+* (Optional) Open Issues/Problems/Risks: Dependency on external AI service reliability. Since this component consists on an AI-based chat, it is important to maintain the integrity of its responses, limiting the queries that the users may perform so that the goal of the LLM doesn't get blurred and it doesn't get influenced by any behaviour that the user tries to introduce. It should only work as a clue generator, and ensuring that this behaviour persists must be a primary focus.
+
+==== WikiData API
+
+* Purpose/Responsibility: External service that provides detailed information about images and concepts for generating game-related questions.
+* Interface(s):
+- Receives requests from the WIChat Application to retrieve image-related data.
+* (Optional) Quality-/Performance Characteristics:
+- Relevant, accurate, and up-to-date information.
+* (Optional) Directory/File Location: External to the system.
+* (Optional) Fulfilled Requirements: Sufficient data to generate accurate and diverse questions.
+* (Optional) Open Issues/Problems/Risks: Limited data availability and consistency in the API's responses.
+
+=== Container Diagram (C4 Level 2)
+
+[plantuml, "C4 Diagram (Level 2) - Container context diagram", png, align="center", title="Overall view of the technical context"]
+----
+include::./diagrams/C4_technical_context_diagram.puml[]
+----
+
+**Motivation:**
+The system decomposition has been done to efficiently divide responsibilities, ensure scalability, and facilitate understanding of the system in terms of components and their interactions. The system is broken down into key blocks that interact with each other and with external systems, such as the LLM and the WikiData API.
+
+**Contained Building Blocks:**
+
+[cols="1,2" options="header"]
+|===
+| **Name** | **Responsibility**
+| WIChat Application Proxy | Manages communication between the client and system services.
+| Client | User interface that interacts with the application.
+| REST API | API that handles requests and responses between the client and server.
+| Database | Database for storing user histories, questions, answers, etc.
+| Question Generator | Automatic question generator based on the WikiData API.
+| WikiData API | External service providing data for generating questions about images and concepts.
+| LLM AI Chat | External service that generates hints for players.
+
+|===
+**Important Interfaces:**
+
+[cols="1,2" options="header"]
+|===
+| **Interface** | **Purpose**
+| WIChat Application Proxy Interface | Defines communication between the client and system services.
+| REST API Interface | Interface for managing interactions between the client and the database.
+| WikiData API Interface | Interface for retrieving information about images and questions for the game.
+| LLM AI Chat Interface | Interface for generating hints and assisting players based on their interactions.
+
+|===
+==== WIChat Application Proxy
+
+* Purpose/Responsibility: Acts as the intermediary between the client and other system services. It manages incoming requests from the client and routes them to the appropriate services.
+* Interface(s):
+- Communication with the client to receive requests.
+- Routing of requests to the backend services (e.g., Question Generator, LLM AI Chat).
+* (Optional) Quality-/Performance Characteristics:
+- High availability and low latency in request routing.
+* (Optional) Directory/File Location: src/proxy/WIChatProxy
+* (Optional) Fulfilled Requirements: The architecture supports application scalability.
+* (Optional) Open Issues/Problems/Risks: No identified risks so far.
+
+==== Client
+
+* Purpose/Responsibility: Provides the user interface that allows players to interact with the system, answer questions, and get hints using the LLM.
+* Interface(s):
+- Connection with the REST API to send responses and get questions.
+- Interaction with the LLM to get hints for the game.
+* (Optional) Quality-/Performance Characteristics:
+- Smooth and fast user interface with real-time updates.
+* (Optional) Directory/File Location: src/client
+* (Optional) Fulfilled Requirements: Accessible and responsive design for various devices.
+* (Optional) Open Issues/Problems/Risks: No critical risks identified.
+
+==== REST API
+
+* Purpose/Responsibility: Manages communication between the client and the database, allowing queries, inserts, and updates of data.
+* Interface(s):
+- Endpoint to get questions from the Question Generator.
+- Endpoint to record responses and retrieve results from the database.
+* (Optional) Quality-/Performance Characteristics:
+- Fast response time and security for API calls.
+* (Optional) Directory/File Location: src/api
+* (Optional) Fulfilled Requirements: Meets security and efficiency requirements.
+* (Optional) Open Issues/Problems/Risks: Scalability for handling large traffic volumes in the future.
+
+==== Database
+
+* Purpose/Responsibility: Stores persistent system data, including user histories, generated questions, answers, and scores.
+* Interface(s):
+- Communication with the REST API to store and retrieve data (e.g., player answers and scores).
+- Interacts with the Question Generator for managing generated questions.
+* (Optional) Quality-/Performance Characteristics:
+- High availability, query performance, and backup/recovery systems.
+- Backup and recovery systems to prevent data loss.
+- ACID compliance for consistency and durability.
+* (Optional) Directory/File Location: src/database
+* (Optional) Fulfilled Requirements: Secure data storage, backup, and recovery.
+* (Optional) Open Issues/Problems/Risks: Ensuring data security, scalability, and ACID compliance is crucial to maintain consistency and performance. The system must also protect user data and comply with privacy regulations.
+
+==== Question Generator
+
+* Purpose/Responsibility: Uses the WikiData API to automatically generate questions related to images and concepts.
+* Interface(s):
+- Connection with the WikiData API to retrieve information and generate questions.
+* (Optional) Quality-/Performance Characteristics:
+- Accuracy and relevance of the generated questions based on the WikiData knowledge base.
+* (Optional) Directory/File Location: src/question_generator
+* (Optional) Fulfilled Requirements: Efficient and accurate question generation.
+* (Optional) Open Issues/Problems/Risks: No identified risks.
 
 
-If you use a list of black box descriptions then you fill in a separate black box template for every important building block .
-Its headline is the name of the black box.
-****
-endif::arc42help[]
+== Component Diagram (C4 Level 3)
 
-==== <Name black box 1>
+[plantuml,"C4 Diagram (Level 3) - Component diagram", png, align="center", title="Overall view of the component context"]
+----
+include::./diagrams/C4_component_diagram.puml[]
+----
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you describe <black box 1>
-according the the following black box template:
+**Motivation:**
+The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal components within the WIChat Application, focusing specifically on the division of the REST API into four modules for better organization and management of the system's functionalities.
 
-* Purpose/Responsibility
-* Interface(s), when they are not extracted as separate paragraphs. This interfaces may include qualities and performance characteristics.
-* (Optional) Quality-/Performance characteristics of the black box, e.g.availability, run time behavior, ....
-* (Optional) directory/file location
-* (Optional) Fulfilled requirements (if you need traceability to requirements).
-* (Optional) Open issues/problems/risks
+**Contained Components:**
 
-****
-endif::arc42help[]
+[cols="1,2" options="header"]
+|===
+| **Component** | **Responsibility**
+| Authenticated Module | Manages authenticated requests, ensuring secure access to the system for registered users.
+| Game Module | Manages game-related requests, such as starting a game, updating progress, and storing player responses.
+| Statistics Module | Handles the tracking and reporting of player statistics, such as scores and performance over time.
+| Question Module | Manages requests for generating and retrieving questions, interacting with the WikiData API.
 
-_<Purpose/Responsibility>_
+|===
 
-_<Interface(s)>_
+**Modules Overview:**
 
-_<(Optional) Quality/Performance Characteristics>_
+==== Authenticated Module
 
-_<(Optional) Directory/File Location>_
+* Purpose/Responsibility: Handles authentication and authorization processes for users to securely access the system.
+* Interface(s):
+- API endpoints for login, registration, and session management.
+- Interacts with the Database to store and verify user credentials.
+* (Optional) Quality-/Performance Characteristics:
+- Ensures secure handling of sensitive user data with encryption.
+* (Optional) Directory/File Location: src/rest_api/authenticated
+* (Optional) Fulfilled Requirements: Secure login, registration, and session management.
 
-_<(Optional) Fulfilled Requirements>_
+==== Game Module
 
-_<(optional) Open Issues/Problems/Risks>_
+* Purpose/Responsibility: Handles interactions related to gameplay, such as starting the game, submitting answers, and tracking game progress.
+* Interface(s):
+- API endpoints for starting the game, submitting responses, and tracking progress.
+- Interacts with the Database to store player progress.
+* (Optional) Quality-/Performance Characteristics:
+- Efficient state management with low-latency updates.
+* (Optional) Directory/File Location: src/rest_api/game
+* (Optional) Fulfilled Requirements: Manage game flow and player data efficiently.
 
+==== Statistics Module
 
+* Purpose/Responsibility: Tracks player performance and generates reports on their gameplay statistics.
+* Interface(s):
+- API endpoints for retrieving statistics and generating reports.
+- Interacts with the Database to store and retrieve player statistics.
+* (Optional) Quality-/Performance Characteristics:
+- High-performance data retrieval for real-time reports.
+* (Optional) Directory/File Location: src/rest_api/statistics
+* (Optional) Fulfilled Requirements: Accurate and timely reporting of player statistics.
 
+==== Question Module
 
-==== <Name black box 2>
+* Purpose/Responsibility: Manages the generation and retrieval of image-based questions based on data from the WikiData API.
+* Interface(s):
+- API endpoints for retrieving questions for the game.
+- Communication with the Question Management component to generate and serve questions.
+* (Optional) Quality-/Performance Characteristics:
+- Relevant and contextually accurate questions.
+* (Optional) Directory/File Location: src/rest_api/questions
+* (Optional) Fulfilled Requirements: Relevant question retrieval and accurate question generation.
 
-_<black box template>_
-
-==== <Name black box n>
-
-_<black box template>_
-
-
-==== <Name interface 1>
-
-...
-
-==== <Name interface m>
-
-
-
-=== Level 2
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you can specify the inner structure of (some) building blocks from level 1 as white boxes.
-
-You have to decide which building blocks of your system are important enough to justify such a detailed description.
-Please prefer relevance over completeness. Specify important, surprising, risky, complex or volatile building blocks.
-Leave out normal, simple, boring or standardized parts of your system
-****
-endif::arc42help[]
-
-==== White Box _<building block 1>_
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-...describes the internal structure of _building block 1_.
-****
-endif::arc42help[]
-
-_<white box template>_
-
-==== White Box _<building block 2>_
-
-
-_<white box template>_
-
-...
-
-==== White Box _<building block m>_
-
-
-_<white box template>_
-
-
-
-=== Level 3
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Here you can specify the inner structure of (some) building blocks from level 2 as white boxes.
-
-When you need more detailed levels of your architecture please copy this
-part of arc42 for additional levels.
-****
-endif::arc42help[]
-
-==== White Box <_building block x.1_>
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-Specifies the internal structure of _building block x.1_.
-****
-endif::arc42help[]
-
-_<white box template>_
-
-
-==== White Box <_building block x.2_>
-
-_<white box template>_
-
-
-
-==== White Box <_building block y.1_>
-
-_<white box template>_
