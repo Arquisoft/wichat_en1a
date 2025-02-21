@@ -3,7 +3,6 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-concepts]]
 == Cross-cutting Concepts
 
-
 ifdef::arc42help[]
 [role="arc42help"]
 ****
@@ -18,13 +17,11 @@ They can include many different topics, such as
 * principal, often technical decisions of an overarching (= cross-cutting) nature
 * implementation rules
 
-
 .Motivation
 Concepts form the basis for _conceptual integrity_ (consistency, homogeneity) of the architecture. 
 Thus, they are an important contribution to achieve inner qualities of your system.
 
 Some of these concepts cannot be assigned to individual building blocks, e.g. security or safety. 
-
 
 .Form
 The form can be varied:
@@ -50,25 +47,81 @@ on this list.
 
 image::08-concepts-EN.drawio.png["Possible topics for crosscutting concepts"]
 
-
 .Further Information
 
 See https://docs.arc42.org/section-8/[Concepts] in the arc42 documentation.
 ****
 endif::arc42help[]
 
-=== _<Concept 1>_
+=== Domain Model
 
-_<explanation>_
+A first version of the domain model of the application, representing all the entities that interact with the application and their relations, is shown in the following diagram:
 
+[plantuml, "Domain Model", svg, align="center", title="Domain Model"]
+----
+include::./diagrams/Domain_Model.puml[]
+----
 
+table::Domain Model
+[cols="2,5",options="header"]
+|===
+| Entity | Description
+| **User** | Represents a player, a stakeholder that will make use of the application. Contains the user's name, email, password, and the list of games played. It represents as well the actions that the user may perform once entering the application, like registering, logging in, playing a game, consulting the statistics.
+| **UserStats** | Represents the statistics of a user. Contains the number of games played, the number of questions answered correctly, the number of questions answered wrong, the number of hints used, and other statistics of the user that may be recorded to generate a ranking based on performance.
+| **Game** | Represents a game played by a user. Contains the game's mode, the user who played it, the questions, and the answers. It models the main interaction class or entity of the application, as it represents the game itself, the core of the project.
+| **GameConfiguration** | Represents the configuration of a game. Contains the number of questions, the time limit, the hints available, and other configurations that may be set by the user before starting a game.
+| **Question** | Represents a question in a game. Contains the question's text, the image, the possible answers, and the correct answer.
+| **Answer** | Represents an answer to a question. Contains the answer's text and a flag indicating if it is the correct answer.
+| **AIChat** | Represents the AI chat that will provide hints to the user. 
+| **GameMode (Enum)** | Represents the different game modes available in the application. Among the available modes it is possible to find some widely recognized like "Each wise man with his subject", "Travel with us" or "The hot question".
+| **QuestionCategory (Enum)** | Represents the different categories of questions available in the application. Some of them are "Science", "Literature", "Famous People", "Sports" or "History".
+|===
 
-=== _<Concept 2>_
+=== Design Patterns and Architectural Styles
 
-_<explanation>_
+The application will be developed following a layered architecture based in the Model-View-Controller (MVC) architectural pattern. This pattern is widely used in web applications and will help to separate the concerns of the application, making it easier to maintain and extend. The MVC pattern divides the application into three interconnected components:
 
-...
+- Model: Represents the data of the application, the business logic, and the rules to manage the data. It acts as an intermediary between the external sources of data (persistence systems, APIs, etc.) and the internal structure of the application.
+- View: Represents the user interface of the application, the way the data is presented to the user and the way the user interacts with the application.
+- Controller: Represents the logic of the application, the way the user input is handled, the way the data is retrieved from the model and the way the view is updated.
 
-=== _<Concept n>_
+Regarding design patterns, the application will make use of the following patterns:
 
-_<explanation>_
+- Singleton: The application will use this pattern to ensure that a class has only one instance and provide a global point of access to it. For example, to ensure that only one instance of the AI chat is created and used to provide hints to the user.
+- Factory: The application will use this pattern to create different types of questions and answers based on the game mode selected by the user in an automated and extensible way.
+- Observer: The application will use this pattern to define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.
+- Strategy: This pattern will be used to define a family of algorithms, encapsulate each one, and make them interchangeable. This will help to promote modularity and maintainability. For example, it will be used to define different strategies for generating questions and answers, and for providing hints to the user.
+
+=== Persistence Layer
+
+The application will rely all of its data persistence dependencies on a MongoDB database that will manage the data of the application, both related to the game sessions (questions, answers, game configurations) and to the user (user session, user statistics...). 
+
+MongoDB is a NoSQL database that stores data in flexible, JSON-like documents, meaning fields can vary from document to document and data structure can be changed over time. This flexibility will help to manage the data of the application, as the structure of the data may change over time as the application evolves.
+
+**NOTE:** The persistence layer is susceptible for change at this point. Using MongoDB is not a final decision.
+
+=== User Interface
+
+The idea of the development team regarding the final application is to make it specially atractive to the final user, with a clean and intuitive design that will make the user experience as pleasant as possible. The application will be developed using a responsive design, so it can be used in different devices, like smartphones, tablets, or desktop computers, enhancing usability, accesibility and adaptability at the maximum possible level. For this reason, the internazionalization of the application will be a key point to consider, as the application is intended to be used by any kind of users of a wide variety of ages and genders and from different countries and cultures.
+
+The user interface will be developed using **React** and **JavaScript** as the main tools.
+
+=== Session handling and Security
+
+The application will incorporate a basic session handling mechanism to manage the user sessions and to provide a secure environment for the users. The session handling mechanism will be based on the use of JSON Web Tokens (JWT) to authenticate the users and to manage the user sessions.
+
+=== Error handling
+
+The application will include a robust error handling mechanism to manage the errors that may occur during the execution of the application. The error handling mechanism will be based on the use of custom error messages and error codes to provide meaningful information to the users and to help the developers to identify and fix the errors. Error messages will be logged to help the developers to identify and fix the errors. It will be important to have a clear and consistent error handling mechanism to ensure that the application is reliable and user-friendly, and that the user does receive only the feedback that is expected to receive (no technical message should be displayed to the final user).
+
+=== Logging
+
+The application will have a logging system to monitor the activity of the application and to help the developers to identify and fix the errors that may occur during the execution of the application. The logging system will be based on the use of log files to store the log messages and to provide a history of the activity of the application. The log messages will be stored in a structured format to help the developers to analyze the log messages and to identify the root cause of the errors.
+
+=== Testing
+
+The application is expected to be tested using a combination of unit tests, integration tests, and end-to-end tests. Unit tests will be used to test individual components of the application, mainly based on testing backend functionality to ensure that the internal part of the applications works as expected. Integration tests will be used to test the interaction between different components of the application. End-to-end tests will be used to test the application as a whole, simulating the user interaction with the application.
+
+=== Deployment
+
+The application will be deployed using Docker containers. Docker is a platform that allows developers to develop, ship, and run applications in containers. Containers are lightweight, standalone, and executable packages of software that include everything needed to run an application: code, runtime, system tools, system libraries, and settings. This will help to ensure that the application runs consistently in different environments, and that the deployment process is as smooth as possible.
