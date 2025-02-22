@@ -26,17 +26,24 @@ See https://docs.arc42.org/section-11/[Risks and Technical Debt] in the arc42 do
 endif::arc42help[]
 
 === Risks
-==== WikiData API
-The API from where the system obtains the data and generates questions from may be unavailable at any point. This has a low chance of happening but nevertheless it's something to consider.
+[cols="1,2,1,1,2"]
+|===
+|Risk name |Description |Probability |Severity |Countermeasures
 
-==== The central server
-The system's deployment server may experience downtime for an indefinite duration. The risk is low- yet present due to our inexperience in its management. This risk is mitigated by the prospect of automatic deployment using docker.
+|Wikidata downtime |The API from where the system obtains the data and generates questions from may be unavailable at any point, rendering us unavailable to generate more questions. |Low |Low |As long as we generate large groups of questions without affecting performance, the system should not run out of questions.
 
-==== Poor documentation
-Even following the clear steps layed out for us, we are inexperienced in the role of a software architect, as well as lack the experience in open source projects of a senior programmer, the project's documentation may be lacking compared. This risk only can be mitigated by either trial and error or external help of some seasoned developer.
+|LLM downtime |The API of the large language model may be unavailable at any point, rendering us unavailable to provide the ai chat. |Low |Medium |None has been decided yet.
 
-==== MongoDb
-The use of this database technology is still to be decided on, but the current placeholder has the risk of losing data consistency. Due to the eventual consistency property of some noSql systems, we may encounter situations where data becomes corrupted.
+|Deployment server downtime |The deployment server may be unavailable at any point, due to our lack of server management skills. This would render us unavailable to test the application on deployment. | Medium | Medium |Mitigated by the prospect of automatic deployment using docker.
+
+|Poor documentation |Even following the clear steps layed out for us, we are inexperienced in the role of a software architect, as well as lack the experience in open source projects of a senior programmer, the project's documentation may be lacking compared. |Medium |Low |Either trial and error or external help of some seasoned developer
+
+|MongoDb |The use of this database technology is still to be decided on, but the current placeholder has the risk of losing data consistency. Due to the eventual consistency property of some noSql systems, we may encounter situations where data becomes corrupted, more likely due to our inexperience. |Medium |Low at development, high at deployment |For now, learn about the technology and practice with it.
+
+|===
+
 
 === Technical debt
 Here is listed the known negative impact of decisions taken by the team. This section is expected to increase every time one is identified. 
+
+- The use of react, due to its many dependencies, has an extra overhead upon deployment that will slow down deployments in quick succession. For this reason, it is discouraged to make releases without completely making sure everything works and encouraged to make use of configuration files that may be modifiable on runtime. 
