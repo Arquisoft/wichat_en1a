@@ -495,12 +495,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#section-concepts">8. Cross-cutting Concepts</a>
 <ul class="sectlevel2">
-<li><a href="#_concept_1">8.1. <em>&lt;Concept 1&gt;</em></a></li>
-<li><a href="#_concept_2">8.2. <em>&lt;Concept 2&gt;</em></a></li>
-<li><a href="#_concept_n">8.3. <em>&lt;Concept n&gt;</em></a></li>
+<li><a href="#_domain_model">8.1. Domain Model</a></li>
+<li><a href="#_design_patterns_and_architectural_styles">8.2. Design Patterns and Architectural Styles</a></li>
+<li><a href="#_persistence_layer">8.3. Persistence Layer</a></li>
+<li><a href="#_ensuring_a_wealthy_user_experience">8.4. Ensuring a wealthy user experience</a></li>
+<li><a href="#_deployment">8.5. Deployment</a></li>
 </ul>
 </li>
-<li><a href="#section-design-decisions">9. Architecture Decisions</a></li>
+<li><a href="#section-design-decisions">9. Architecture Decisions</a>
+<ul class="sectlevel2">
+<li><a href="#_main_webapp_technology">9.1. Main webapp technology</a></li>
+<li><a href="#_main_backend_technology">9.2. Main backend technology</a></li>
+<li><a href="#_use_of_mongodb">9.3. Use of MongoDB</a></li>
+<li><a href="#_architecture_of_the_question_generator_process">9.4. Architecture of the question generator process</a></li>
+<li><a href="#_connection_to_the_database_with_the_question_generator">9.5. Connection to the database with the question generator</a></li>
+<li><a href="#_integration_of_an_llm_for_hints">9.6. Integration of an LLM for hints</a></li>
+</ul>
+</li>
 <li><a href="#section-quality-scenarios">10. Quality Requirements</a>
 <ul class="sectlevel2">
 <li><a href="#_quality_tree">10.1. Quality Tree</a></li>
@@ -2504,27 +2515,173 @@ on this list.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_1">8.1. <em>&lt;Concept 1&gt;</em></h3>
+<h3 id="_domain_model">8.1. Domain Model</h3>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
+<p>A first version of the domain model of the application, representing all the entities that interact with the application and their relations, is shown in the following diagram:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/Domain%20Model.svg" alt="Domain Model" width="938" height="1038">
+</div>
+<div class="title">Figure 10. Domain Model</div>
 </div>
 <div class="paragraph">
-<p>&#8230;&#8203;</p>
+<p>table::Domain Model</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Entity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>User</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents a player, a stakeholder that will make use of the application. Contains the user&#8217;s name, email, password, and the list of games played. It represents as well the actions that the user may perform once entering the application, like registering, logging in, playing a game, consulting the statistics.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>UserStats</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents the statistics of a user. Contains the number of games played, the number of questions answered correctly, the number of questions answered wrong, the number of hints used, and other statistics of the user that may be recorded to generate a ranking based on performance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Game</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents a game played by a user. Contains the game&#8217;s mode, the user who played it, the questions, and the answers. It models the main interaction class or entity of the application, as it represents the game itself, the core of the project.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GameConfiguration</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents the configuration of a game. Contains the number of questions, the time limit, the hints available, and other configurations that may be set by the user before starting a game.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Question</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents a question in a game. Contains the question&#8217;s text, the image, the possible answers, and the correct answer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Answer</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents an answer to a question. Contains the answer&#8217;s text and a flag indicating if it is the correct answer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>AIChat</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents the AI chat that will provide hints to the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>GameMode (Enum)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents the different game modes available in the application. Among the available modes it is possible to find some widely recognized like "Each wise man with his subject", "Travel with us" or "The hot question".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>QuestionCategory (Enum)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents the different categories of questions available in the application. Some of them are "Science", "Literature", "Famous People", "Sports" or "History".</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_design_patterns_and_architectural_styles">8.2. Design Patterns and Architectural Styles</h3>
+<div class="paragraph">
+<p>The application will be developed following a layered architecture based in the Model-View-Controller (MVC) architectural pattern. This pattern is widely used in web applications and will help to separate the concerns of the application, making it easier to maintain and extend. The MVC pattern divides the application into three interconnected components:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Model: Represents the data of the application, the business logic, and the rules to manage the data. It acts as an intermediary between the external sources of data (persistence systems, APIs, etc.) and the internal structure of the application.</p>
+</li>
+<li>
+<p>View: Represents the user interface of the application, the way the data is presented to the user and the way the user interacts with the application.</p>
+</li>
+<li>
+<p>Controller: Represents the logic of the application, the way the user input is handled, the way the data is retrieved from the model and the way the view is updated.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Regarding design patterns, the application will make use of the following patterns:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Singleton: The application will use this pattern to ensure that a class has only one instance and provide a global point of access to it. For example, to ensure that only one instance of the AI chat is created and used to provide hints to the user.</p>
+</li>
+<li>
+<p>Factory: The application will use this pattern to create different types of questions and answers based on the game mode selected by the user in an automated and extensible way.</p>
+</li>
+<li>
+<p>Observer: The application will use this pattern to define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.</p>
+</li>
+<li>
+<p>Strategy: This pattern will be used to define a family of algorithms, encapsulate each one, and make them interchangeable. This will help to promote modularity and maintainability. For example, it will be used to define different strategies for generating questions and answers, and for providing hints to the user.</p>
+</li>
+<li>
+<p>Template: This pattern may be used to define the skeleton of an algorithm in any superclass, letting the subclasses override specific steps of the algorithm without changing its structure. This will help to promote code reuse and extensibility, and can be used in different concerns of the application. For example, when defining the different types (categories) of questions or the game modes available in the application.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_2">8.2. <em>&lt;Concept 2&gt;</em></h3>
+<h3 id="_persistence_layer">8.3. Persistence Layer</h3>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
+<p>The application will rely its data persistence dependencies presumably on a MongoDB database that will manage the data of the application related to the game sessions (questions, answers, game configurations) or related to the user (user session, user statistics&#8230;&#8203;), with the possibility to incorporate another database of the same type and with similar features to treat any of those concerns.</p>
 </div>
 <div class="paragraph">
-<p>&#8230;&#8203;</p>
+<p>MongoDB is a NoSQL database that stores data in flexible, JSON-like documents, meaning fields can vary from document to document and data structure can be changed over time. This flexibility will help to manage the data of the application, as the structure of the data may change over time as the application evolves. It is not a definite decission, but it is a good starting point to consider.</p>
+</div>
+<div class="paragraph">
+<p><strong>NOTE:</strong> The persistence layer is susceptible for change at this point. Using MongoDB is not a final decision.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_n">8.3. <em>&lt;Concept n&gt;</em></h3>
+<h3 id="_ensuring_a_wealthy_user_experience">8.4. Ensuring a wealthy user experience</h3>
+<div class="sect3">
+<h4 id="_user_interface">8.4.1. User Interface</h4>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
+<p>The idea of the development team regarding the final application is to make it specially atractive to the final user, with a clean and intuitive design that will make the user experience as pleasant as possible. The application will be developed using a responsive design, so it can be used in different devices, like smartphones, tablets, or desktop computers, enhancing usability, accesibility and adaptability at the maximum possible level. For this reason, the internazionalization of the application will be a key point to consider, as the application is intended to be used by any kind of users of a wide variety of ages and genders and from different countries and cultures.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_session_handling_and_security">8.4.2. Session handling and Security</h4>
+<div class="paragraph">
+<p>The application will incorporate a basic session handling mechanism to manage the user sessions and to provide a secure environment for the users. The session handling mechanism will be based on the use of JSON Web Tokens (JWT) to authenticate the users and to manage the user sessions.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_error_handling">8.4.3. Error handling</h4>
+<div class="paragraph">
+<p>The application will include a robust error handling mechanism to manage the errors that may occur during the execution of the application. The error handling mechanism will be based on the use of custom error messages and error codes to provide meaningful information to the users and to help the developers to identify and fix the errors. Error messages will be logged to help the developers to identify and fix the errors. It will be important to have a clear and consistent error handling mechanism to ensure that the application is reliable and user-friendly, and that the user does receive only the feedback that is expected to receive (no technical message should be displayed to the final user).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_logging">8.4.4. Logging</h4>
+<div class="paragraph">
+<p>The application will have a logging system to monitor the activity of the application and to help the developers to identify and fix the errors that may occur during the execution of the application. The logging system will be based on the use of log files to store the log messages and to provide a history of the activity of the application. The log messages will be stored in a structured format to help the developers to analyze the log messages and to identify the root cause of the errors.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_testing">8.4.5. Testing</h4>
+<div class="paragraph">
+<p>The application is expected to be tested using a combination of unit tests, integration tests, and end-to-end tests.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Unit tests</strong> will be used to test individual components of the application, mainly based on testing backend functionality to ensure that the internal part of the applications works as expected. Since the application will be Dockerized in containers, unit tests can be executed within a container or in a separate testing container that has access to the application&#8217;s code and dependencies, ensuring that the tests run in an environment identical to production.</p>
+</li>
+<li>
+<p><strong>Integration tests</strong> will be used to test the interaction between different components of the application. They can be executed by running multiple service containers in a Docker setup, allowing the test environment to closely mimic the production deployment.</p>
+</li>
+<li>
+<p><strong>End-to-end tests</strong> will be used to test the application as a whole, simulating the user interaction with the application. They can be performed using containers running the full application stack. This will help to ensure that the application works as expected from the user&#8217;s perspective.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deployment">8.5. Deployment</h3>
+<div class="paragraph">
+<p>The application will be deployed using Docker containers. Docker is a platform that allows developers to develop, ship, and run applications in containers. Containers are lightweight, standalone, and executable packages of software that include everything needed to run an application: code, runtime, system tools, system libraries, and settings. This will help to ensure that the application runs consistently in different environments, and that the deployment process is as smooth as possible.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -2533,6 +2690,109 @@ on this list.</p>
 <div class="sect1">
 <h2 id="section-design-decisions">9. Architecture Decisions</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_main_webapp_technology">9.1. Main webapp technology</h3>
+<div class="paragraph">
+<p>Date Recorded: 10/02/2025</p>
+</div>
+<div class="paragraph">
+<p>Scope: frontend, webapp</p>
+</div>
+<div class="paragraph">
+<p>Description: The frontend team has opted for a modern framework that offers a combination of performance,
+flexibility, and developer experience. One of the team members has prior experience with this technology,
+making it a viable choice for building an intuitive user interface.</p>
+</div>
+<div class="paragraph">
+<p>Decision taken: The team has decided
+to use React or a React framework due to the lack of expertise in maintaining a custom stylesheet.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_main_backend_technology">9.2. Main backend technology</h3>
+<div class="paragraph">
+<p>Date Recorded: 10/02/2025</p>
+</div>
+<div class="paragraph">
+<p>Scope: backend, API</p>
+</div>
+<div class="paragraph">
+<p>Description: The backend team is currently evaluating whether to use a monolithic Spring Boot-based
+approach or maintain a Node.js microservices system. One of the main reasons for considering Spring
+Boot is the team&#8217;s lack of experience with Node.js. Additionally, last year’s project was implemented using Spring Boot,
+which could facilitate development. If needed, Spring Boot provides flexibility for a future migration to microservices.</p>
+</div>
+<div class="paragraph">
+<p>Decision taken: [TO_BE_TAKEN]</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_of_mongodb">9.3. Use of MongoDB</h3>
+<div class="paragraph">
+<p>Date Recorded: 10/02/2025</p>
+</div>
+<div class="paragraph">
+<p>Scope: database</p>
+</div>
+<div class="paragraph">
+<p>Description: Unlike the previous year, where MongoDB was replaced by PostgreSQL,
+this year the team has decided to use MongoDB as the primary database system.
+The decision aligns with the need to store unstructured question-based data
+efficiently and leverage NoSQL advantages for scalability and flexibility.</p>
+</div>
+<div class="paragraph">
+<p>Decision taken: The team has agreed to use MongoDB as the database for this project.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_architecture_of_the_question_generator_process">9.4. Architecture of the question generator process</h3>
+<div class="paragraph">
+<p>Date Recorded: 17/02/2025</p>
+</div>
+<div class="paragraph">
+<p>Scope: backend, question generator</p>
+</div>
+<div class="paragraph">
+<p>Description: The question generator is a key component of the system but does not need to run continuously.
+It will be executed when new questions need to be loaded or updated. To maintain a clean architecture, it
+should be implemented as a separate module rather than part of the API.</p>
+</div>
+<div class="paragraph">
+<p>Decision taken: The team has decided to implement the question generator as a separate module of the application.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_connection_to_the_database_with_the_question_generator">9.5. Connection to the database with the question generator</h3>
+<div class="paragraph">
+<p>Date Recorded:</p>
+</div>
+<div class="paragraph">
+<p>Scope: backend, question generator, database</p>
+</div>
+<div class="paragraph">
+<p>Description: [TO_BE_DISCUSSED]</p>
+</div>
+<div class="paragraph">
+<p>Decision taken: [TO_BE_TAKEN]</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_integration_of_an_llm_for_hints">9.6. Integration of an LLM for hints</h3>
+<div class="paragraph">
+<p>Date Recorded: 10/02/2025</p>
+</div>
+<div class="paragraph">
+<p>Scope: backend, AI integration</p>
+</div>
+<div class="paragraph">
+<p>Description: The game will integrate an AI model to provide hints to players.
+The chosen model must be capable of interpreting image-based questions and
+generating meaningful hints.</p>
+</div>
+<div class="paragraph">
+<p>Decision taken: The team has decided to integrate
+the Empathy AI model for generating hints in the game.</p>
+</div>
 <div class="sidebarblock arc42help">
 <div class="content">
 <div class="paragraph">
@@ -2578,6 +2838,7 @@ There you will find links and examples about ADR.</p>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2833,12 +3094,208 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Term-1&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;definition-1&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>WIChat</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The updated version of the <strong>Saber y Ganar</strong> quiz show, incorporating a new hint system powered by an external Large Language Model (LLM).</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Term-2&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;definition-2&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>LLM (Large Language Model)</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An advanced AI model used to generate hints for quiz questions in a conversational manner.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Wikidata</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An external API that serves as the main source for all presented data, including questions and images.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>RTVE</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The organization that has hired ChattySw to update the quiz show application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>ChattySw</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The software development company responsible for updating the quiz show application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>HappySw</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The company that developed the previous version of the quiz show application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Web-based system</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An application that must be accessible via web browsers.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>APIs for Data Access</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>APIs that provide access to user and question data, with proper documentation.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Prevention of Correct Answer Disclosure</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Mechanisms to prevent the LLM from directly revealing the correct answer in hints.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Coding Standards</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Industry best practices for maintainable code.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Version Control</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Managing all source code in a repository with clear commit messages.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>HTTP Protocol</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A protocol used for transmitting hypertext requests and information on the internet.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>MongoDB</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A NoSQL database that stores data in flexible, JSON-like documents. Chosen for its ability to efficiently store unstructured question-based data and its scalability.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>MongoDB Query Language (MQL)</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A query language used to interact with MongoDB databases.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>React</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A JavaScript library for building user interfaces, particularly single-page applications.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>REST API</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An API that conforms to the constraints of REST architectural style and allows for interaction with RESTful web services.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Docker</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A platform used to develop, ship, and run applications inside containers.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>NodeJs</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A JavaScript runtime built on Chrome&#8217;s V8 JavaScript engine, used for building the backend of the application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Git</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A distributed version control system used for tracking changes in source code during software development.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Swagger</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A tool used for designing and documenting APIs.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Kanban</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An agile framework used to manage and improve work across human systems.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>INVEST Acronym</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A mnemonic for writing well-formed user stories in agile development: Independent, Negotiable, Valuable, Estimable, Small, Testable.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Semantic Versioning</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A versioning scheme for software that uses a three-part version number: major, minor, and patch.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Github Flow</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A branch strategy for managing changes in a Git repository, emphasizing simplicity and collaboration.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Building Block View</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A hierarchical collection of black boxes and white boxes that describe the system&#8217;s structure.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>White Box</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A detailed description of a system or component, including its internal structure and interactions.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Black Box</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A description of a system or component that focuses on its external behavior and interfaces, without detailing its internal structure.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>WIChat Application Proxy</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Manages communication between the client and system services.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>REST API Interface</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Interface for managing interactions between the client and the database.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Database</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Stores persistent system data, including user histories, generated questions, answers, and scores.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A type of diagram that shows how objects interact in a particular scenario of a use case.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Registration Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A sequence diagram that represents the process of user registration in the system.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Login Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A sequence diagram that represents the process of user login in the system.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Game&#8217;s Lifecycle Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A sequence diagram that represents the lifecycle of a game session in the system.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Question Generation Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A sequence diagram that represents the process of generating questions in the system.inition-2&gt;</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Domain Model</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A conceptual model that represents the entities and their relationships within the application domain.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Model-View-Controller (MVC)</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An architectural pattern that separates an application into three main components: Model, View, and Controller.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Singleton Pattern</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A design pattern that ensures a class has only one instance and provides a global point of access to it.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Factory Pattern</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A design pattern used to create objects without specifying the exact class of object that will be created.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Observer Pattern</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A design pattern where an object maintains a list of dependents and notifies them of any state changes.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Strategy Pattern</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A design pattern that defines a family of algorithms, encapsulates each one, and makes them interchangeable.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>JSON Web Tokens (JWT)</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A compact, URL-safe means of representing claims to be transferred between two parties, used for authentication and session management.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Unit Tests</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Tests that verify the functionality of individual components of the application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Integration Tests</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Tests that verify the interaction between different components of the application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>End-to-End Tests</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Tests that simulate user interaction with the application to verify it works as a whole.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Deployment</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The process of distributing and installing the application in a production environment, often using Docker containers.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Empathy AI Model</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An AI model integrated into the game to provide hints to players. Capable of interpreting image-based questions and generating meaningful hints.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Frontend</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The part of the application that interacts with the user, typically involving the user interface and user experience.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Backend</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The part of the application that handles data processing, business logic, and interactions with databases and external services.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Microservices</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An architectural style that structures an application as a collection of loosely coupled services. Each service is independently deployable and scalable.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Monolithic Architecture</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An architectural style where the entire application is built as a single, unified unit. Easier to develop initially but can become difficult to manage as the application grows.</em></p></td>
 </tr>
 </tbody>
 </table>
