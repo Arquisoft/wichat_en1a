@@ -3,6 +3,79 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-design-decisions]]
 == Architecture Decisions
 
+== Main webapp technology
+
+Date Recorded: 10/02/2025
+
+Scope: frontend, webapp
+
+Description: The frontend team has opted for a modern framework that offers a combination of performance,
+flexibility, and developer experience. One of the team members has prior experience with this technology,
+making it a viable choice for building an intuitive user interface.
+
+Decision taken: The team has decided
+to use React or a React framework due to the lack of expertise in maintaining a custom stylesheet.
+
+== Main backend technology
+Date Recorded: 10/02/2025
+
+Scope: backend, API
+
+Description: The backend team is currently evaluating whether to use a monolithic Spring Boot-based
+approach or maintain a Node.js microservices system. One of the main reasons for considering Spring
+Boot is the team's lack of experience with Node.js. Additionally, last year’s project was implemented using Spring Boot,
+which could facilitate development. If needed, Spring Boot provides flexibility for a future migration to microservices.
+
+Decision taken: [TO_BE_TAKEN]
+
+== Use of MongoDB
+
+Date Recorded: 10/02/2025
+
+Scope: database
+
+Description: Unlike the previous year, where MongoDB was replaced by PostgreSQL,
+this year the team has decided to use MongoDB as the primary database system.
+The decision aligns with the need to store unstructured question-based data
+efficiently and leverage NoSQL advantages for scalability and flexibility.
+
+Decision taken: The team has agreed to use MongoDB as the database for this project.
+
+== Architecture of the question generator process
+
+Date Recorded: 17/02/2025
+
+Scope: backend, question generator
+
+Description: The question generator is a key component of the system but does not need to run continuously.
+It will be executed when new questions need to be loaded or updated. To maintain a clean architecture, it
+should be implemented as a separate module rather than part of the API.
+
+Decision taken: The team has decided to implement the question generator as a separate module of the application.
+
+== Connection to the database with the question generator
+
+Date Recorded:
+
+Scope: backend, question generator, database
+
+Description: [TO_BE_DISCUSSED]
+
+Decision taken: [TO_BE_TAKEN]
+
+
+== Integration of an LLM for hints
+
+Date Recorded: 10/02/2025
+
+Scope: backend, AI integration
+
+Description: The game will integrate an AI model to provide hints to players.
+The chosen model must be capable of interpreting image-based questions and
+generating meaningful hints.
+
+Decision taken: The team has decided to integrate
+the Empathy AI model for generating hints in the game.
 
 ifdef::arc42help[]
 [role="arc42help"]
