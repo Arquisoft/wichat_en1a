@@ -91,36 +91,43 @@ Regarding design patterns, the application will make use of the following patter
 - Factory: The application will use this pattern to create different types of questions and answers based on the game mode selected by the user in an automated and extensible way.
 - Observer: The application will use this pattern to define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.
 - Strategy: This pattern will be used to define a family of algorithms, encapsulate each one, and make them interchangeable. This will help to promote modularity and maintainability. For example, it will be used to define different strategies for generating questions and answers, and for providing hints to the user.
+- Template: This pattern may be used to define the skeleton of an algorithm in any superclass, letting the subclasses override specific steps of the algorithm without changing its structure. This will help to promote code reuse and extensibility, and can be used in different concerns of the application. For example, when defining the different types (categories) of questions or the game modes available in the application.
 
 === Persistence Layer
 
-The application will rely all of its data persistence dependencies on a MongoDB database that will manage the data of the application, both related to the game sessions (questions, answers, game configurations) and to the user (user session, user statistics...). 
+The application will rely its data persistence dependencies presumably on a MongoDB database that will manage the data of the application related to the game sessions (questions, answers, game configurations) or related to the user (user session, user statistics...), with the possibility to incorporate another database of the same type and with similar features to treat any of those concerns. 
 
-MongoDB is a NoSQL database that stores data in flexible, JSON-like documents, meaning fields can vary from document to document and data structure can be changed over time. This flexibility will help to manage the data of the application, as the structure of the data may change over time as the application evolves.
+MongoDB is a NoSQL database that stores data in flexible, JSON-like documents, meaning fields can vary from document to document and data structure can be changed over time. This flexibility will help to manage the data of the application, as the structure of the data may change over time as the application evolves. It is not a definite decission, but it is a good starting point to consider.
 
 **NOTE:** The persistence layer is susceptible for change at this point. Using MongoDB is not a final decision.
 
-=== User Interface
+=== Ensuring a wealthy user experience
+
+==== User Interface
 
 The idea of the development team regarding the final application is to make it specially atractive to the final user, with a clean and intuitive design that will make the user experience as pleasant as possible. The application will be developed using a responsive design, so it can be used in different devices, like smartphones, tablets, or desktop computers, enhancing usability, accesibility and adaptability at the maximum possible level. For this reason, the internazionalization of the application will be a key point to consider, as the application is intended to be used by any kind of users of a wide variety of ages and genders and from different countries and cultures.
 
-The user interface will be developed using **React** and **JavaScript** as the main tools.
-
-=== Session handling and Security
+==== Session handling and Security
 
 The application will incorporate a basic session handling mechanism to manage the user sessions and to provide a secure environment for the users. The session handling mechanism will be based on the use of JSON Web Tokens (JWT) to authenticate the users and to manage the user sessions.
 
-=== Error handling
+==== Error handling
 
 The application will include a robust error handling mechanism to manage the errors that may occur during the execution of the application. The error handling mechanism will be based on the use of custom error messages and error codes to provide meaningful information to the users and to help the developers to identify and fix the errors. Error messages will be logged to help the developers to identify and fix the errors. It will be important to have a clear and consistent error handling mechanism to ensure that the application is reliable and user-friendly, and that the user does receive only the feedback that is expected to receive (no technical message should be displayed to the final user).
 
-=== Logging
+==== Logging
 
 The application will have a logging system to monitor the activity of the application and to help the developers to identify and fix the errors that may occur during the execution of the application. The logging system will be based on the use of log files to store the log messages and to provide a history of the activity of the application. The log messages will be stored in a structured format to help the developers to analyze the log messages and to identify the root cause of the errors.
 
-=== Testing
+==== Testing
 
-The application is expected to be tested using a combination of unit tests, integration tests, and end-to-end tests. Unit tests will be used to test individual components of the application, mainly based on testing backend functionality to ensure that the internal part of the applications works as expected. Integration tests will be used to test the interaction between different components of the application. End-to-end tests will be used to test the application as a whole, simulating the user interaction with the application.
+The application is expected to be tested using a combination of unit tests, integration tests, and end-to-end tests. 
+
+- **Unit tests** will be used to test individual components of the application, mainly based on testing backend functionality to ensure that the internal part of the applications works as expected. Since the application will be Dockerized in containers, unit tests can be executed within a container or in a separate testing container that has access to the application's code and dependencies, ensuring that the tests run in an environment identical to production.
+
+- **Integration tests** will be used to test the interaction between different components of the application. They can be executed by running multiple service containers in a Docker setup, allowing the test environment to closely mimic the production deployment.
+
+- **End-to-end tests** will be used to test the application as a whole, simulating the user interaction with the application. They can be performed using containers running the full application stack. This will help to ensure that the application works as expected from the user's perspective.
 
 === Deployment
 
