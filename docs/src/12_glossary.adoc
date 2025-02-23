@@ -54,29 +54,8 @@ endif::arc42help[]
 |**HappySw**
 |The company that developed the previous version of the quiz show application.
 
-|**Scalability**
-|The ability of the system to support at least 100 simultaneous players with a crash ratio below 1%.
-
-|**Usability**
-|The quality of the interface being intuitive, engaging, and accessible.
-
-|**Accuracy**
-|The precision of the LLM hints and question generation, minimizing incorrect or misleading information.
-
-|**Performance**
-|The system's ability to have minimal latency in interactions, especially for real-time play.
-
-|**Security**
-|The protection of user data and game integrity against unauthorized access.
-
 |**Web-based system**
 |An application that must be accessible via web browsers.
-
-|**Automated Answer Generation**
-|The process of generating correct answers and distractors algorithmically.
-
-|**Time-limited Questions**
-|Questions that players must answer within a predefined time.
 
 |**APIs for Data Access**
 |APIs that provide access to user and question data, with proper documentation.
@@ -89,15 +68,6 @@ endif::arc42help[]
 
 |**Version Control**
 |Managing all source code in a repository with clear commit messages.
-
-|**Monitoring and Observability**
-|Providing logging and performance monitoring for the system.
-
-|**Business Context**
-|The domain-specific inputs and outputs or interfaces of the system, including communication partners.
-
-|**Technical Context**
-|The technical interfaces (channels and transmission media) linking the system to its environment.
 
 |**HTTP Protocol**
 |A protocol used for transmitting hypertext requests and information on the internet.
@@ -138,9 +108,6 @@ endif::arc42help[]
 |**Github Flow**
 |A branch strategy for managing changes in a Git repository, emphasizing simplicity and collaboration.
 
-|**University of Oviedo**
-|The institution providing installations and technical assistance for the team's mandatory meetings.
-
 |**Building Block View**
 |A hierarchical collection of black boxes and white boxes that describe the system's structure.
 
@@ -150,44 +117,14 @@ endif::arc42help[]
 |**Black Box**
 |A description of a system or component that focuses on its external behavior and interfaces, without detailing its internal structure.
 
-|**Player-Application Interface**
-|Defines the interaction between the player and the application, including how questions are presented and how the player submits answers.
-
-|**Application-LLM Interface**
-|Manages communication between the application and the LLM AI Chat to request hints.
-
-|**Application-WikiData Interface**
-|Manages the interaction between the application and the WikiData API to retrieve information for generating questions.
-
 |**WIChat Application Proxy**
 |Manages communication between the client and system services.
-
-|**Client**
-|The user interface that interacts with the application.
 
 |**REST API Interface**
 |Interface for managing interactions between the client and the database.
 
 |**Database**
 |Stores persistent system data, including user histories, generated questions, answers, and scores.
-
-|**Question Generator**
-|Uses the WikiData API to automatically generate questions related to images and concepts.
-
-|**Authenticated Module**
-|Manages authenticated requests, ensuring secure access to the system for registered users.
-
-|**Game Module**
-|Manages game-related requests, such as starting a game, updating progress, and storing player responses.
-
-|**Statistics Module**
-|Handles the tracking and reporting of player statistics, such as scores and performance over time.
-
-|**Question Module**
-|Manages requests for generating and retrieving questions, interacting with the WikiData API.
-
-|**Runtime View**
-|Describes the concrete behavior and interactions of the system’s building blocks in various scenarios.
 
 |**Sequence Diagram**
 |A type of diagram that shows how objects interact in a particular scenario of a use case.
@@ -207,33 +144,6 @@ endif::arc42help[]
 |**Domain Model**
 |A conceptual model that represents the entities and their relationships within the application domain.
 
-|**User**
-|Represents a player who interacts with the application, including their name, email, password, and list of games played.
-
-|**UserStats**
-|Represents the statistics of a user, including the number of games played, questions answered correctly, questions answered incorrectly, and hints used.
-
-|**Game**
-|Represents a game session played by a user, including the game mode, user, questions, and answers.
-
-|**GameConfiguration**
-|Represents the configuration of a game, including the number of questions, time limit, and available hints.
-
-|**Question**
-|Represents a question in a game, including the question text, image, possible answers, and correct answer.
-
-|**Answer**
-|Represents an answer to a question, including the answer text and a flag indicating if it is correct.
-
-|**AIChat**
-|Represents the AI chat that provides hints to the user.
-
-|**GameMode (Enum)**
-|Represents the different game modes available in the application.
-
-|**QuestionCategory (Enum)**
-|Represents the different categories of questions available in the application.
-
 |**Model-View-Controller (MVC)**
 |An architectural pattern that separates an application into three main components: Model, View, and Controller.
 
@@ -252,12 +162,6 @@ endif::arc42help[]
 |**JSON Web Tokens (JWT)**
 |A compact, URL-safe means of representing claims to be transferred between two parties, used for authentication and session management.
 
-|**Error Handling**
-|Mechanisms to manage errors that occur during the execution of the application, providing meaningful information to users and developers.
-
-|**Logging**
-|The process of recording application activity to help developers identify and fix errors.
-
 |**Unit Tests**
 |Tests that verify the functionality of individual components of the application.
 
@@ -269,9 +173,6 @@ endif::arc42help[]
 
 |**Deployment**
 |The process of distributing and installing the application in a production environment, often using Docker containers.
-
-|**Node.js**
-|A JavaScript runtime built on Chrome's V8 JavaScript engine, used for building scalable network applications. Evaluated for maintaining a microservices architecture.
 
 |**Empathy AI Model**
 |An AI model integrated into the game to provide hints to players. Capable of interpreting image-based questions and generating meaningful hints.
@@ -287,7 +188,4 @@ endif::arc42help[]
 
 |**Monolithic Architecture**
 |An architectural style where the entire application is built as a single, unified unit. Easier to develop initially but can become difficult to manage as the application grows.
-
-|**Technical Debt**
-|The known negative impact of decisions taken by the team, which may increase over time. It includes the overhead of using React and the need for careful release management.
 |===
