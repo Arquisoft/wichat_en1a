@@ -36,9 +36,156 @@ endif::arc42help[]
 |===
 |Term |Definition
 
-|<Term-1>
-|<definition-1>
+|**WIChat**
+|The updated version of the *Saber y Ganar* quiz show, incorporating a new hint system powered by an external Large Language Model (LLM).
 
-|<Term-2>
-|<definition-2>
+|**LLM (Large Language Model)**
+|An advanced AI model used to generate hints for quiz questions in a conversational manner.
+
+|**Wikidata**
+|An external API that serves as the main source for all presented data, including questions and images.
+
+|**RTVE**
+|The organization that has hired ChattySw to update the quiz show application.
+
+|**ChattySw**
+|The software development company responsible for updating the quiz show application.
+
+|**HappySw**
+|The company that developed the previous version of the quiz show application.
+
+|**Web-based system**
+|An application that must be accessible via web browsers.
+
+|**APIs for Data Access**
+|APIs that provide access to user and question data, with proper documentation.
+
+|**Prevention of Correct Answer Disclosure**
+|Mechanisms to prevent the LLM from directly revealing the correct answer in hints.
+
+|**Coding Standards**
+|Industry best practices for maintainable code.
+
+|**Version Control**
+|Managing all source code in a repository with clear commit messages.
+
+|**HTTP Protocol**
+|A protocol used for transmitting hypertext requests and information on the internet.
+
+|**MongoDB**
+|A NoSQL database that stores data in flexible, JSON-like documents. Chosen for its ability to efficiently store unstructured question-based data and its scalability.
+
+|**MongoDB Query Language (MQL)**
+|A query language used to interact with MongoDB databases.
+
+|**React**
+|A JavaScript library for building user interfaces, particularly single-page applications.
+
+|**REST API**
+|An API that conforms to the constraints of REST architectural style and allows for interaction with RESTful web services.
+
+|**Docker**
+|A platform used to develop, ship, and run applications inside containers.
+
+|**NodeJs**
+|A JavaScript runtime built on Chrome's V8 JavaScript engine, used for building the backend of the application.
+
+|**Git**
+|A distributed version control system used for tracking changes in source code during software development.
+
+|**Swagger**
+|A tool used for designing and documenting APIs.
+
+|**Kanban**
+|An agile framework used to manage and improve work across human systems.
+
+|**INVEST Acronym**
+|A mnemonic for writing well-formed user stories in agile development: Independent, Negotiable, Valuable, Estimable, Small, Testable.
+
+|**Semantic Versioning**
+|A versioning scheme for software that uses a three-part version number: major, minor, and patch.
+
+|**Github Flow**
+|A branch strategy for managing changes in a Git repository, emphasizing simplicity and collaboration.
+
+|**Building Block View**
+|A hierarchical collection of black boxes and white boxes that describe the system's structure.
+
+|**White Box**
+|A detailed description of a system or component, including its internal structure and interactions.
+
+|**Black Box**
+|A description of a system or component that focuses on its external behavior and interfaces, without detailing its internal structure.
+
+|**WIChat Application Proxy**
+|Manages communication between the client and system services.
+
+|**REST API Interface**
+|Interface for managing interactions between the client and the database.
+
+|**Database**
+|Stores persistent system data, including user histories, generated questions, answers, and scores.
+
+|**Sequence Diagram**
+|A type of diagram that shows how objects interact in a particular scenario of a use case.
+
+|**Registration Sequence Diagram**
+|A sequence diagram that represents the process of user registration in the system.
+
+|**Login Sequence Diagram**
+|A sequence diagram that represents the process of user login in the system.
+
+|**Game's Lifecycle Sequence Diagram**
+|A sequence diagram that represents the lifecycle of a game session in the system.
+
+|**Question Generation Sequence Diagram**
+|A sequence diagram that represents the process of generating questions in the system.inition-2>
+
+|**Domain Model**
+|A conceptual model that represents the entities and their relationships within the application domain.
+
+|**Model-View-Controller (MVC)**
+|An architectural pattern that separates an application into three main components: Model, View, and Controller.
+
+|**Singleton Pattern**
+|A design pattern that ensures a class has only one instance and provides a global point of access to it.
+
+|**Factory Pattern**
+|A design pattern used to create objects without specifying the exact class of object that will be created.
+
+|**Observer Pattern**
+|A design pattern where an object maintains a list of dependents and notifies them of any state changes.
+
+|**Strategy Pattern**
+|A design pattern that defines a family of algorithms, encapsulates each one, and makes them interchangeable.
+
+|**JSON Web Tokens (JWT)**
+|A compact, URL-safe means of representing claims to be transferred between two parties, used for authentication and session management.
+
+|**Unit Tests**
+|Tests that verify the functionality of individual components of the application.
+
+|**Integration Tests**
+|Tests that verify the interaction between different components of the application.
+
+|**End-to-End Tests**
+|Tests that simulate user interaction with the application to verify it works as a whole.
+
+|**Deployment**
+|The process of distributing and installing the application in a production environment, often using Docker containers.
+
+|**Empathy AI Model**
+|An AI model integrated into the game to provide hints to players. Capable of interpreting image-based questions and generating meaningful hints.
+
+|**Frontend**
+|The part of the application that interacts with the user, typically involving the user interface and user experience.
+
+|**Backend**
+|The part of the application that handles data processing, business logic, and interactions with databases and external services.
+
+|**Microservices**
+|An architectural style that structures an application as a collection of loosely coupled services. Each service is independently deployable and scalable.
+
+|**Monolithic Architecture**
+|An architectural style where the entire application is built as a single, unified unit. Easier to develop initially but can become difficult to manage as the application grows.
 |===
