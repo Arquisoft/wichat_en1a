@@ -3,7 +3,7 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-design-decisions]]
 == Architecture Decisions
 
-== Main webapp technology
+=== Main webapp technology
 
 Date Recorded: 10/02/2025
 
@@ -16,7 +16,7 @@ making it a viable choice for building an intuitive user interface.
 Decision taken: The team has decided
 to use React or a React framework due to the lack of expertise in maintaining a custom stylesheet.
 
-== Main backend technology
+=== Main backend technology
 Date Recorded: 10/02/2025
 
 Scope: backend, API
@@ -28,7 +28,7 @@ which could facilitate development. If needed, Spring Boot provides flexibility 
 
 Decision taken: [TO_BE_TAKEN]
 
-== Use of MongoDB
+=== Use of MongoDB
 
 Date Recorded: 10/02/2025
 
@@ -41,7 +41,7 @@ efficiently and leverage NoSQL advantages for scalability and flexibility.
 
 Decision taken: The team has agreed to use MongoDB as the database for this project.
 
-== Architecture of the question generator process
+=== Architecture of the question generator process
 
 Date Recorded: 17/02/2025
 
@@ -53,7 +53,7 @@ should be implemented as a separate module rather than part of the API.
 
 Decision taken: The team has decided to implement the question generator as a separate module of the application.
 
-== Connection to the database with the question generator
+=== Connection to the database with the question generator
 
 Date Recorded:
 
@@ -64,7 +64,7 @@ Description: [TO_BE_DISCUSSED]
 Decision taken: [TO_BE_TAKEN]
 
 
-== Integration of an LLM for hints
+=== Integration of an LLM for hints
 
 Date Recorded: 10/02/2025
 
