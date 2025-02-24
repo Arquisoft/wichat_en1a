@@ -491,6 +491,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_infrastructure_level_1">7.1. Infrastructure Level 1</a></li>
 <li><a href="#_infrastructure_level_2">7.2. Infrastructure Level 2</a></li>
+<li><a href="#_conclusion">7.3. Conclusion</a></li>
 </ul>
 </li>
 <li><a href="#section-concepts">8. Cross-cutting Concepts</a>
@@ -2327,6 +2328,12 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/C4%20Diagram%20(Level%202)%20-%20Deployment%20view%20diagram.png" alt="C4 Diagram (Level 2)   Deployment view diagram" width="634" height="648">
+</div>
+<div class="title">Figure 10. Overview of the deployment infraestructure</div>
+</div>
 <div class="sect2">
 <h3 id="_infrastructure_level_1">7.1. Infrastructure Level 1</h3>
 <div class="sidebarblock arc42help">
@@ -2355,25 +2362,73 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p><em><strong>&lt;Overview Diagram&gt;</strong></em></p>
-</div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Motivation</dt>
 <dd>
-<p><em>&lt;explanation in text form&gt;</em></p>
+<p>The above diagram shows the high-level deployment architecture of the WIChat application. The system is divided into three main components: the <strong>frontend</strong>, the <strong>backend</strong>, and the <strong>external services</strong> (LLM API and Wikidata). Each deployment block will be containerized in Docker packages to grant several quality features.</p>
 </dd>
 <dt class="hdlist1">Quality and/or Performance Features</dt>
 <dd>
-<p><em>&lt;explanation in text form&gt;</em></p>
+<p>The main advantages of this architecture are:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Modularity</strong>: The separation of concerns between the frontend, backend, and external services allows for independent development and deployment.</p>
+</li>
+<li>
+<p><strong>Interchangeability</strong>: By the same reason as why it is modular, as long as the common API is mantained, the separation of the architecture will allow the replacement and upgrade of implementations without affecting the rest of the system.</p>
+</li>
+<li>
+<p><strong>Portability</strong>: Since Docker containers are platform-agnostic, the application can be easily deployed across different environments (e.g., local development, cloud production) without modification.</p>
+</li>
+<li>
+<p><strong>Scalability</strong>: Having a Gateway Service ensures the system can handle increased traffic by distributing requests across multiple backend instances, enabling horizontal scaling, and integrating with cloud auto-scaling tools.</p>
+</li>
+</ul>
+</div>
 </dd>
 <dt class="hdlist1">Mapping of Building Blocks to Infrastructure</dt>
-<dd>
-<p><em>&lt;description of the mapping&gt;</em></p>
-</dd>
 </dl>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Building Block</th>
+<th class="tableblock halign-left valign-top">Infrastructure Component</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Client/Frontend</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>webapp</code> subfolder.Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>API/Backend</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Docker container hosted on Azure. Handles game logic, user management, and question generation. Communicates with the MongoDB database and external LLM API.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Gateway Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>gatewayservice</code> subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LLM API</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>llmservice</code> subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed via HTTPS from the backend to generate conversational hints.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Question Generator</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A separate component that runs at the beginning of the application. Queries Wikidata using MQL to generate questions and answers, which are then stored in the MongoDB database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MongoDB Database</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Containerized instance.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_infrastructure_level_2">7.2. Infrastructure Level 2</h3>
@@ -2388,27 +2443,22 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_infrastructure_element_1">7.2.1. <em>&lt;Infrastructure Element 1&gt;</em></h4>
+<h4 id="_clientfrontend">7.2.1. Client/Frontend</h4>
 <div class="paragraph">
-<p><em>&lt;diagram + explanation&gt;</em></p>
+<p>The <strong>frontend</strong> is a single-page application (SPA) that runs in the user&#8217;s web browser. It is built using React and communicates with the backend via the API. The frontend is containerized using Docker and deployed on a cloud platform. Static assets (e.g., images, CSS, JavaScript) are served via a CDN to reduce latency and improve load times.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_infrastructure_element_2">7.2.2. <em>&lt;Infrastructure Element 2&gt;</em></h4>
-<div class="paragraph">
-<p><em>&lt;diagram + explanation&gt;</em></p>
-</div>
-<div class="paragraph">
-<p>&#8230;&#8203;</p>
+<h4 id="_apibackend">7.2.2. API/Backend</h4>
+
 </div>
 </div>
-<div class="sect3">
-<h4 id="_infrastructure_element_n">7.2.3. <em>&lt;Infrastructure Element n&gt;</em></h4>
+<div class="sect2">
+<h3 id="_conclusion">7.3. Conclusion</h3>
 <div class="paragraph">
-<p><em>&lt;diagram + explanation&gt;</em></p>
+<p>The Deployment View provides a detailed overview of how the WIChat application will be deployed across different environments and infrastructure components. It ensures that the system meets the quality goal of scalability while supporting efficient development and deployment processes.</p>
 </div>
 <div style="page-break-after: always;"></div>
-</div>
 </div>
 </div>
 </div>
@@ -2523,7 +2573,7 @@ on this list.</p>
 <div class="content">
 <img src="./images/Domain%20Model.svg" alt="Domain Model" width="938" height="1038">
 </div>
-<div class="title">Figure 10. Domain Model</div>
+<div class="title">Figure 11. Domain Model</div>
 </div>
 <div class="paragraph">
 <p>table::Domain Model</p>
