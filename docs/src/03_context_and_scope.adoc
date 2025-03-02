@@ -49,11 +49,11 @@ The title of the table is the name of your system, the three columns contain the
 ****
 endif::arc42help[]
 
-[plantuml,"C4 Diagram (Level 1) - Business context diagram", png, align="center", title="Overall view of the business context"]
+[plantuml,"C4 Diagram - Business context", png, align="center", title="Overall view of the business context"]
 ----
-include::./diagrams/C4_business_model_diagram.puml[]
+include::./diagrams/S3_C4_Business_Context_Diagram.puml[]
 ----
-The business model diagram represents how the player interacts with the system of the wichat application, which will communicate with the WikiData API using the HTTP protocol and MongoDB Query Languague (MQL) queries to retrieve the information. The data retrieved by the API will be used to generate the questions that the player must answer, in this case, an image will be retrieved, and the player must select the option that best fits what is shown in the picture. The player can also ask for help from the LLM Chat, which will use the information from the WikiData API to provide clues about the image.
+The business model diagram represents how the player interacts with the system of the WiChat application, which will communicate with the WikiData API using the HTTP protocol and MongoDB Query Languague (MQL) queries to retrieve the information. The data retrieved by the API will be used to generate the questions that the player must answer, in this case, an image will be retrieved, and the player must select the option that best fits what is shown in the picture. The player can also ask for help from the LLM Chat, which will use the information from the WikiData API to provide clues about the image.
 A simple example of the functioning of the system is the following: the player logs in and starts a game. The system retrieves data from the WikiData API and generates the image and the possible answers (for example, an image of the Eiffel Tower, and four cities of Europe, like Madrid, Rome, London and Paris). The player may ask for help to the LLM Chat if he/she is not sure about the answer, and the AI will use the information from the WikiData API to provide clues about the image. The player can then select the correct answer, and the system will inform if it is correct or not.
 
 === Technical Context
@@ -74,14 +74,14 @@ together with a mapping table showing the relationships between channels and inp
 ****
 endif::arc42help[]
 
-[plantuml, "C4 Diagram (Level 2) - Container context diagram", png, align="center", title="Overall view of the technical context"]
+[plantuml, "C4 Diagram - Technical context diagram", png, align="center", title="Overall view of the technical context"]
 ----
-include::./diagrams/C4_technical_context_diagram.puml[]
+include::./diagrams/S3_C4_Technical_Context_Diagram.puml[]
 ----
-The system will be deployed in a single server containing all the functionalities separated in different modules:
+The system will be deployed in a single server (using **Docker**) containing all the functionalities separated in different modules:
 
 * **Wichat Application Proxy: **
-When interacting with the server, an <TO BE DEFINED> proxy will be tasked with redirecting the queries to the petitions to the Wichat application client, which will also be deployed on a <TO BE DEFINED> web server.
+When interacting with the server, a <TO BE DEFINED> proxy will be tasked with redirecting the queries to the petitions to the Wichat application client, which will also be deployed on a <TO BE DEFINED> web server.
 
 * **Wichat Application Client: **
 This client will be served to the user and communicates with the API through HTTPS calls and exchanges information through JSON objects. The client (Front-End of the application) will be developed in React (+ JavaScript), and it is deployed via a <TO BE DEFINED> server.

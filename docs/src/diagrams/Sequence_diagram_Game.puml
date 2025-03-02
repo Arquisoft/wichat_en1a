@@ -2,51 +2,66 @@
 title Game's lifecycle Sequence Diagram
 
 actor User #DarkGreen
-participant API as "API" #DarkOliveGreen
-participant LLM as "LLM" #DarkOliveGreen
+participant GUI as "GUI" #WhiteSmoke
+participant mainAPI as "Main App API" #Aqua
+participant gameAPI as "Game API" #SkyBlue
+participant LLM as "LLM" #IndianRed
 database DB as "Database" #LightGray
+participant QG as "Question Generator" #LightYellow
 
 skinparam Style strictuml
 skinparam SequenceMessageAlignment center
 
-User -> API : Start game
-activate API #DarkOliveGreen
-API -> DB : Obtain game info
+User -> GUI : Select game mode and start game
+activate GUI #WhiteSmoke
+GUI -> mainAPI : Request game start
+activate mainAPI #Aqua
+mainAPI -> gameAPI : Start game
+activate gameAPI #SkyBlue
+gameAPI -> DB : Request questions
 activate DB #LightGray
-DB --> API : Return game context
+DB -> QG : Ask for questions
+activate QG #LightYellow
+QG -> QG : Generate questions
+QG --> DB : Return questions
+deactivate QG
+DB --> gameAPI : Store questions and answers context
 deactivate DB
-API --> User : Display game info
-deactivate API
 loop #MediumSeaGreen Round
-    User -> API : Start round (question)
-    activate API #DarkOliveGreen
-    API -> DB : Ask for question
-    activate DB  #LightGray
-    DB --> API : Return question (image)
-    deactivate DB
-    API --> User : Return question (image) & possible answers
-    deactivate API
-    User -> API: Ask for hint
-    activate API #DarkOliveGreen
-    API -> LLM : Request hint
-    activate LLM #DarkOliveGreen
-    LLM --> API : Return hint
-    deactivate LLM
-    API --> User : Return hint
-    deactivate API
-    User -> API : Send chosen answer
-    activate API #DarkOliveGreen
-    API -> API : Check answer is correct
-    API -> DB : Update game context
-    activate DB #LightGray
-    DB --> API : Return game info updated
-    deactivate DB
-    API --> User : Inform user if answered right
+    gameAPI -> gameAPI : Select question
+    gameAPI --> mainAPI : Return selected question
+    mainAPI --> GUI : Display selected question
+    GUI --> User : Show question and options
+    opt Request hint from LLM (optional)
+        User -> GUI : Select request hint (query)
+        GUI -> mainAPI : Request hint
+        mainAPI -> LLM : Query LLM chat for hint
+        activate LLM #IndianRed
+        LLM --> mainAPI : Return hint
+        deactivate LLM
+        mainAPI --> GUI : Return hint
+        GUI --> User : Show hint
+    end  
+    User -> GUI : Select answer
+    GUI -> mainAPI : Send answer
+    mainAPI -> gameAPI : Request answer check
+    gameAPI -> gameAPI : Check answer
+    gameAPI --> mainAPI : Send question result
+    mainAPI --> GUI : Display question result
+    GUI --> User : Show question result
+    gameAPI -> gameAPI : Update game context
+    gameAPI --> mainAPI : Return game info updated
+    mainAPI --> GUI : Display game info updated
+    GUI --> User : Show game info updated
 end loop Round
-API -> DB : [After last question] Update ranking
+gameAPI -> DB : [After last question] Update ranking
 activate DB #LightGray
-DB --> API : Ranking updated
+DB --> gameAPI : Return updated rankings
 deactivate DB
-API --> User : Display results
-deactivate API
+gameAPI --> mainAPI : Return results
+deactivate gameAPI
+mainAPI --> GUI : Display results
+deactivate mainAPI
+GUI --> User : Show results
+deactivate GUI
 @enduml

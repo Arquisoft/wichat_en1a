@@ -2,32 +2,46 @@
 title Login Sequence Diagram
 
 actor User #DarkGreen
-participant API as "API" #DarkOliveGreen
+participant GUI as "GUI" #WhiteSmoke
+participant mainAPI as "Main App API" #Aqua
+participant authAPI as "Authentication API" #SkyBlue
 database DB as "Database" #LightGray
 
 skinparam Style strictuml
 skinparam SequenceMessageAlignment center
 
-User -> API : Enter credentials
-activate API #DarkOliveGreen
-API -> DB : Check credentials
+User -> GUI : Enter credentials
+activate GUI #WhiteSmoke
+GUI -> mainAPI : Request login
+activate mainAPI #Aqua
+mainAPI -> authAPI : Request credentials validation
+activate authAPI #SkyBlue
+authAPI -> DB : Check credentials
 activate DB #LightGray
-alt #MediumSeaGreen Credentials are valid
-    DB --> API : Return result ("Valid")
+alt #MediumSeaGreen Valid credentials
+    DB --> authAPI : Credentials are valid
     deactivate DB
-    API -> API : Generate JWT and refresh tokens
-    API -> DB : Store session tokens
+    authAPI -> authAPI : Generate JWT and refresh tokens
+    authAPI -> DB : Store session tokens
     activate DB #LightGray
-    DB --> API : Tokens saved
+    DB --> authAPI : Tokens saved
     deactivate DB
-    API --> User : Return JWT DTO
-    deactivate API
-else Credentials are invalid
+    authAPI --> mainAPI : Return JWT DTO
+    deactivate authAPI
+    mainAPI --> GUI : Return JWT DTO
+    deactivate mainAPI
+    GUI --> User : Show main app
+else Invalid credentials
     activate DB #LightGray
-    DB --> API : Return error ("Invalid credentials")
+    activate authAPI #SkyBlue
+    activate mainAPI #Aqua
+    DB --> authAPI : Invalid credentials
     deactivate DB
-    activate API #DarkOliveGreen
-    API --> User : Return error ("403 Forbidden")
-    deactivate API
+    authAPI --> mainAPI : Return error ("Invalid credentials")
+    deactivate authAPI
+    mainAPI --> GUI : Return error ("401 Unauthorized")
+    deactivate mainAPI
+    GUI --> User : Show error message
+    deactivate GUI
 end
 @enduml

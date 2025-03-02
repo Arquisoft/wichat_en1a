@@ -1,0 +1,30 @@
+@startuml C4_Business_Context_Diagram
+!include <C4/C4_Container>
+
+top to bottom direction
+
+Person(user, "User")
+System_Boundary(quizGame, "WiChat Application") {
+    System(wichat, "WiChat Main API", "Main system / interface to provide the quiz game service")
+    System(game, "WiChat Game Module", "Game service layer that provides the game logic and stands as a façade for the rest of the modules", "Internal system")
+    Container(llmChat, "LLM AI Chat", "Empathy", "Application service that works as an interface with the LLM API", "Internal system")
+    Container(auth, "Authentication Module", "", "Application module to manage the sessions and authentications", "Internal system")
+    Container(questionGen, "Question Generator", "", "Application module that generates the questions of the game using information from Wikidata", "Internal system")
+}
+System_Ext(wikidata, "WikiData API", "External resource to provide data for the questions and images")
+System_Ext(llm, "LLM API", "External resource to provide hints")
+System_Ext(authAPI, "Auth API", "External resource to provide session verification")
+SystemDb(db, "MongoDB Database", "Database to store the game and user data and other statistics")
+
+Rel(user, wichat, "Uses")
+Rel(wichat, game, "Uses")
+Rel(game, llmChat, "Provides")
+Rel(game, auth, "Provides")
+Rel(game, questionGen, "Provides")
+Rel(llmChat, llm, "Connects to")
+Rel(auth, authAPI, "Connects to")
+Rel(authAPI, db, "Stores data in")
+Rel(questionGen, db, "Stores data in")
+Rel(questionGen, wikidata, "Collects data from")
+
+@enduml

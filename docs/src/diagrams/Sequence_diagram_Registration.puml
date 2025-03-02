@@ -2,32 +2,45 @@
 title Registration Sequence Diagram
 
 actor User #DarkGreen
-participant API as "API" #DarkOliveGreen
+participant GUI as "GUI" #WhiteSmoke
+participant mainAPI as "Main App API" #Aqua
+participant authAPI as "Authentication API" #SkyBlue
 database DB as "Database" #LightGray
 
 skinparam Style strictuml
 skinparam SequenceMessageAlignment center
 
-User -> API : Input account details
-activate API #DarkOliveGreen
-API -> API : Validate account details
-API -> DB : Check email account is unused
-alt #MediumSeaGreen Email is available
-    activate DB #LightGray
-    DB --> API : Available email
+User -> GUI : Input account details
+activate GUI #WhiteSmoke
+GUI -> mainAPI : Request account creation
+activate mainAPI #Aqua
+mainAPI -> authAPI : Request account details validation
+activate authAPI #SkyBlue
+authAPI -> DB : Check email account is unused
+activate DB #LightGray
+alt #MediumSeaGreen Email available
+    DB --> authAPI : Available and valid credentials
     deactivate DB
-    API -> DB : Register user
+    authAPI -> DB : Register user
     activate DB #LightGray
-    DB --> API : User registered
+    DB --> authAPI : User registered
     deactivate DB
-    API --> User : Return confirmation
-    deactivate API
+    authAPI --> mainAPI : Return confirmation
+    deactivate authAPI
+    mainAPI --> GUI : Return confirmation and register
+    deactivate mainAPI
+    GUI --> User : Show confirmation message
 else Email already in use
     activate DB #LightGray
-    DB --> API : Email is used
+    activate authAPI #SkyBlue
+    activate mainAPI #Aqua
+    DB --> authAPI : Email is used
     deactivate DB
-    activate API #DarkOliveGreen
-    API --> User : Return error ("400 Bad Request")
-    deactivate API
+    authAPI --> mainAPI : Return error in request
+    deactivate authAPI
+    mainAPI --> GUI : Show error ("409 Conflict")
+    deactivate mainAPI
+    GUI --> User : Show error message
+    deactivate GUI
 end
 @enduml
