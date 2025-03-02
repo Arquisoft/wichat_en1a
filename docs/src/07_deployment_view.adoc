@@ -1,8 +1,6 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-deployment-view]]
-
-
 == Deployment View
 
 ifdef::arc42help[]
@@ -44,6 +42,11 @@ See https://docs.arc42.org/section-7/[Deployment View] in the arc42 documentatio
 ****
 endif::arc42help[]
 
+[plantuml,"C4 Diagram (Level 2) - Deployment view diagram", png, align="center", title="Overview of the deployment infraestructure"]
+----
+include::./diagrams/C4_deployment_diagram.puml[]
+----
+
 === Infrastructure Level 1
 
 ifdef::arc42help[]
@@ -60,19 +63,30 @@ For multiple environments or alternative deployments please copy and adapt this 
 ****
 endif::arc42help[]
 
-_**<Overview Diagram>**_
-
 Motivation::
 
-_<explanation in text form>_
+The above diagram shows the high-level deployment architecture of the WIChat application. The system is divided into three main components: the **frontend**, the **backend**, and the **external services** (LLM API and Wikidata). Each deployment block will be containerized in Docker packages to grant several quality features.
 
 Quality and/or Performance Features::
 
-_<explanation in text form>_
+The main advantages of this architecture are:
+- **Modularity**: The separation of concerns between the frontend, backend, and external services allows for independent development and deployment.
+- **Interchangeability**: By the same reason as why it is modular, as long as the common API is mantained, the separation of the architecture will allow the replacement and upgrade of implementations without affecting the rest of the system.
+- **Portability**: Since Docker containers are platform-agnostic, the application can be easily deployed across different environments (e.g., local development, cloud production) without modification.
+- **Scalability**: Having a Gateway Service ensures the system can handle increased traffic by distributing requests across multiple backend instances, enabling horizontal scaling, and integrating with cloud auto-scaling tools.
+
 
 Mapping of Building Blocks to Infrastructure::
-_<description of the mapping>_
-
+[cols="1,2", options="header"]
+|===
+| Building Block | Infrastructure Component
+| **Client/Frontend** | Contained in the `webapp` subfolder.Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.
+| **API/Backend** | Docker container hosted on Azure. Handles game logic, user management, and question generation. Communicates with the MongoDB database and external LLM API.
+| **Gateway Service** | Contained in the `gatewayservice` subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.
+| **LLM API** | Contained in the `llmservice` subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed via HTTPS from the backend to generate conversational hints.
+| **Question Generator** | A separate component that runs at the beginning of the application. Queries Wikidata using MQL to generate questions and answers, which are then stored in the MongoDB database.
+| **MongoDB Database** | Containerized instance.
+|===
 
 === Infrastructure Level 2
 
@@ -85,16 +99,12 @@ Please copy the structure from level 1 for each selected element.
 ****
 endif::arc42help[]
 
-==== _<Infrastructure Element 1>_
+==== Client/Frontend
+The **frontend** is a single-page application (SPA) that runs in the user's web browser. It is built using React and communicates with the backend via the API. The frontend is containerized using Docker and deployed on a cloud platform. Static assets (e.g., images, CSS, JavaScript) are served via a CDN to reduce latency and improve load times.
 
-_<diagram + explanation>_
+==== API/Backend
 
-==== _<Infrastructure Element 2>_
 
-_<diagram + explanation>_
+=== Conclusion
 
-...
-
-==== _<Infrastructure Element n>_
-
-_<diagram + explanation>_
+The Deployment View provides a detailed overview of how the WIChat application will be deployed across different environments and infrastructure components. It ensures that the system meets the quality goal of scalability while supporting efficient development and deployment processes.

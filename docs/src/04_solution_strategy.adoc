@@ -43,6 +43,7 @@ endif::arc42help[]
 - Branch names follow a simplification of the strategy described https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534[here] and it is used to ease the documentation, identification and meaningful naming of development branches. 
 - Github Flow is followed as a branch strategy, as the size of the project is expected to be medium and we deemed a hotfix branch and a release branch excessive overhead. 
 - Use of semantic versioning (https://semver.org/) for specifying versions meaningfully.
+- The Ui wireframes are designed using link:app.moqups.com[Moqups], a tool designed just for that. The decision stems from a recommendation from a work colleage that fit our researched technologies, and its ease of use over link:https://miro.com/[Miro] led to its use.
 
 === Workflow of the team
 
@@ -71,3 +72,6 @@ To avoid losing a team member and the collapse of the project this could entail,
 - The team delegates the responsabilty of the version control's remote server to Github, as it is expected to be up and working most of the time.
 - Extraofficial communications are delegated to Whatsapp, as it is the easiest contact method between the team members and all the team personally knowing each other. Otherwise, tools like matrix messaging would be preferred.
 - University of Oviedo provides the installations and the technical assistance for the team's mandatory meeting, as well as the contact mail domain.
+
+=== UI Design - Wireframes
+The most up to date Ui designs can be found link:https://app.moqups.com/HlaJ7rOGqhY1EkHifxBrLncQWB5eXIaO/view/page/ad64222d5[here].
