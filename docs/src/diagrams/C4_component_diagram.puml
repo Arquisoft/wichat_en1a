@@ -12,46 +12,44 @@ AddElementTag("Database", $bgColor="#darkgreen", $fontColor="#white")
 AddElementTag("Component", $bgColor="#darkolivegreen", $fontColor="#white")
 
 ' Containers
-Person(player, Player's Browser, "Preferred browser (Firefox, Chrome, Opera...)")
+Person(player, "Player's Browser", "Preferred browser (Firefox, Chrome, Opera...)")
 
-System_Boundary(wichat, "Wichat Application Server") {
-    Container(proxy, "Proxy", "TO BE DEFINED", "TO BE DEFINED web server", $tags="Internal system")
-    Container(web_app, "Wichat Application Client", "React, JavaScript", "TO BE DEFINED web server", $tags="Internal system")
+System_Boundary(wichat, "Wichat Application") {
+Container(web_app, "Wichat Web Client", "React, JavaScript", "Runs in user's browser", $tags="Internal system")
+Container(api_gateway, "Wichat API", "Node.js", "Single entry point for client requests", $tags="Internal system")
 
-    System_Boundary(backend_api, "Wichat REST API") {
-        Component(auth_module, "Authenticated Module", "TO BE DEFINED", "Handles authenticated requests and session management", $tags="<<componente>>")
-        Component(game_module, "Game Module", "TO BE DEFINED", "Handles game-related requests and updates", $tags="<<componente>>")
-        Component(statistics_module, "Statistics Module", "TO BE DEFINED", "Manages player statistics and performance tracking", $tags="<<componente>>")
-        Component(question_module, "Question Module", "TO BE DEFINED", "Manages question generation and retrieval", $tags="<<componente>>")
-    }
+Container(backend, "Wichat Backend", "Node.js", "Handles business logic and API requests", $tags="Internal system") {
+    Component(auth_module, "Auth Module", "Node.js", "Handles authentication and session management", $tags="Component")
+    Component(game_module, "Game Module", "Node.js", "Handles game-related requests and updates", $tags="Component")
+    Component(statistics_module, "Statistics Module", "Node.js", "Manages player statistics", $tags="Component")
+    Component(question_module, "Question Module", "Node.js", "Manages question generation and retrieval", $tags="Component")
+}
 
-    Container(question_generator, "Question Generator", "TO BE DEFINED", ".jar file", $tags="Internal system")
-    ContainerDb(database, "Wichat Application Database", "MongoDB", "MongoDB docker container", $tags="Database")
+Container(question_generator, "Question Generator", "Node.js", "Generates questions from WikiData", $tags="Internal system")
+Container(llm_ai_chat, "LLM AI Chat Service", "Node.js", "Handles AI chat for hints", $tags="Internal system")
+ContainerDb(database, "Wichat Database", "MongoDB", "Stores all game and user data", $tags="Database")
 }
 
 System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
-System_Ext(llm, "LLM AI Chat", "REST API", $tags="External system")
+System_Ext(llm_api, "LLM API (Empathy)", "REST API", $tags="External system")
 
 ' Relations
-Rel(player, proxy, "Uses", "HTTPS")
-Rel(proxy, web_app, "Serves", "HTTPS")
-Rel(web_app, backend_api, "Asks for user/game information", "JSON, HTTPS")
-Rel(question_generator, wikidata, "Asks for data", "MQL, HTTPS")
-Rel(llm, wikidata, "Asks for data", "MQL, HTTPS")
-Rel(player, llm, "Uses", "HTTPS")
+Rel(player, web_app, "Uses", "HTTPS")
+Rel(web_app, api_gateway, "Sends requests", "JSON, HTTPS")
+Rel(api_gateway, auth_module, "Handles authentication requests", "JSON, HTTPS")
+Rel(api_gateway, game_module, "Handles game interactions", "JSON, HTTPS")
+Rel(api_gateway, statistics_module, "Retrieves statistics", "JSON, HTTPS")
+Rel(api_gateway, llm_ai_chat, "Requests hints", "JSON, HTTPS")
+Rel(api_gateway, question_module, "Fetches questions", "JSON, HTTPS")
 
-Rel(question_generator, database, "Stores questions", "TO BE DEFINED")
+Rel(question_generator, wikidata, "Fetches question data", "MQL, HTTPS")
+Rel(llm_ai_chat, llm_api, "Sends prompts & receives responses", "JSON, HTTPS")
+Rel(question_generator, database, "Stores questions", "JSON, MongoDB")
 
-' Relations for modules
-Rel(web_app, auth_module, "Ask for login and register", "JSON, HTTPS")
-Rel(web_app, game_module, "Plays a game", "JSON, HTTPS")
-Rel(web_app, statistics_module, "Asks for statistics", "JSON, HTTPS")
-Rel(web_app, question_module, "Asks for question information", "JSON, HTTPS")
-
-
-Rel(game_module,question_module,"Gets questions")
-Rel(question_module,database,"Stores game/user information","TO BE DEFINED")
-Rel(statistics_module,database,"Stores game/user information","TO BE DEFINED")
-Rel(auth_module,database,"Stores game/user information","TO BE DEFINED")
+' Relations for backend modules
+Rel(game_module, question_module, "Retrieves questions")
+Rel(question_module, database, "Stores game data", "JSON, MongoDB")
+Rel(statistics_module, database, "Stores player statistics", "JSON, MongoDB")
+Rel(auth_module, database, "Stores user sessions", "JSON, MongoDB")
 @enduml
 
