@@ -3,7 +3,6 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-runtime-view]]
 == Runtime View
 
-
 ifdef::arc42help[]
 [role="arc42help"]
 ****
@@ -31,7 +30,6 @@ There are many notations for describing scenarios, e.g.
 * state machines
 * ...
 
-
 .Further Information
 
 See https://docs.arc42.org/section-6/[Runtime View] in the arc42 documentation.
@@ -39,29 +37,36 @@ See https://docs.arc42.org/section-6/[Runtime View] in the arc42 documentation.
 ****
 endif::arc42help[]
 
-=== <Runtime Scenario 1>
+In this section, some sequence diagrams that represent the runtime view of the system are presented. The sequence diagrams are used to show the interactions between the building blocks of the system in different scenarios, generating a workflow that helps to imagine how the ideal interaction of a regular user with the application should be.
 
+=== Registration and Login
 
-* _<insert runtime diagram or textual description of the scenario>_
-* _<insert description of the notable aspects of the interactions between the
-building block instances depicted in this diagram.>_
+The following sequence diagrams represent the process of registration and login in the system. The diagrams show the interactions between the user, the main API of the application, and the database, representing the steps that are followed in each scenario.
 
-It is possible to use a sequence diagram:
-
-[plantuml,"Sequence diagram",png]
+[plantuml, "Sequential diagram of the process of registration", png, align="center", title="Registration Sequence Diagram"]
 ----
-actor Alice
-actor Bob
-database Pod as "Bob's Pod"
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
-Alice  --> Pod: Store route
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+include::./diagrams/Sequence_diagram_Registration.puml[]
 ----
 
-=== <Runtime Scenario 2>
+[plantuml, "Sequential diagram representing the Log In process", png, align="center", title="Login Sequence Diagram"]
+----
+include::./diagrams/Sequence_diagram_Login.puml[]
+----
 
-=== ...
+=== Game lifecycle
 
-=== <Runtime Scenario n>
+The following sequence diagram represents the lifecycle of a game in the system. The diagram shows the interactions between the user, the main API of the application, the LLM API that provides the chat to ask for hints, and the database. The different steps that can be followed will be represented.
+
+[plantuml, "Sequential diagram representing the interaction in a game session", png, align="center", title="Game's Lifecycle Sequence Diagram"]
+----
+include::./diagrams/Sequence_diagram_Game.puml[]
+----
+
+=== Question generation process
+
+The following sequence diagram represents the process of generating questions in the system. The diagram shows the interactions between the Question Generator, the WikiData API that provides the answers to the questions, and the database. The information exchange process will be represented.
+
+[plantuml, "Sequential diagram representing the question generation process", png, align="center", title="Question Generation Sequence Diagram"]
+----
+include::./diagrams/Sequence_diagram_Question_Generation.puml[]
+----

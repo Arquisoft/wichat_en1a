@@ -1,0 +1,25 @@
+@startuml question_generation
+title Question Generation Sequence Diagram
+
+participant QG as "QuestionGenerator" #DarkOliveGreen
+participant WD as "WikiData" #DarkOliveGreen
+database DB as "Database" #LightGray
+
+skinparam Style strictuml
+skinparam SequenceMessageAlignment center
+
+loop #darkseagreen Generate question templates
+    activate QG #DarkOliveGreen
+    QG -> WD : Request query template
+    activate WD #DarkOliveGreen
+    WD --> QG : Return query answers
+    deactivate WD
+    QG -> QG : Process query answer
+    QG -> DB : Store answers
+    activate DB #DarkOliveGreen
+    QG -> DB : Store questions
+end loop
+DB --> QG : Data saved
+deactivate DB
+deactivate QG
+@enduml
