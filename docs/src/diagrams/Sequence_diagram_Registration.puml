@@ -4,7 +4,7 @@ title Registration Sequence Diagram
 actor User #DarkGreen
 participant GUI as "GUI" #WhiteSmoke
 participant mainAPI as "Main App API" #Aqua
-participant authAPI as "Authentication API" #SkyBlue
+participant authAPI as "User service" #SkyBlue
 database DB as "Database" #LightGray
 
 skinparam Style strictuml

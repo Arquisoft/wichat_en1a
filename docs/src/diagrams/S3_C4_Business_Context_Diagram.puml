@@ -10,11 +10,12 @@ System_Boundary(quizGame, "WiChat Application") {
     Container(llmChat, "LLM AI Chat", "Empathy", "Application service that works as an interface with the LLM API", "Internal system")
     Container(auth, "Authentication Module", "", "Application module to manage the sessions and authentications", "Internal system")
     Container(questionGen, "Question Generator", "", "Application module that generates the questions of the game using information from Wikidata", "Internal system")
+    Container(authAPI, "Auth API", "Resource that provides session verification")
+    SystemDb(mongodb, "MongoDB Database", "Database to store the game questions and possible answers")
+    SystemDb(sqldb, "SQLite Database", "Database to store the user data, rankings and other statistics")    
 }
 System_Ext(wikidata, "WikiData API", "External resource to provide data for the questions and images")
 System_Ext(llm, "LLM API", "External resource to provide hints")
-System_Ext(authAPI, "Auth API", "External resource to provide session verification")
-SystemDb(db, "MongoDB Database", "Database to store the game and user data and other statistics")
 
 Rel(user, wichat, "Uses")
 Rel(wichat, game, "Uses")
@@ -23,8 +24,8 @@ Rel(game, auth, "Provides")
 Rel(game, questionGen, "Provides")
 Rel(llmChat, llm, "Connects to")
 Rel(auth, authAPI, "Connects to")
-Rel(authAPI, db, "Stores data in")
-Rel(questionGen, db, "Stores data in")
+Rel(authAPI, sqldb, "Stores data in")
+Rel(questionGen, mongodb, "Stores data in")
 Rel(questionGen, wikidata, "Collects data from")
 
 @enduml
