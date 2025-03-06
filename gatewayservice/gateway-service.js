@@ -57,19 +57,23 @@ app.post('/askllm', async (req, res) => {
   }
 });
 
-// Proxy requests to questionService
-app.use('/questions', async (req, res) => {
+app.get('/questions', async (req, res) => {
   try {
-    const url = questionServiceURL + req.originalUrl;  // Usar la URL original completa
-    const options = {
-      method: req.method,  // Usar el mismo método HTTP
-      url: url,
-      data: req.body,
-      headers: req.headers
-    };
+    const url = questionServiceURL + '/questions';
+    const questionsResponse = await axios.get(url);
+    res.json(questionsResponse.data);
+  } catch (error) {
+    console.error(error);
+    res.status(error.response ? error.response.status : 500).json({ error: error.message });
+  }
+});
 
-    const response = await axios(options);
-    res.status(response.status).json(response.data);
+app.post('/questions', async (req, res) => {
+  try {
+    const url = `${questionServiceURL}/questions`;
+    const questionsResponse = await axios.post(url, req.body);
+
+    res.json(questionsResponse.data);
   } catch (error) {
     console.error(error);
     res.status(error.response ? error.response.status : 500).json({ error: error.message });
