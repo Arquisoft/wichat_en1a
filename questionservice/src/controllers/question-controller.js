@@ -3,6 +3,7 @@ const { generateQuestions } = require('../services/question-generator');
 const generateQuestionsController = async (req, res) => {
     try {
         const questions = await generateQuestions();
+        //To test
         if (req.path === '/questions/view') {
             return questions;
         }

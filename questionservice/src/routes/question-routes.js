@@ -6,7 +6,9 @@ const router = express.Router();
 router.get('/questions', generateQuestionsController);
 //router.get('/questions/types', getQuestionTypesController);
 
+//To test
 router.get('/questions/view', async (req, res) => {
+    //const { generateQuestions } = require('../services/question-generator');
     const questions = await generateQuestionsController(req, res);
     res.send(`
     <!DOCTYPE html>

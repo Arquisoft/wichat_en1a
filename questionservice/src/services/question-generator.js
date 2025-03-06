@@ -1,4 +1,6 @@
 const axios = require('axios');
+const Question = require('../models/question-model');
+const { saveQuestions } = require('./question-storage');
 
 const generateQuestions = async () => {
     try {
@@ -27,10 +29,14 @@ const generateQuestions = async () => {
                 question: `¿De qué país es esta bandera?`,
                 image: item.image.value,
                 correctAnswer: correctAnswer,
+                correctAnswerId: 0, // Asumiendo que la respuesta correcta es siempre la primera opción
+                type: 'flag', // Tipo de pregunta
                 options: [correctAnswer, ...incorrectOptions]
             };
         });
 
+        // Guardar en la base de datos
+        await saveQuestions(questions);
         return questions;
     } catch (error) {
         throw new Error('Error al generar las preguntas: ' + error.message);

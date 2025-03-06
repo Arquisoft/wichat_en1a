@@ -6,10 +6,19 @@ const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/questiond
 
 mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const server = app.listen(port, () => {
-    console.log(`Question Service listening at http://localhost:${port}`);
+
+
+mongoose.connection.on('connected', () => {
+    console.log('Connected to MongoDB');
+    const server = app.listen(port, () => {
+        console.log(`Question Service listening at http://localhost:${port}`);
+    });
+
+    server.on('close', () => {
+        mongoose.connection.close();
+    });
 });
 
-server.on('close', () => {
-    mongoose.connection.close();
+mongoose.connection.on('error', (err) => {
+    console.error('Error connecting to MongoDB:', err.message);
 });
