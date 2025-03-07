@@ -5,13 +5,22 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
+import GetQuestions from './components/GetQuestions';
+
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
+    const [showGetQuestions, setShowGetQuestions] = useState(false);
 
-  const handleToggleView = () => {
+
+    const handleToggleView = () => {
     setShowLogin(!showLogin);
   };
+    const handleGoToGetQuestions = () => {
+        setShowLogin(false);
+        setShowGetQuestions(true);
+    };
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -20,7 +29,9 @@ function App() {
         Welcome to the 2025 edition of the Software Architecture course
       </Typography>
       {showLogin ? <Login /> : <AddUser />}
-      <Typography component="div" align="center" sx={{ marginTop: 2 }}>
+        {showGetQuestions && <GetQuestions />}
+
+        <Typography component="div" align="center" sx={{ marginTop: 2 }}>
         {showLogin ? (
           <Link name="gotoregister" component="button" variant="body2" onClick={handleToggleView}>
             Don't have an account? Register here.
@@ -31,6 +42,11 @@ function App() {
           </Link>
         )}
       </Typography>
+        <Typography component="div" align="center" sx={{ marginTop: 2 }}>
+            <Link component="button" variant="body2" onClick={handleGoToGetQuestions}>
+                Go to Get Questions
+            </Link>
+        </Typography>
     </Container>
   );
 }
