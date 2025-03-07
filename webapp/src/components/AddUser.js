@@ -1,7 +1,7 @@
 // src/components/AddUser.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';
+import { Typography, TextField, Button, Snackbar } from '@mui/material';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
@@ -25,9 +25,9 @@ const AddUser = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ marginTop: 4 }}>
+    <React.Fragment>
       <Typography component="h1" variant="h5">
-        Add User
+        Welcome!
       </Typography>
       <TextField
         name="username"
@@ -36,7 +36,7 @@ const AddUser = () => {
         label="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-      />
+      ></TextField>
       <TextField
         name="password"
         margin="normal"
@@ -45,7 +45,7 @@ const AddUser = () => {
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-      />
+      ></TextField>
       <Button variant="contained" color="primary" onClick={addUser}>
         Add User
       </Button>
@@ -53,7 +53,7 @@ const AddUser = () => {
       {error && (
         <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')} message={`Error: ${error}`} />
       )}
-    </Container>
+    </React.Fragment>
   );
 };
 
