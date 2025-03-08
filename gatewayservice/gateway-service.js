@@ -10,6 +10,7 @@ const YAML = require('yaml')
 const app = express();
 const port = 8000;
 
+const questionServiceURL = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
@@ -53,6 +54,29 @@ app.post('/askllm', async (req, res) => {
     res.json(llmResponse.data);
   } catch (error) {
     res.status(error.response.status).json({ error: error.response.data.error });
+  }
+});
+
+app.get('/questions', async (req, res) => {
+  try {
+    const url = questionServiceURL + '/questions';
+    const questionsResponse = await axios.get(url);
+    res.json(questionsResponse.data);
+  } catch (error) {
+    console.error(error);
+    res.status(error.response ? error.response.status : 500).json({ error: error.message });
+  }
+});
+
+app.post('/questions', async (req, res) => {
+  try {
+    const url = `${questionServiceURL}/questions`;
+    const questionsResponse = await axios.post(url, req.body);
+
+    res.json(questionsResponse.data);
+  } catch (error) {
+    console.error(error);
+    res.status(error.response ? error.response.status : 500).json({ error: error.message });
   }
 });
 

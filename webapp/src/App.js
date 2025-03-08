@@ -1,6 +1,6 @@
 import React from 'react';
 import {LogInOrUpPage,IndexPage} from './windows/';
-import {Typography,CssBaseline} from '@mui/material/';
+import {CssBaseline} from '@mui/material/';
 import {BrowserRouter as Router,Route,Routes} from 'react-router-dom';
 
 function App() {
