@@ -1,27 +1,29 @@
 import {React,useState} from 'react'
 import AddUser from '../components/AddUser';
-import {Card,Typography,Link,Stack,CardContent} from '@mui/material';
+import {Card,Typography,Link,Grid,CardContent} from '@mui/material';
 import Login from '../components/Login'
+import NavBar from '../components/NavBar'
+import { useParams } from 'react-router-dom';
 
 const LogInOrUpPage = () => {
 
-  const [showLogin, setShowLogin] = useState(true);
-
-  const handleToggleView = () => {
-    setShowLogin(!showLogin);
-  };
-
+  const {loginRequested}=useParams();//the login view is asked if true
+  const [loginShown,alternateAuthMethod] = useState(loginRequested==='true');
+  const switchAuthentificationMethod =()=>{
+    alternateAuthMethod(!loginShown);
+  }
   
   return (
-    <Stack>
-    {showLogin ? (
-        <Card variant="outlined" sx={{borderRadius:5}}>
+    <Grid>
+      <NavBar/>
+    {loginShown ? (
+        <Card variant="outlined">
         <CardContent>
             <Login></Login>
             <Typography>
                 Don't have an account? 
             </Typography>
-            <Link align='center' component="button" onClick={handleToggleView}>
+            <Link component='button' onClick={switchAuthentificationMethod}>
                 Register here.
             </Link>
         </CardContent>
@@ -33,13 +35,13 @@ const LogInOrUpPage = () => {
             <Typography>
                 Already have an account? 
             </Typography>
-            <Link component="button" onClick={handleToggleView}>
+            <Link component='button' onClick={switchAuthentificationMethod}>
             Login here.
             </Link>
         </CardContent>
         </Card>
     )}
-    </Stack>
+    </Grid>
   )
 }
 

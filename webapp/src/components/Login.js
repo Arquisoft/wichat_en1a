@@ -57,7 +57,7 @@ const Login = () => {
       value={password}
       onChange={(e) => setPassword(e.target.value)}
     />
-    <Button variant="outlined" onClick={loginUser}>
+    <Button variant='contained' onClick={loginUser}>
       Login
     </Button>
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="Login successful" />
