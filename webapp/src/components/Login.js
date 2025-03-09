@@ -1,12 +1,12 @@
 // src/components/Login.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Typography, TextField, Button, Snackbar } from '@mui/material';
+import { Typography, TextField, Button, Snackbar, InputLabel } from '@mui/material';
 import { Typewriter } from "react-simple-typewriter";
+import { Form, useSubmit } from 'react-router-dom';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setForm] = useState({username:'',password:''});
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState(false);
@@ -18,8 +18,8 @@ const Login = () => {
 
   const loginUser = async () => {
     try {
-      const response = await axios.post(`${apiEndpoint}/login`, { username, password });
-      setMessage("Welcome "+username);
+      const response = await axios.post(`${apiEndpoint}/login`, formData);
+      setMessage("Welcome "+formData.username);
       // Extract data from the response
       const { createdAt: userCreatedAt } = response.data;
 
@@ -31,6 +31,9 @@ const Login = () => {
       setError(error.response.data.error);
     }
   };
+  const handleFormChange = (e)=>{
+    setForm({...formData,[e.target.name]:e.target.value})
+  }
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -38,28 +41,27 @@ const Login = () => {
 
   const login = (
     <div>
-    <Typography component="h1" variant="h5">
+    <Typography component="h2" variant='h3'>
       Welcome back!
     </Typography>
-
-    <TextField
-      margin="normal"
-      fullWidth
-      label="Username"
-      value={username}
-      onChange={(e) => setUsername(e.target.value)}
-    />
-    <TextField
-      margin="normal"
-      fullWidth
-      label="Password"
-      type="password"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-    />
-    <Button variant='contained' onClick={loginUser}>
-      Login
-    </Button>
+    <Form onSubmit={loginUser}>
+      <TextField
+        fullWidth
+        label="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <TextField
+        fullWidth
+        label="Password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <Button variant='contained' type='submit'>
+        Login
+      </Button>
+    </Form>
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="Login successful" />
       {error && (
         <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')} message={`Error: ${error}`} />

@@ -14,33 +14,35 @@ const LogInOrUpPage = () => {
   }
   
   return (
-    <Grid>
-      <NavBar/>
+    <Grid container minHeight='100vh' flexDirection='column' alignItems='center'>
+    <NavBar/>
+    <Grid item md={4} margin={'2rem'} flexGrow={1}>
     {loginShown ? (
-        <Card variant="outlined">
-        <CardContent>
-            <Login></Login>
-            <Typography>
-                Don't have an account? 
-            </Typography>
-            <Link component='button' onClick={switchAuthentificationMethod}>
-                Register here.
-            </Link>
-        </CardContent>
-        </Card>
-        ):(
-        <Card variant="outlined">
-        <CardContent>
-            <AddUser></AddUser>
-            <Typography>
-                Already have an account? 
-            </Typography>
-            <Link component='button' onClick={switchAuthentificationMethod}>
-            Login here.
-            </Link>
-        </CardContent>
-        </Card>
+      <Card variant="outlined" sx={{borderRadius:'1rem'}}>
+      <CardContent>
+          <Login></Login>
+          <Typography>
+              Don't have an account? 
+          </Typography>
+          <Link component='button' onClick={switchAuthentificationMethod}>
+              Register here.
+          </Link>
+      </CardContent>
+      </Card>
+      ):(
+      <Card variant="outlined">
+      <CardContent>
+          <AddUser></AddUser>
+          <Typography>
+              Already have an account? 
+          </Typography>
+          <Link component='button' onClick={switchAuthentificationMethod}>
+          Login here.
+          </Link>
+      </CardContent>
+      </Card>
     )}
+    </Grid>
     </Grid>
   )
 }

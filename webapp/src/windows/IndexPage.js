@@ -24,8 +24,9 @@ const IndexPage = () => {
               <Button href="/auth/false" variant="outlined">{t('signup')}</Button>
             </Grid>
           </Grid>
-          <Grid item>
-            <img height='100%' src='colorPalleteProposed.png' alt='Placeholder image, proposed color pallete for the ui'></img>
+          <Grid item md={5.5}>
+            <img src='colorPalleteProposed.png' alt='Placeholder image, proposed color pallete for the ui' 
+            style={{ width: '100%', height: 'auto' }}></img>
           </Grid>
         </Grid>
       <AboutUsFooter></AboutUsFooter>
