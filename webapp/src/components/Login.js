@@ -1,7 +1,7 @@
 // src/components/Login.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, Typography, TextField, Button, Snackbar } from '@mui/material';
+import { Typography, TextField, Button, Snackbar } from '@mui/material';
 import { Typewriter } from "react-simple-typewriter";
 
 const Login = () => {
@@ -19,17 +19,7 @@ const Login = () => {
   const loginUser = async () => {
     try {
       const response = await axios.post(`${apiEndpoint}/login`, { username, password });
-
-      const question = "Please, generate a greeting message for a student called " + username + " that is a student of the Software Architecture course in the University of Oviedo. Be nice and polite. Two to three sentences max.";
-      const model = "empathy"
-
-      if (apiKey==='None'){
-        setMessage("LLM API key is not set. Cannot contact the LLM.");
-      }
-      else{
-        const message = await axios.post(`${apiEndpoint}/askllm`, { question, model, apiKey })
-        setMessage(message.data.answer);
-      }
+      setMessage("Welcome "+username);
       // Extract data from the response
       const { createdAt: userCreatedAt } = response.data;
 
@@ -46,8 +36,38 @@ const Login = () => {
     setOpenSnackbar(false);
   };
 
+  const login = (
+    <div>
+    <Typography component="h1" variant="h5">
+      Welcome back!
+    </Typography>
+
+    <TextField
+      margin="normal"
+      fullWidth
+      label="Username"
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
+    />
+    <TextField
+      margin="normal"
+      fullWidth
+      label="Password"
+      type="password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+    />
+    <Button variant='contained' onClick={loginUser}>
+      Login
+    </Button>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="Login successful" />
+      {error && (
+        <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')} message={`Error: ${error}`} />
+      )}
+    </div>
+  );
   return (
-    <Container component="main" maxWidth="xs" sx={{ marginTop: 4 }}>
+    <React.Fragment>
       {loginSuccess ? (
         <div>
           <Typewriter
@@ -61,35 +81,9 @@ const Login = () => {
           </Typography>
         </div>
       ) : (
-        <div>
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button variant="contained" color="primary" onClick={loginUser}>
-            Login
-          </Button>
-          <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="Login successful" />
-          {error && (
-            <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')} message={`Error: ${error}`} />
-          )}
-        </div>
+        login
       )}
-    </Container>
+      </React.Fragment>
   );
 };
 
