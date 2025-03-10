@@ -16,7 +16,7 @@ const LogInOrUpPage = () => {
   return (
     <Grid container minHeight='100vh' flexDirection='column' alignItems='center'>
     <NavBar/>
-    <Grid item md={4} margin={'2rem'} flexGrow={1}>
+    <Grid item md={4} margin={'2rem'}>
     {loginShown ? (
       <Card variant="outlined" sx={{borderRadius:'1rem'}}>
       <CardContent>
