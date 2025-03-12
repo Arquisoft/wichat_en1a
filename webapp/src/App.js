@@ -2,10 +2,11 @@ import React from 'react';
 import LogInOrUpPage from "./windows/LogInOrUpPage";
 import IndexPage from './windows/IndexPage';
 import HomePage from './windows/HomePage';
-import {CssBaseline} from '@mui/material/';
-import {BrowserRouter as Router,Route,Routes} from 'react-router-dom';
+import {CssBaseline, ThemeProvider, createTheme} from '@mui/material/';
+import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom';
 
 function App() {
+  
   const theme = createTheme({
     palette: {
       primary: {
@@ -19,10 +20,11 @@ function App() {
       }
     }
   });
+
   const loggedInRoutes = ({ children }) => {
     const token = localStorage.getItem("sessionToken");
     if (!token) {
-      return <Navigate to="/auth/true" />;//redirect to login page
+      return <Navigate to="/auth/true" />; //redirect to login page
     }
     return children;
   };
