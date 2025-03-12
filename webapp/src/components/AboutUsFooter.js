@@ -6,7 +6,7 @@ const AboutUsFooter = () => {
   const {t} = useTranslation();
   return (
     <Grid item md={12}>
-      <Card variant='outlined'>
+      <Card variant='outlined' sx={{backgroundColor:"secondary.main"}}>
         <CardContent align='center'>
           <Typography variant="h5" gutterBottom>
             {t('about.title')}

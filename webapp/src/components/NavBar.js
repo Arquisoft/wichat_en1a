@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography,AppBar, Toolbar,Select,MenuItem, Button, IconButton} from '@mui/material';
+import { Typography,AppBar, Toolbar,Select,MenuItem, Button, Icon} from '@mui/material';
+import VideogameAsset from "@mui/icons-material/VideogameAsset"
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -17,12 +18,12 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar position="static" color="default">
+    <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Wichat
+          <Icon><VideogameAsset/></Icon>
+          <Typography style={{ flexGrow: 1 }}>
           </Typography>
-          <Select onChange={handleLanguageChange} defaultValue="EN" variant="outlined" size="small" style={{ marginRight: 10 }}>
+          <Select sx={{color:'secondary.light'}} onChange={handleLanguageChange} defaultValue="EN" variant='standard' size="small" style={{ marginRight: 10 }}>
             <MenuItem value="EN">EN</MenuItem>
             <MenuItem value="ES">ES</MenuItem>
           </Select>

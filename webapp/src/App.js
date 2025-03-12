@@ -1,25 +1,47 @@
 import React from 'react';
 import LogInOrUpPage from "./windows/LogInOrUpPage";
 import IndexPage from './windows/IndexPage';
-import MainMenuPage from './windows/MainMenuPage';
+import HomePage from './windows/HomePage';
 import {CssBaseline} from '@mui/material/';
 import {BrowserRouter as Router,Route,Routes} from 'react-router-dom';
 
 function App() {
+  const theme = createTheme({
+    palette: {
+      primary: {
+        light: 'rgb(216, 218, 211)',
+        main: 'rgb(74, 74, 72)',
+      },
+      secondary: {
+        light: 'rgb(241, 242, 235)',
+        main: 'rgb(164, 194, 165)',
+        dark: 'rgb(86, 98, 70)'
+      }
+    }
+  });
+  const loggedInRoutes = ({ children }) => {
+    const token = localStorage.getItem("sessionToken");
+    if (!token) {
+      return <Navigate to="/auth/true" />;//redirect to login page
+    }
+    return children;
+  };
 
   return (
-    <Router>
-      <CssBaseline/>
-      <Routes>
-        <Route path='/' element={<IndexPage></IndexPage>} />
-        <Route path="/auth/:loginRequested" element={<LogInOrUpPage></LogInOrUpPage>}/>
-        <Route path="/auth/" element={<LogInOrUpPage></LogInOrUpPage>}/>
-        <Route path="/home" element={<MainMenuPage></MainMenuPage>}/>
-        <Route path="/leaderboard" element={<></>}/>
-        <Route path="/stats" element={<></>}/>
-        <Route path="/game" element={<></>}/>
-      </Routes>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <CssBaseline/>
+        <Routes>
+          <Route path='/' element={<IndexPage></IndexPage>} />
+          <Route path="/auth/:loginRequested" element={<LogInOrUpPage></LogInOrUpPage>}/>
+          <Route path="/auth" element={<LogInOrUpPage></LogInOrUpPage>}/>
+          <Route path="/home" element={<loggedInRoutes><HomePage/></loggedInRoutes>}/>
+          <Route path="/leaderboard" element={<></>}/>
+          <Route path="/stats" element={<></>}/>
+          <Route path="/game" element={<></>}/>
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
