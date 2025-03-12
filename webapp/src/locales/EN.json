@@ -1,6 +1,10 @@
 {
     "about.title":"About us",
+    "forms.username":"Username",
+    "forms.password":"Password",
     "index.title":"What is Wichat",
-    "login":"Log in",
-    "signup":"Sign up"
+    "login.title":"Welcome back!",
+    "login.error":"Invalid username or password",
+    "login.message":"Log in",
+    "signup.message":"Sign up"
 }

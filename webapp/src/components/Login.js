@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Typography, TextField, Button, Snackbar, Box, Alert } from '@mui/material';
 import { Navigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
   const [formData, setForm] = useState({username:'',password:''});
   const [error, setError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [snackbarStatus, setSnackbar] = useState(false);
+  const{t} = useTranslation();
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const apiKey = process.env.REACT_APP_LLM_API_KEY || 'None';
@@ -33,30 +35,34 @@ const Login = () => {
   };
 
   const login = (
-    <Box>
+    <React.Fragment>
     <Typography component="h2" variant='h3'>
-      Welcome back!
+      {t("login.title")}
     </Typography>
     <TextField
+      margin='normal'
       fullWidth
-      label="Username"
+      label={t("forms.username")}
       name="username"
+      value={formData.username}
       onChange={handleFormChange}
       />
     <TextField
+      margin='normal'
       fullWidth
-      label="Password"
+      label={t("forms.password")}
       type="password"
       name="password"
+      value={formData.password}
       onChange={handleFormChange}
       />
     <Snackbar open={snackbarStatus} onClose={()=>{setSnackbar(false)}}>
-      <Alert severity='error'>{error}</Alert>
+      <Alert severity='error'>Error: {t('login.error')}</Alert>
     </Snackbar>
-    <Button variant='contained' onClick={loginUser}>
-      Login
+    <Button variant='contained' data-testid='loginButton' onClick={loginUser}>
+      {t('login.message')}
     </Button>
-    </Box>
+    </React.Fragment>
   );
   return (
     <React.Fragment>

@@ -10,6 +10,20 @@ services:
     networks:
       - mynetwork
 
+  questionservice:
+    container_name: questionservice-wichat_en1a
+    image: ghcr.io/arquisoft/wichat_en1a/authservice:latest
+    profiles: ["dev", "prod"]
+    build: ./users/authservice
+    depends_on:
+      - mongodb
+    ports:
+      - "8004:8004"
+    networks:
+      - mynetwork
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/questiondb
+
   authservice:
     container_name: authservice-wichat_en1a
     image: ghcr.io/arquisoft/wichat_en1a/authservice:latest
@@ -55,6 +69,7 @@ services:
     build: ./gatewayservice
     depends_on:
       - mongodb
+      - questionservice
       - userservice
       - authservice
       - llmservice
