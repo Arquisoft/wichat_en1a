@@ -1,6 +1,10 @@
 {
     "about.title":"Quienes somos",
+    "forms.username":"Usuario",
+    "forms.password":"Contraseña",
     "index.title":"Qué es Wichat",
-    "login":"Iniciar sesión",
-    "signup":"Registrarme"
+    "login.title":"Bienvenid@ de vuelta!",
+    "login.error":"Inicio de sesión inválido",
+    "login.message":"Iniciar sesión",
+    "signup.message":"Registrarme"
 }

@@ -26,7 +26,7 @@ const AddUser = () => {
 
   return (
     <React.Fragment>
-      <Typography component="h1" variant="h5">
+      <Typography component="h2" variant="h3">
         Welcome!
       </Typography>
       <TextField
