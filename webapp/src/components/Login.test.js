@@ -65,7 +65,7 @@ describe('Login component', () => {
 
     // Wait for the error Snackbar to be open
     await waitFor(() => {
-      expect(screen.getByText(/Error: Unauthorized/i)).toBeInTheDocument();
+      expect(screen.getByTestId('errorNotification')).toBeInTheDocument();
     });
     //check it has not been redirected
     expect(window.location.pathname).not.toContain('/home')

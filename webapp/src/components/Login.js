@@ -57,7 +57,7 @@ const Login = () => {
       onChange={handleFormChange}
       />
     <Snackbar open={snackbarStatus} onClose={()=>{setSnackbar(false)}}>
-      <Alert severity='error'>Error: {t('login.error')}</Alert>
+      <Alert data-testid='errorNotification' severity='error'>Error: {t('login.error')}</Alert>
     </Snackbar>
     <Button variant='contained' data-testid='loginButton' onClick={loginUser}>
       {t('login.message')}
