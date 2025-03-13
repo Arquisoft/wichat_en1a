@@ -8,6 +8,6 @@ const questionSchema = new mongoose.Schema({
     image: { type: String, required: false }
 });
 
-const QuestionModel = mongoose.model('Question', questionSchema);
+const Question = mongoose.model('Question', questionSchema);
 
-module.exports = { QuestionModel };
+module.exports = { Question };
