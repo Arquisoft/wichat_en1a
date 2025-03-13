@@ -1,19 +1,17 @@
 // src/components/Login.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Typography, TextField, Button, Snackbar, Box, Alert } from '@mui/material';
+import { Typography, TextField, Button, Snackbar, Alert } from '@mui/material';
 import { Navigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 const Login = () => {
-  const [formData, setForm] = useState({username:'',password:''});
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({username:'',password:''});
   const [loginSuccess, setLoginSuccess] = useState(false);
-  const [snackbarStatus, setSnackbar] = useState(false);
+  const [snackbarStatus, setSnackbarStatus] = useState(false);
   const{t} = useTranslation();
 
   const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
-  const apiKey = process.env.REACT_APP_LLM_API_KEY || 'None';
 
   const loginUser = async () => {
     try {
@@ -26,12 +24,11 @@ const Login = () => {
 
 
     } catch (error) {
-      setError(error.response.data.error);
-      setSnackbar(true);
+      setSnackbarStatus(true);
     }
   };
   const handleFormChange = (e)=>{
-    setForm((prevState)=>({...prevState,[e.target.name]:e.target.value}));
+    setFormData((prevState)=>({...prevState,[e.target.name]:e.target.value}));
   };
 
   const login = (
@@ -56,7 +53,7 @@ const Login = () => {
       value={formData.password}
       onChange={handleFormChange}
       />
-    <Snackbar open={snackbarStatus} onClose={()=>{setSnackbar(false)}}>
+    <Snackbar open={snackbarStatus} onClose={()=>{setSnackbarStatus(false)}}>
       <Alert data-testid='errorNotification' severity='error'>Error: {t('login.error')}</Alert>
     </Snackbar>
     <Button variant='contained' data-testid='loginButton' onClick={loginUser}>

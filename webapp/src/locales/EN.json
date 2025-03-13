@@ -2,9 +2,16 @@
     "about.title":"About us",
     "forms.username":"Username",
     "forms.password":"Password",
+    "forms.repeatPassword":"Repeat password",
     "index.title":"What is Wichat",
-    "login.title":"Welcome back!",
     "login.error":"Invalid username or password",
+    "login.hasNoAccountQuestion":"Don't have an account?",
+    "login.here":"Login here",
     "login.message":"Log in",
-    "signup.message":"Sign up"
+    "login.title":"Welcome back!",
+    "signup.error":"An error ocurred during singup, please try again.",
+    "signup.hasAccountAlreadyQuestion":"Already have an account?",
+    "signup.here":"Sign up here",
+    "signup.message":"Sign up",
+    "signup.title":"Welcome!"
 }
