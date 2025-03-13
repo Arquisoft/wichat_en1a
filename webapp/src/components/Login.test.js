@@ -27,7 +27,6 @@ describe('Login component', () => {
 
     // Mock the axios.post request to simulate a successful response
     mockAxios.onPost('http://localhost:8000/login').reply(200, { token: 'token' });
-    mockAxios.onPost('http://localhost:8000/askllm').reply(200, { answer: 'Hello test user' });
 
     // Simulate user input
     fireEvent.change(usernameInput, { target: { value: 'testUser' } });
