@@ -5,6 +5,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Login from './Login';
 import '../i18n';
+import HomePage from '../windows/HomePage';
 
 const mockAxios = new MockAdapter(axios);
 
@@ -27,6 +28,7 @@ describe('Login component', () => {
 
     // Mock the axios.post request to simulate a successful response
     mockAxios.onPost('http://localhost:8000/login').reply(200, { token: 'token' });
+    mockAxios.onPost('http://localhost:8000/askllm').reply(200, { answer: 'Hello test user' });
 
     // Simulate user input
     fireEvent.change(usernameInput, { target: { value: 'testUser' } });

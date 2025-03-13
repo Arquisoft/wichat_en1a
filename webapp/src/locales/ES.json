@@ -2,16 +2,9 @@
     "about.title":"Quienes somos",
     "forms.username":"Usuario",
     "forms.password":"Contraseña",
-    "forms.repeatPassword":"Repetir contraseña",
     "index.title":"Qué es Wichat",
+    "login.title":"Bienvenid@ de vuelta!",
     "login.error":"Inicio de sesión inválido",
-    "login.hasNoAccountQuestion":"¿No tienes una cuenta aún?",
-    "login.here":"Inicia sesión aquí",
-    "login.message":"Inicia sesión",
-    "login.title":"¡Bienvenid@ de vuelta!",
-    "signup.error":"Un error ocurrió durante el registrado, por favor, inténtalo de nuevo.",
-    "signup.hasAccountAlreadyQuestion":"¿Ya tienes una cuenta?",
-    "signup.here":"Regístrate aquí",
-    "signup.message":"Registrarme",
-    "signup.title":"¡Bienvenido!"
+    "login.message":"Iniciar sesión",
+    "signup.message":"Registrarme"
 }

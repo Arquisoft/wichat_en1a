@@ -4,13 +4,11 @@ import {Card,Typography,Link,Grid,CardContent} from '@mui/material';
 import Login from '../components/Login'
 import NavBar from '../components/NavBar'
 import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 const LogInOrUpPage = () => {
 
   const {loginRequested}=useParams();//the login view is asked if true
   const [loginShown,alternateAuthMethod] = useState(loginRequested==='true');
-  const{t} = useTranslation();
   const switchAuthentificationMethod =()=>{
     alternateAuthMethod(!loginShown);
   }
@@ -36,10 +34,10 @@ const LogInOrUpPage = () => {
       <CardContent>
           <AddUser></AddUser>
           <Typography>
-            {t("signup.hasAccountAlreadyQuestion")}
+              Already have an account? 
           </Typography>
           <Link component='button' onClick={switchAuthentificationMethod}>
-          {t("login.here")}
+          Login here.
           </Link>
       </CardContent>
       </Card>
