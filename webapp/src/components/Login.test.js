@@ -5,7 +5,6 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Login from './Login';
 import '../i18n';
-import HomePage from '../windows/HomePage';
 
 const mockAxios = new MockAdapter(axios);
 
