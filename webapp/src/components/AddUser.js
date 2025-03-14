@@ -11,6 +11,8 @@ const AddUser = () => {
   const [formData, setFormData] = useState({username:'',password:'',repeatPassword:''});
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [matchingPasswords,setMatchingPasswords]=useState(false);
+  const [submitButton,setSubmitButton]=useState(false);
   const{t} = useTranslation();
 
   const addUser = async () => {
@@ -27,6 +29,12 @@ const AddUser = () => {
   const handleFormChange = (e)=>{
     setFormData((prevState)=>({...prevState,[e.target.name]:e.target.value}));
   };
+  const checkFields = ()=>{
+    setSubmitButton(formData.username>0 && formData.password.length>0 && formData.repeatPassword>0);
+  }
+  const checkPasswords = ()=>{
+    setMatchingPasswords(formData.password == formData.repeatPassword);
+  };
 
   const signup = (
   <React.Fragment>
@@ -37,7 +45,7 @@ const AddUser = () => {
     fullWidth
     label={t("forms.username")}
     value={formData.username}
-    onChange={handleFormChange}
+    onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <TextField
     name="password"
@@ -46,7 +54,7 @@ const AddUser = () => {
     label={t("forms.password")}
     type="password"
     value={formData.password}
-    onChange={handleFormChange}
+    onChange={(e)=>{checkFields();handleFormChange(e);checkPasswords()}}
   ></TextField>
   <TextField
     name="repeatPassword"
@@ -55,7 +63,7 @@ const AddUser = () => {
     label={t("forms.repeatPassword")}
     type="password"
     value={formData.repeatPassword}
-    onChange={handleFormChange}
+    onChange={(e)=>{checkFields();handleFormChange(e);checkPasswords()}}
   ></TextField>
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
     <Alert data-testid='errorNotification' severity='error'>{t("signup.error")}</Alert>
