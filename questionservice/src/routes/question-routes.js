@@ -1,76 +1,77 @@
 const express = require('express');
 const { generateQuestionsController} = require('../controllers/question-controller');
+const { saveQuestions, addQuestion, getQuestions, getRandomQuestion, getQuestionById, checkAnswer, clearQuestions , getQuestionsByType} = require('../services/question-storage');
+
 
 const router = express.Router();
 
-router.get('/questions', generateQuestionsController);
-//router.get('/questions/types', getQuestionTypesController);
+router.get('/generate-questions', generateQuestionsController);
 
-//To test
-router.get('/questions/view', async (req, res) => {
-    //const { generateQuestions } = require('../services/question-generator');
-    const questions = await generateQuestionsController(req, res);
-    res.send(`
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Preguntas sobre Banderas</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4;
-          margin: 0;
-          padding: 20px;
-        }
-        .question-container {
-          background-color: #fff;
-          border-radius: 8px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          margin-bottom: 20px;
-          padding: 20px;
-        }
-        .question {
-          font-size: 1.2em;
-          margin-bottom: 10px;
-        }
-        .options {
-          list-style-type: none;
-          padding: 0;
-        }
-        .options li {
-          background-color: #e0e0e0;
-          border-radius: 4px;
-          margin-bottom: 10px;
-          padding: 10px;
-          cursor: pointer;
-        }
-        .options li:hover {
-          background-color: #d0d0d0;
-        }
-        .image {
-          max-width: 100%;
-          height: auto;
-          border-radius: 8px;
-          margin-bottom: 10px;
-        }
-      </style>
-    </head>
-    <body>
-      <h1>Preguntas sobre Banderas</h1>
-      ${questions.map(question => `
-        <div class="question-container">
-          <img src="${question.image}" alt="Bandera" class="image">
-          <div class="question">${question.question}</div>
-          <ul class="options">
-            ${question.options.map(option => `<li>${option}</li>`).join('')}
-          </ul>
-        </div>
-      `).join('')}
-    </body>
-    </html>
-  `);
+
+router.get('/questions/:type/:limit', async (req, res) => {
+    const { type, limit } = req.params;
+
+    try {
+        const questions = await getQuestionsByType(type, parseInt(limit));
+        res.status(200).json(questions);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
+
+router.get('/question/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const question = await getQuestionById(id);
+        res.status(200).json(question);
+    } catch (error) {
+        res.status(404).json({ error: 'Pregunta no encontrada' });
+    }
+});
+
+router.get('/question', async (req, res) => {
+    try {
+        const randomQuestion = await getRandomQuestion();
+        if (!randomQuestion) {
+            return res.status(404).json({ error: 'No se encontró una pregunta' });
+        }
+        res.status(200).json(randomQuestion);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// Ruta POST: Verify answer selected
+router.post('/check-answer', async (req, res) => {
+    const { questionId, selectedAnswer } = req.body;
+
+    if (!questionId || !selectedAnswer) {
+        return res.status(400).json({ error: 'Faltan datos necesarios para verificar la respuesta' });
+    }
+
+    try {
+        const result = await checkAnswer(questionId, selectedAnswer);
+        if (!result) {
+            return res.status(404).json({ error: 'Pregunta no encontrada' });
+        }
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Ruta DELETE: Limpiar todas las preguntas (solo para pruebas)
+router.delete('/questions', async (req, res) => {
+    try {
+        await clearQuestions();  // Llama a la función para limpiar todas las preguntas
+        res.status(200).json({ message: 'Todas las preguntas han sido eliminadas' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 module.exports = router;

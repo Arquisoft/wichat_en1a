@@ -57,9 +57,15 @@ app.post('/askllm', async (req, res) => {
   }
 });
 
-app.get('/questions', async (req, res) => {
+app.get('/generate-questions', async (req, res) => {
   try {
-    const url = questionServiceURL + '/questions';
+    const { type, numQuestions } = req.query;
+    if (!type || !numQuestions || isNaN(numQuestions) || numQuestions <= 0) {
+      return res.status(400).json({
+        error: 'Debe proporcionar un tipo de pregunta y un número válido de preguntas.',
+      });
+    }
+    const url = questionServiceURL + '/generate-questions' + '?type=' + type + '&numQuestions=' + numQuestions;
     const questionsResponse = await axios.get(url);
     res.json(questionsResponse.data);
   } catch (error) {
