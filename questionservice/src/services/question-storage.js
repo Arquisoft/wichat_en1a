@@ -127,9 +127,21 @@ const clearQuestions = async () => {
     }
 };
 
+const getQuestionsByType = async (type, limit) => {
+    try {
+        const questions = await Question.find({ type }).limit(limit);
+        return questions;
+    } catch (error) {
+        console.error('Error al obtener preguntas:', error);
+        throw new Error('Error al obtener preguntas');
+    }
+};
+
+
 module.exports = { saveQuestions, addQuestion,
     getQuestions,
     getRandomQuestion,
     getQuestionById,
     checkAnswer,
-    clearQuestions };
+    clearQuestions,
+    getQuestionsByType};

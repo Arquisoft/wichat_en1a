@@ -1,11 +1,23 @@
 const express = require('express');
 const { generateQuestionsController} = require('../controllers/question-controller');
-const { saveQuestions, addQuestion, getQuestions, getRandomQuestion, getQuestionById, checkAnswer, clearQuestions } = require('../services/question-storage');
+const { saveQuestions, addQuestion, getQuestions, getRandomQuestion, getQuestionById, checkAnswer, clearQuestions , getQuestionsByType} = require('../services/question-storage');
 
 
 const router = express.Router();
 
-router.get('/questions', generateQuestionsController);
+router.get('/generate-questions', generateQuestionsController);
+
+
+router.get('/questions/:type/:limit', async (req, res) => {
+    const { type, limit } = req.params;
+
+    try {
+        const questions = await getQuestionsByType(type, parseInt(limit));
+        res.status(200).json(questions);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 router.get('/question/:id', async (req, res) => {
     const { id } = req.params;

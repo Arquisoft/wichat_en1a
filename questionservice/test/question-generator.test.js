@@ -3,6 +3,8 @@ const request = require('supertest');  // Asegúrate de que esta línea esté aq
 const express = require('express');
 const router = require('../src/routes/question-routes');
 const app = express();
+const Question = require('../src/models/question-model');
+
 
 app.use(express.json());
 app.use(router);
@@ -16,9 +18,10 @@ jest.mock('../src/services/question-storage', () => ({
     getQuestionById: jest.fn().mockResolvedValue({ _id: '123', question: 'What is 2 + 2?', answers: ['3', '4'], correctAnswerId: 1 }),
     checkAnswer: jest.fn().mockResolvedValue({ isCorrect: true }),
     clearQuestions: jest.fn().mockResolvedValue(),
+    getQuestionsByType: jest.fn().mockResolvedValue([]),
 }));
 
-const { saveQuestions, addQuestion, getQuestions, getRandomQuestion, getQuestionById, checkAnswer, clearQuestions } = require('../src/services/question-storage');
+const { saveQuestions, addQuestion, getQuestions, getRandomQuestion, getQuestionById, checkAnswer, clearQuestions, getQuestionsByType} = require('../src/services/question-storage');
 
 describe('Question Tests', () => {
     it('should add a question correctly', async () => {
@@ -62,9 +65,9 @@ describe('Question Tests', () => {
 describe('Question Routes', () => {
 
     // Test 1: GET /questions - Genera preguntas
-    it('should generate questions on GET /questions', async () => {
+    it('should generate questions on GET /generateQuestions', async () => {
         const response = await request(app)
-            .get('/questions');  // Accedes a la ruta sin el prefijo /api
+            .get('/generate-questions');  // Accedes a la ruta sin el prefijo /api
         expect(response.status).toBe(200);
         response.body.forEach(question => {
             expect(question).toHaveProperty('question');
@@ -187,5 +190,39 @@ describe('Question Routes', () => {
 
         expect(response.status).toBe(404);
         expect(response.body).toHaveProperty('error', 'Pregunta no encontrada');
+    });
+
+    it('should return questions of the given type', async () => {
+        const mockQuestions = [
+            { _id: '1', text: '¿Quién descubrió América?', type: 'historia', answers: [] },
+            { _id: '2', text: '¿En qué año comenzó la Revolución Francesa?', type: 'historia', answers: [] }
+        ];
+
+        getQuestionsByType.mockResolvedValue(mockQuestions);
+
+        const response = await request(app).get('/questions/type/historia');
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(2);
+        expect(response.body[0]).toHaveProperty('text', '¿Quién descubrió América?');
+        expect(response.body[1]).toHaveProperty('text', '¿En qué año comenzó la Revolución Francesa?');
+    });
+
+    it('should return an empty array if no questions are found', async () => {
+        getQuestionsByType.mockResolvedValue([]);
+
+        const response = await request(app).get('/questions/type/ciencia');
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([]);
+    });
+
+    it('should return 500 if there is a database error', async () => {
+        getQuestionsByType.mockRejectedValue(new Error('Error en la base de datos'));
+
+        const response = await request(app).get('/questions/type/historia');
+
+        expect(response.status).toBe(500);
+        expect(response.body).toHaveProperty('error', 'Error en la base de datos');
     });
 });

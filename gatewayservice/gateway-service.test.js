@@ -49,4 +49,32 @@ describe('Gateway Service', () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.answer).toBe('llmanswer');
   });
+
+  it('should forward generate-questions request to the question service', async () => {
+    axios.get.mockResolvedValue({
+      data: [{ question: 'What is the flag of France?', answers: ['Blue', 'Red', 'White'], correctAnswer: 'Blue' }],
+    });
+
+    // Hacemos la solicitud
+    const response = await request(app)
+        .get('/generate-questions')
+        .query({ type: 'flag', numQuestions: 5 });
+
+    // Verificamos el código de estado y el cuerpo de la respuesta
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toEqual([
+      { question: 'What is the flag of France?', answers: ['Blue', 'Red', 'White'], correctAnswer: 'Blue' },
+    ]);
+
+
+  });
+
+  it('should return error if type or numQuestions is missing or invalid', async () => {
+    const response = await request(app)
+        .get('/generate-questions')
+        .query({ type: '', numQuestions: '' });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBe('Debe proporcionar un tipo de pregunta y un número válido de preguntas.');
+  });
 });
