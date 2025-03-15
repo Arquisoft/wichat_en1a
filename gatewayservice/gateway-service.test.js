@@ -77,4 +77,104 @@ describe('Gateway Service', () => {
     expect(response.statusCode).toBe(400);
     expect(response.body.error).toBe('Debe proporcionar un tipo de pregunta y un número válido de preguntas.');
   });
+
+  it('should return questions when the request is successful', async () => {
+    const mockQuestions = [
+      { questionText: 'Pregunta 1', options: ['a', 'b', 'c', 'd'], correctAnswer: 'a' },
+      { questionText: 'Pregunta 2', options: ['a', 'b', 'c', 'd'], correctAnswer: 'b' }
+    ];
+
+    // Configurar la respuesta mock de axios
+    axios.get.mockResolvedValue({ data: mockQuestions });
+
+    // Hacer la solicitud GET a la ruta del Gateway
+    const response = await request(app)
+        .get('/questions/type/5')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    // Comprobar la respuesta
+    expect(response.body).toEqual(mockQuestions);
+  });
+
+  it('should return 500 if the question service fails', async () => {
+    axios.get.mockRejectedValue(new Error('Error al obtener preguntas'));
+
+    const response = await request(app)
+        .get('/questions/type/5')
+        .expect('Content-Type', /json/)
+        .expect(500);
+
+    expect(response.body.error).toBe('Error al obtener preguntas');
+  });
+
+  it('should return a random question when the request is successful', async () => {
+    const randomQuestion = { questionText: 'Pregunta aleatoria', options: ['a', 'b', 'c', 'd'], correctAnswer: 'c' };
+
+    axios.get.mockResolvedValue({ data: randomQuestion });
+
+    const response = await request(app)
+        .get('/question')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    expect(response.body).toEqual(randomQuestion);
+  });
+
+  it('should return 404 if no random question is found', async () => {
+    axios.get.mockResolvedValue({ data: null });
+
+    const response = await request(app)
+        .get('/question')
+        .expect('Content-Type', /json/)
+        .expect(404);
+
+    expect(response.body.error).toBe('No se encontró una pregunta');
+  });
+
+  it('should return 500 if the question service fails', async () => {
+    axios.get.mockRejectedValue(new Error('Error al obtener pregunta aleatoria'));
+
+    const response = await request(app)
+        .get('/question')
+        .expect('Content-Type', /json/)
+        .expect(500);
+
+    expect(response.body.error).toBe('Error al obtener pregunta aleatoria');
+  });
+
+  it('should return a random question when the request is successful', async () => {
+    const randomQuestion = { questionText: 'Pregunta aleatoria', options: ['a', 'b', 'c', 'd'], correctAnswer: 'c' };
+
+    axios.get.mockResolvedValue({ data: randomQuestion });
+
+    const response = await request(app)
+        .get('/question')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    expect(response.body).toEqual(randomQuestion);
+  });
+
+  it('should return 404 if no random question is found', async () => {
+    axios.get.mockResolvedValue({ data: null });
+
+    const response = await request(app)
+        .get('/question')
+        .expect('Content-Type', /json/)
+        .expect(404);
+
+    expect(response.body.error).toBe('No se encontró una pregunta');
+  });
+
+  it('should return 500 if the question service fails', async () => {
+    axios.get.mockRejectedValue(new Error('Service Error'));
+
+    const response = await request(app)
+        .get('/question')
+        .expect('Content-Type', /json/)
+        .expect(500);
+
+    expect(response.body.error).toBe('Service Error');
+  });
 });
