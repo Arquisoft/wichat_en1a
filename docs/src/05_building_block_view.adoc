@@ -84,7 +84,7 @@ The purpose of this section is to provide a high-level view of the system and it
 | **Name** | **Responsibility**
 | Player | The player interacts with the system, answering questions and obtaining hints through the interface.
 | WIChat Application | The central application that facilitates player interaction, communication with external services, and question generation.
-| LLM AI Chat | Provides hints to the player when requested.
+| LLM AI API | Provides hints to the player when requested.
 | WikiData API | Supplies data and information used to generate questions about images and concepts.
 
 |===
@@ -95,7 +95,7 @@ The purpose of this section is to provide a high-level view of the system and it
 |===
 | **Interface** | **Purpose**
 | Player-Application Interface | Defines the interaction between the player and the application, including how questions are presented and how the player submits answers.
-| Application-LLM Interface | Manages communication between the application and the LLM AI Chat to request hints.
+| Application-LLM Interface | Manages communication between the application and the LLM AI API to request hints.
 | Application-WikiData Interface | Manages the interaction between the application and the WikiData API to retrieve information for generating questions.
 
 |===
@@ -124,9 +124,9 @@ The purpose of this section is to provide a high-level view of the system and it
 * (Optional) Fulfilled Requirements: Real-time interaction and data handling.
 * (Optional) Open Issues/Problems/Risks: Performance under high traffic (large number of players simultaneously).
 
-==== LLM AI Chat
+==== LLM AI API
 
-* Purpose/Responsibility: Provides AI-generated hints to players based on their interactions within the game.
+* Purpose/Responsibility: External service that provides AI-generated hints to players based on their interactions within the game.
 * Interface(s):
 - Receives requests from the WIChat Application to provide hints based on player progress.
 * (Optional) Quality-/Performance Characteristics:
@@ -163,11 +163,12 @@ The system decomposition has been done to efficiently divide responsibilities, e
 | **Name** | **Responsibility**
 | WIChat Application Proxy | Manages communication between the client and system services.
 | Client | User interface that interacts with the application.
+| WiChat API (API Gateway) | Manages requests between frontend and backend services, routes traffic to the correct backend service.
 | REST API | API that handles requests and responses between the client and server.
 | Database | Database for storing user histories, questions, answers, etc.
 | Question Generator | Automatic question generator based on the WikiData API.
 | WikiData API | External service providing data for generating questions about images and concepts.
-| LLM AI Chat | External service that generates hints for players.
+| LLM AI API | External service that generates hints for players.
 
 |===
 **Important Interfaces:**
@@ -178,7 +179,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 | WIChat Application Proxy Interface | Defines communication between the client and system services.
 | REST API Interface | Interface for managing interactions between the client and the database.
 | WikiData API Interface | Interface for retrieving information about images and questions for the game.
-| LLM AI Chat Interface | Interface for generating hints and assisting players based on their interactions.
+| LLM AI API Interface | Interface for generating hints and assisting players based on their interactions.
 
 |===
 ==== WIChat Application Proxy
@@ -205,17 +206,30 @@ The system decomposition has been done to efficiently divide responsibilities, e
 * (Optional) Fulfilled Requirements: Accessible and responsive design for various devices.
 * (Optional) Open Issues/Problems/Risks: No critical risks identified.
 
+==== WiChat API (API Gateway)
+
+* Purpose/Responsibility: Manages requests between the frontend (Client) and backend services, routing them to the appropriate backend service.
+* Interface(s):
+- Forwards requests from the Client to the REST API for further processing.
+- Routes AI-related requests to the LLM AI Chat Service.
+* (Optional) Quality-/Performance Characteristics:
+- Efficient request handling and routing, ensuring that each request reaches the correct backend service.
+* (Optional) Directory/File Location: src/gatewayservice
+* (Optional) Fulfilled Requirements:  Efficient request routing.
+* (Optional) Open Issues/Problems/Risks: Potential bottlenecks if request routing becomes too complex.
+
 ==== REST API
 
-* Purpose/Responsibility: Manages communication between the client and the database, allowing queries, inserts, and updates of data.
+* Purpose/Responsibility: Handles requests and responses between the backend services and the client, through the WiChat API (API Gateway). This container interacts with services like the Question Generator, Database, and LLM AI Chat Service, but it only receives requests routed by the API Gateway.
 * Interface(s):
-- Endpoint to get questions from the Question Generator.
-- Endpoint to record responses and retrieve results from the database.
+- Receives requests from the WiChat API (API Gateway), which routes requests from the client.
+- Endpoint to fetch questions from the Question Generator.
+- Endpoint to record answers and retrieve results from the Database.
 * (Optional) Quality-/Performance Characteristics:
 - Fast response time and security for API calls.
-* (Optional) Directory/File Location: src/api
-* (Optional) Fulfilled Requirements: Meets security and efficiency requirements.
-* (Optional) Open Issues/Problems/Risks: Scalability for handling large traffic volumes in the future.
+- The routing logic is delegated to the API Gateway, allowing for a cleaner and more scalable approach.
+* (Optional) Fulfilled Requirements:  Meets security and efficiency requirements for processing requests.
+* (Optional) Open Issues/Problems/Risks: scalability to handle large traffic volumes in the future, especially if routing through the API Gateway introduces any bottlenecks.
 
 ==== Database
 
