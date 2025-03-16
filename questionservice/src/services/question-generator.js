@@ -64,11 +64,15 @@ const generateQuestionsFromData = (data, type) => {
         const correctAnswer = item[config.correctAnswerField].value;
         const incorrectOptions = generateIncorrectOptions(correctAnswer, data, 3);
 
+         // Combina la respuesta correcta con las incorrectas y mezcla las opciones
+         const allOptions = [correctAnswer, ...incorrectOptions];
+         const shuffledOptions = shuffleArray(allOptions);
+
         return {
             question: config.questionTemplate,
             image: config.imageField ? item[config.imageField]?.value : null,
             correctAnswer,
-            correctAnswerId: 0,
+            correctAnswerId: shuffledOptions.indexOf(correctAnswer),
             type,
             answers: [correctAnswer, ...incorrectOptions]
         };
