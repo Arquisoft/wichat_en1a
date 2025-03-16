@@ -9,9 +9,14 @@ const GetQuestions = () => {
     const [error, setError] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
 
-    const fetchQuestions = async () => {
+    const fetchQuestions = async (type, numQuestions) => {
         try {
-            const response = await axios.get(`${apiEndpoint}/questions`);
+            const response = await axios.get(`${apiEndpoint}/generate-questions`, {
+                params: {
+                    type: type,
+                    numQuestions: numQuestions
+                }
+            });
             setQuestions(response.data);
 
             setOpenSnackbar(true);

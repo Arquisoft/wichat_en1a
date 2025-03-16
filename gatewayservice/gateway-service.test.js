@@ -8,8 +8,39 @@ afterAll(async () => {
 
 jest.mock('axios');
 
+const checkErrorResponse = async (url, expectedError, statusCode) => {
+  const response = await request(app)
+      .get(url)
+      .expect('Content-Type', /json/)
+      .expect(statusCode);
+
+  expect(response.body.error).toBe(expectedError);
+};
+
+const checkSuccessResponse = async (url, mockData, expectedData) => {
+  axios.get.mockResolvedValue({ data: mockData });
+
+  const response = await request(app)
+      .get(url)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+  expect(response.body).toEqual(expectedData);
+};
+
+const checkPostSuccessResponse = async (url, requestData, mockData, expectedData) => {
+  axios.post.mockResolvedValue({ data: mockData });
+
+  const response = await request(app)
+      .post(url)
+      .send(requestData)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+  expect(response.body).toEqual(expectedData);
+};
+
 describe('Gateway Service', () => {
-  // Mock responses from external services
   axios.post.mockImplementation((url, data) => {
     if (url.endsWith('/login')) {
       return Promise.resolve({ data: { token: 'mockedToken' } });
@@ -20,33 +51,67 @@ describe('Gateway Service', () => {
     }
   });
 
-  // Test /login endpoint
   it('should forward login request to auth service', async () => {
-    const response = await request(app)
-      .post('/login')
-      .send({ username: 'testuser', password: 'testpassword' });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body.token).toBe('mockedToken');
+    await checkPostSuccessResponse('/login', { username: 'testuser', password: 'testpassword' }, { token: 'mockedToken' }, { token: 'mockedToken' });
   });
 
-  // Test /adduser endpoint
   it('should forward add user request to user service', async () => {
-    const response = await request(app)
-      .post('/adduser')
-      .send({ username: 'newuser', password: 'newpassword' });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body.userId).toBe('mockedUserId');
+    await checkPostSuccessResponse('/adduser', { username: 'newuser', password: 'newpassword' }, { userId: 'mockedUserId' }, { userId: 'mockedUserId' });
   });
 
-  // Test /askllm endpoint
   it('should forward askllm request to the llm service', async () => {
-    const response = await request(app)
-      .post('/askllm')
-      .send({ question: 'question', apiKey: 'apiKey', model: 'gemini' });
+    await checkPostSuccessResponse('/askllm', { question: 'question', apiKey: 'apiKey', model: 'gemini' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
+  });
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body.answer).toBe('llmanswer');
+  it('should forward generate-questions request to the question service', async () => {
+    const mockQuestions = [{ question: 'What is the flag of France?', answers: ['Blue', 'Red', 'White'], correctAnswer: 'Blue' }];
+    await checkSuccessResponse('/generate-questions?type=flag&numQuestions=5', mockQuestions, mockQuestions);
+  });
+
+  it('should return error if type or numQuestions is missing or invalid', async () => {
+    await checkErrorResponse('/generate-questions?type=&numQuestions=', 'Debe proporcionar un tipo de pregunta y un número válido de preguntas.', 400);
+  });
+
+  it('should return questions when the request is successful', async () => {
+    const mockQuestions = [
+      { questionText: 'Pregunta 1', options: ['a', 'b', 'c', 'd'], correctAnswer: 'a' },
+      { questionText: 'Pregunta 2', options: ['a', 'b', 'c', 'd'], correctAnswer: 'b' }
+    ];
+    await checkSuccessResponse('/questions/type/5', mockQuestions, mockQuestions);
+  });
+
+  it('should return 500 if the question service fails', async () => {
+    axios.get.mockRejectedValue(new Error('Error al obtener preguntas'));
+    await checkErrorResponse('/questions/type/5', 'Error al obtener preguntas', 500);
+  });
+
+  it('should return a random question when the request is successful', async () => {
+    const randomQuestion = { questionText: 'Pregunta aleatoria', options: ['a', 'b', 'c', 'd'], correctAnswer: 'c' };
+    await checkSuccessResponse('/question', randomQuestion, randomQuestion);
+  });
+
+  it('should return 404 if no random question is found', async () => {
+    axios.get.mockResolvedValue({ data: null });
+    await checkErrorResponse('/question', 'No se encontró una pregunta', 404);
+  });
+
+  it('should return 500 if the question service fails', async () => {
+    axios.get.mockRejectedValue(new Error('Error al obtener pregunta aleatoria'));
+    await checkErrorResponse('/question', 'Error al obtener pregunta aleatoria', 500);
+  });
+
+  it('should return a random question when the request is successful', async () => {
+    const randomQuestion = { questionText: 'Pregunta aleatoria', options: ['a', 'b', 'c', 'd'], correctAnswer: 'c' };
+    await checkSuccessResponse('/question', randomQuestion, randomQuestion);
+  });
+
+  it('should return 404 if no random question is found', async () => {
+    axios.get.mockResolvedValue({ data: null });
+    await checkErrorResponse('/question', 'No se encontró una pregunta', 404);
+  });
+
+  it('should return 500 if the question service fails', async () => {
+    axios.get.mockRejectedValue(new Error('Service Error'));
+    await checkErrorResponse('/question', 'Service Error', 500);
   });
 });

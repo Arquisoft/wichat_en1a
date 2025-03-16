@@ -27,7 +27,7 @@ const NavBar = () => {
             <MenuItem value="EN">EN</MenuItem>
             <MenuItem value="ES">ES</MenuItem>
           </Select>
-          <Button onClick={loginLink} color="inherit">{t('login')}</Button>
+          <Button onClick={loginLink} color="inherit">{t('login.message')}</Button>
         </Toolbar>
       </AppBar>
   );

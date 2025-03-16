@@ -1,58 +1,75 @@
 // src/components/AddUser.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Typography, TextField, Button, Snackbar } from '@mui/material';
+import {Alert, Typography, TextField, Button, Snackbar } from '@mui/material';
+import { Navigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
 const AddUser = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({username:'',password:'',repeatPassword:''});
+  const [signupSuccess, setSignupSuccess] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const{t} = useTranslation();
 
   const addUser = async () => {
     try {
-      await axios.post(`${apiEndpoint}/adduser`, { username, password });
-      setOpenSnackbar(true);
+      const response = await axios.post(`${apiEndpoint}/adduser`, formData);
+      const {token}=response.data;
+      sessionStorage.setItem("sessionToken",token);
+      setSignupSuccess(true);
     } catch (error) {
-      setError(error.response.data.error);
+      setOpenSnackbar(true);
     }
   };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
+  
+  const handleFormChange = (e)=>{
+    setFormData((prevState)=>({...prevState,[e.target.name]:e.target.value}));
   };
+
+  const signup = (
+  <React.Fragment>
+  <Typography component="h2" variant="h3">{t("signup.title")}</Typography>
+  <TextField
+    name="username"
+    margin="normal"
+    fullWidth
+    label={t("forms.username")}
+    value={formData.username}
+    onChange={handleFormChange}
+  ></TextField>
+  <TextField
+    name="password"
+    margin="normal"
+    fullWidth
+    label={t("forms.password")}
+    type="password"
+    value={formData.password}
+    onChange={handleFormChange}
+  ></TextField>
+  <TextField
+    name="repeatPassword"
+    margin="normal"
+    fullWidth
+    label={t("forms.repeatPassword")}
+    type="password"
+    value={formData.repeatPassword}
+    onChange={handleFormChange}
+  ></TextField>
+  <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
+    <Alert data-testid='errorNotification' severity='error'>{t("signup.error")}</Alert>
+  </Snackbar>
+  <Button variant="contained" data-testid='signupButton' onClick={addUser}>
+    {t("signup.message")}
+  </Button>
+</React.Fragment>
+);
 
   return (
     <React.Fragment>
-      <Typography component="h2" variant="h3">
-        Welcome!
-      </Typography>
-      <TextField
-        name="username"
-        margin="normal"
-        fullWidth
-        label="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      ></TextField>
-      <TextField
-        name="password"
-        margin="normal"
-        fullWidth
-        label="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      ></TextField>
-      <Button variant="contained" color="primary" onClick={addUser}>
-        Add User
-      </Button>
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="User added successfully" />
-      {error && (
-        <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError('')} message={`Error: ${error}`} />
-      )}
+      {signupSuccess?(<Navigate to="/home"/>)
+      :(signup)}
     </React.Fragment>
   );
 };
