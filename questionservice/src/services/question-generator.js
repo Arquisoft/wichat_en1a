@@ -74,7 +74,7 @@ const generateQuestionsFromData = (data, type) => {
             correctAnswer,
             correctAnswerId: shuffledOptions.indexOf(correctAnswer),
             type,
-            answers: [correctAnswer, ...incorrectOptions]
+            answers: shuffledOptions
         };
     });
 };
