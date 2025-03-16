@@ -1,9 +1,9 @@
 const Score = require('../models/score-model');
 
 /**
- * 📌 Guarda el puntaje de un usuario.
- * @param {string} userId - ID del usuario.
- * @param {number} score - Puntaje obtenido.
+ * 📌 Saves a user's score.
+ * @param {string} userId - User ID.
+ * @param {number} score - Score achieved.
  */
 const saveScore = async (userId, score) => {
     try {
@@ -16,12 +16,12 @@ const saveScore = async (userId, score) => {
 };
 
 /**
- * 📌 Actualiza el puntaje de un usuario.
- * @param {string} userId - ID del usuario.
- * @param {number} score - Nuevo puntaje.
+ * 📌 Updates a user's score.
+ * @param {string} userId - User ID.
+ * @param {number} score - New score.
  */
 const updateScore = async (userId, score) => {
-    if (!userId || score == null) return { success: false, error: 'Datos inválidos' };
+    if (!userId || score == null) return { success: false, error: 'Invalid data' };
 
     try {
         const updatedScore = await Score.findOneAndUpdate(
@@ -30,29 +30,29 @@ const updateScore = async (userId, score) => {
             { new: true }
         );
 
-        if (!updatedScore) return { success: false, error: 'Puntaje no encontrado' };
+        if (!updatedScore) return { success: false, error: 'Score not found' };
         return { success: true, updatedScore };
     } catch (error) {
-        return { success: false, error: 'Error al actualizar el puntaje' };
+        return { success: false, error: 'Error updating score' };
     }
 };
 
 /**
- * 📌 Obtiene los puntajes de un usuario.
- * @param {string} userId - ID del usuario.
+ * 📌 Retrieves a user's scores.
+ * @param {string} userId - User ID.
  */
 const getScoresByUser = async (userId) => {
     try {
         const scores = await Score.find({ userId });
-        if (!scores.length) return { success: false, error: 'No hay puntajes para este usuario' };
+        if (!scores.length) return { success: false, error: 'No scores found for this user' };
         return { success: true, scores };
     } catch (error) {
-        return { success: false, error: 'Error al obtener los puntajes' };
+        return { success: false, error: 'Error retrieving scores' };
     }
 };
 
 /**
- * 📌 Obtiene el leaderboard (Top 10 jugadores con más puntuación).
+ * 📌 Retrieves the leaderboard (Top 10 players with the highest scores).
  */
 const getLeaderboard = async () => {
     try {
@@ -63,7 +63,7 @@ const getLeaderboard = async () => {
 
         return { success: true, leaderboard };
     } catch (error) {
-        return { success: false, error: 'Error al obtener el leaderboard' };
+        return { success: false, error: 'Error retrieving leaderboard' };
     }
 };
 
