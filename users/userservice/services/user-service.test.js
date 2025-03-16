@@ -2,7 +2,7 @@ const request = require('supertest');
 const bcrypt = require('bcrypt');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
-const User = require('./user-model');
+const User = require('../models/user-model');
 
 
 let mongoServer;
@@ -12,7 +12,7 @@ beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
   process.env.MONGODB_URI = mongoUri;
-  app = require('./user-service'); 
+  app = require('./user-service');
 });
 
 afterAll(async () => {

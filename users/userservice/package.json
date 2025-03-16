@@ -4,7 +4,7 @@
   "description": "User service, in charge of handling users in the application",
   "main": "service.js",
   "scripts": {
-    "start": "node user-service.js",
+    "start": "node services/user-service.js",
     "test": "jest"
   },
   "repository": {
