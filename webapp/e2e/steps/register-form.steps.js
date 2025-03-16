@@ -17,7 +17,7 @@ defineFeature(feature, test => {
     setDefaultOptions({ timeout: 10000 })
 
     await page
-      .goto("http://localhost:3000", {
+      .goto("http://localhost:3000/auth/true", {
         waitUntil: "networkidle0",
       })
       .catch(() => {});
