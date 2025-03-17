@@ -4,22 +4,20 @@ import { Navigate } from "react-router-dom";
 import { Grid } from '@mui/material';
 
 const GamePage = () => {
-    const [questionNum,setQuestionNum] = useState(-1);
+    const [questionNum,setQuestionNum] = useState(0);
     const [score,setScore] = useState(0);
 
     const [questions,setQuestions] = useState(null);
     const [loadedQuestions,setLoadedQuestions] =useState(false);
-    const [responded, setResponded] = useState(false);
     const [endGame, setEndGame] = useState(false);
     const fetchData = async () =>{ 
         try{
-            const response = await fetch('http://localhost:8004/generate-questions');
+            const response = await fetch('http://localhost:8000/generate-questions?type=flag&numQuestions=20');
             if(!response.ok){
                 throw new Error('Network error')
             }
             const result = await response.json();
             setQuestions(result);
-            setResponded(false);
             setLoadedQuestions(true);
         }catch(err){
             console.error('Error fetching questions: ',err);
@@ -30,38 +28,28 @@ const GamePage = () => {
             fetchData();
         }
     }, [loadedQuestions]);
-    useEffect(() => {
-        if(loadedQuestions && !responded){
-            setQuestionNum(questionNum+1);
-            setResponded(true);
-        }
-    }, [loadedQuestions, responded, questionNum]);
     
     const handleQuestionAnswered = (correct) => {
+      console.log("change question")
         if(correct===true){
-            setScore(score+1);
+          setScore(score+1);
         }
         if (questionNum < questions.length - 1) { // Check if there are more questions
-          setQuestionNum((prev) => prev + 1);
-          setResponded(true); // Keep responded true, or reset it if your logic requires
+          setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
         } else {
           sessionStorage.setItem('score',score);
-          sessionStorage.setItem('questionNum',questionNum);
+          sessionStorage.setItem('questionNum',questionNum+1);
           setEndGame(true);
         }
     };
 
   return (
-    <Grid container>
+    <Grid container minHeight='100vh' alignContent='center'>
         {loadedQuestions && questions? (
-        responded ? (
             endGame?(<Navigate to="/results"/>):(
-          <GameComponent question={questions[questionNum]} // Pass current question
+          <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
           onQuestionAnswered={handleQuestionAnswered} // Pass callback
           />)
-        ) : (
-          <div>Preparing question...</div>
-        )
       ) : (
         <div>Loading...</div>
       )}
