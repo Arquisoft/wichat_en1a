@@ -68,7 +68,7 @@ const AddUser = () => {
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
     <Alert data-testid='errorNotification' severity='error'>{t("signup.error")}</Alert>
   </Snackbar>
-  <Button variant="contained" data-testid='signupButton' onClick={addUser}>
+  <Button variant="contained" disabled={submitButton} data-testid='signupButton' onClick={addUser}>
     {t("signup.message")}
   </Button>
 </React.Fragment>
