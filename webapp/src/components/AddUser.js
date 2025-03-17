@@ -33,7 +33,7 @@ const AddUser = () => {
     setSubmitButton(formData.username>0 && formData.password.length>0 && formData.repeatPassword>0);
   }
   const checkPasswords = ()=>{
-    setMatchingPasswords(formData.password == formData.repeatPassword);
+    setMatchingPasswords(formData.password === formData.repeatPassword);
   };
 
   const signup = (
