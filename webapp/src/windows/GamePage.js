@@ -13,7 +13,7 @@ const GamePage = () => {
     const [endGame, setEndGame] = useState(false);
     const fetchData = async () =>{ 
         try{
-            const response = await fetch('http://localhost:8004/generate-questions');
+            const response = await fetch('http://localhost:8000/generate-questions');
             if(!response.ok){
                 throw new Error('Network error')
             }
