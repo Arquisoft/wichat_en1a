@@ -1,5 +1,9 @@
 import { React, useState }  from 'react'
-import { Card, Button, CardContent, Switch, FormControlLabel } from '@mui/material';
+import { Card, Button, CardContent, Switch, FormControlLabel, Icon } from '@mui/material';
+import VideogameAsset from "@mui/icons-material/VideogameAsset"
+import School from "@mui/icons-material/School"
+import AccessAlarm from "@mui/icons-material/AccessAlarm"
+import DirectionsRun from "@mui/icons-material/DirectionsRun"
 import NavBar from '../components/NavBarSignedIn'
 import { useTranslation } from 'react-i18next';
 import "../HomePage.css";
@@ -10,10 +14,10 @@ const HomePage = () => {
   const {t} = useTranslation();
 
   const gameModes = [
-    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), image: require("../img/normal.jpg") },
-    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), image: require("../img/expert.jpg") },
-    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), image: require("../img/time_attack.jpg") },
-    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), image: require("../img/endless.jpg") }
+    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset/> },
+    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School/> },
+    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm/> },
+    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun/> }
   ];
 
   const handleToggle = () => {
@@ -31,9 +35,8 @@ const HomePage = () => {
           {gameModes.map((mode) => (
             <div key={mode.id}>
               <Card className="menu-card">
-                <img src={mode.image} alt={mode.name + " gamemode logo"}/>
                 <CardContent>
-                  <h2 className="menu-card-title">{mode.name}</h2>
+                  <h2 className="menu-card-title"><Icon>{mode.icon} </Icon> {mode.name}</h2>
                   <p className="menu-card-description">{mode.description}</p>
                   {/* Show a switch only for "Expert's domain" mode to randomize the topic */}
                   {mode.id === 2 && (
