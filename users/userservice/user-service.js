@@ -18,17 +18,20 @@ mongoose.connect(mongoUri);
 
 // Function to validate required fields in the request body
 function validateRequiredFields(req, requiredFields) {
-    for (const field of requiredFields) {
-      if (!(field in req.body)) {
-        throw new Error(`Missing required field: ${field}`);
-      }
+  for (const field of requiredFields) {
+    if (!(field in req.body)) {
+      throw new Error(`Missing required field: ${field}`);
     }
+  }
+  if(req.body.password!=req.body.repeatPassword){
+    throw new Error('Passwords must match');
+  }
 }
 
 app.post('/adduser', async (req, res) => {
     try {
         // Check if required fields are present in the request body
-        validateRequiredFields(req, ['username', 'password']);
+        validateRequiredFields(req, ['username', 'password','repeatPassword']);
 
         // Encrypt the password before saving it
         const hashedPassword = await bcrypt.hash(req.body.password, 10);

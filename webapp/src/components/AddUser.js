@@ -11,8 +11,8 @@ const AddUser = () => {
   const [formData, setFormData] = useState({username:'',password:'',repeatPassword:''});
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [matchingPasswords,setMatchingPasswords]=useState(false);
   const [submitButton,setSubmitButton]=useState(false);
+  const [errormsg, setErrormsg] = useState('');
   const{t} = useTranslation();
 
   const addUser = async () => {
@@ -22,6 +22,7 @@ const AddUser = () => {
       sessionStorage.setItem("sessionToken",token);
       setSignupSuccess(true);
     } catch (error) {
+      setErrormsg(error);
       setOpenSnackbar(true);
     }
   };
@@ -32,9 +33,6 @@ const AddUser = () => {
   const checkFields = ()=>{
     setSubmitButton(formData.username>0 && formData.password.length>0 && formData.repeatPassword>0);
   }
-  const checkPasswords = ()=>{
-    setMatchingPasswords(formData.password === formData.repeatPassword);
-  };
 
   const signup = (
   <React.Fragment>
@@ -54,7 +52,7 @@ const AddUser = () => {
     label={t("forms.password")}
     type="password"
     value={formData.password}
-    onChange={(e)=>{checkFields();handleFormChange(e);checkPasswords()}}
+    onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <TextField
     name="repeatPassword"
@@ -63,10 +61,10 @@ const AddUser = () => {
     label={t("forms.repeatPassword")}
     type="password"
     value={formData.repeatPassword}
-    onChange={(e)=>{checkFields();handleFormChange(e);checkPasswords()}}
+    onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
-    <Alert data-testid='errorNotification' severity='error'>{t("signup.error")}</Alert>
+    <Alert data-testid='errorNotification' severity='error'>{t("signup.error") +errormsg}</Alert>
   </Snackbar>
   <Button variant="contained" disabled={submitButton} data-testid='signupButton' onClick={addUser}>
     {t("signup.message")}
