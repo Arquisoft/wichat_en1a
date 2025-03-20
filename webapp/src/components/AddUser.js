@@ -11,6 +11,8 @@ const AddUser = () => {
   const [formData, setFormData] = useState({username:'',password:'',repeatPassword:''});
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [submitButton,setSubmitButton]=useState(false);
+  const [errormsg, setErrormsg] = useState('');
   const{t} = useTranslation();
 
   const addUser = async () => {
@@ -20,6 +22,7 @@ const AddUser = () => {
       sessionStorage.setItem("sessionToken",token);
       setSignupSuccess(true);
     } catch (error) {
+      setErrormsg(error);
       setOpenSnackbar(true);
     }
   };
@@ -27,6 +30,9 @@ const AddUser = () => {
   const handleFormChange = (e)=>{
     setFormData((prevState)=>({...prevState,[e.target.name]:e.target.value}));
   };
+  const checkFields = ()=>{
+    setSubmitButton(formData.username>0 && formData.password.length>0 && formData.repeatPassword>0);
+  }
 
   const signup = (
   <React.Fragment>
@@ -37,7 +43,7 @@ const AddUser = () => {
     fullWidth
     label={t("forms.username")}
     value={formData.username}
-    onChange={handleFormChange}
+    onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <TextField
     name="password"
@@ -46,7 +52,7 @@ const AddUser = () => {
     label={t("forms.password")}
     type="password"
     value={formData.password}
-    onChange={handleFormChange}
+    onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <TextField
     name="repeatPassword"
@@ -55,12 +61,12 @@ const AddUser = () => {
     label={t("forms.repeatPassword")}
     type="password"
     value={formData.repeatPassword}
-    onChange={handleFormChange}
+    onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
-    <Alert data-testid='errorNotification' severity='error'>{t("signup.error")}</Alert>
+    <Alert data-testid='errorNotification' severity='error'>{t("signup.error") +errormsg}</Alert>
   </Snackbar>
-  <Button variant="contained" data-testid='signupButton' onClick={addUser}>
+  <Button variant="contained" disabled={submitButton} data-testid='signupButton' onClick={addUser}>
     {t("signup.message")}
   </Button>
 </React.Fragment>
