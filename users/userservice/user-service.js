@@ -18,20 +18,36 @@ mongoose.connect(mongoUri);
 
 // Function to validate required fields in the request body
 function validateRequiredFields(req, requiredFields) {
-  for (const field of requiredFields) {
+    for (const field of requiredFields) {
     if (!(field in req.body)) {
       throw new Error(`Missing required field: ${field}`);
     }
-  }
-  if(req.body.password!=req.body.repeatPassword){
+    }
+    if(req.body.password!=req.body.repeatPassword){
     throw new Error('Passwords must match');
-  }
+    }
+
+    if (!req.body.password || req.body.password.length < 8) {
+      throw new Error('Password must be at least 8 characters long');
+    }
+    // Password strength validation (at least 8 characters, one uppercase, one lowercase, one digit, and one special character)
+    const passwordStrengthRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordStrengthRegex.test(req.body.password)) {
+        throw new Error('Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+    }
 }
 
 app.post('/adduser', async (req, res) => {
     try {
         // Check if required fields are present in the request body
         validateRequiredFields(req, ['username', 'password','repeatPassword']);
+
+
+        // Check if the user already exists
+        const existingUser = await User.findOne({ username: req.body.username });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Username already taken' });
+        }
 
         // Encrypt the password before saving it
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
