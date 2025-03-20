@@ -60,7 +60,7 @@ describe('Gateway Service', () => {
   });
 
   it('should forward askllm request to the llm service', async () => {
-    await checkPostSuccessResponse('/askllm', { question: 'question', apiKey: 'apiKey', model: 'gemini' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
+    await checkPostSuccessResponse('/askllm', { question: 'question', gameQuestion: 'gameQuestion', correctAnswer: 'llmanswer', apiKey: 'apiKey', model: 'empathy' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
   });
 
   it('should forward generate-questions request to the question service', async () => {
@@ -114,4 +114,91 @@ describe('Gateway Service', () => {
     axios.get.mockRejectedValue(new Error('Service Error'));
     await checkErrorResponse('/question', 'Service Error', 500);
   });
+});
+
+
+describe('Gateway Service - LLM Service', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  axios.post.mockImplementation((url, data) => {
+    if (url.endsWith('/ask')) {
+      return Promise.resolve({ data: { answer: 'The capital of France is Paris.' } });
+    }
+  });
+
+  it('should forward ask request to llm service and filter the correct answer', async () => {
+    const requestData = {
+      question: 'What is the capital of France?',
+      gameQuestion: 'Name the capital of France.',
+      correctAnswer: 'Paris',
+      apiKey: 'fake-api-key',
+      model: 'gemini'
+    };
+
+    const response = await request(app)
+        .post('/askllm')
+        .send(requestData)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    expect(response.body.answer).not.toContain('Paris'); // Asegura que la respuesta correcta no está en la respuesta final
+    expect(response.body.answer).not.toBe(''); // Asegura que aún haya contenido
+  });
+
+  it('should return error if LLM service fails', async () => {
+    axios.post.mockRejectedValue(new Error('LLM Service Error'));
+
+    const response = await request(app)
+        .post('/askllm')
+        .send({
+          question: 'Some question',
+          gameQuestion: 'Some question text',
+          correctAnswer: 'Some answer',
+          apiKey: 'apiKey',
+          model: 'gemini'
+        })
+        .expect('Content-Type', /json/)
+        .expect(500);
+
+    expect(response.body.error).toBe('Failed to process request to LLM Service');
+  });
+
+  it('Debe devolver 400 si faltan todos los parámetros', async () => {
+    const response = await request(app).post('/askllm').send({});
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Missing required fields: question, gameQuestion, correctAnswer');
+  });
+
+  it('Debe devolver 400 si falta "question"', async () => {
+    const response = await request(app).post('/askllm').send({
+      gameQuestion: 'Pregunta del juego',
+      correctAnswer: 'Respuesta correcta',
+    });
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Missing required fields: question, gameQuestion, correctAnswer');
+
+  });
+
+  it('Debe devolver 400 si falta "gameQuestion"', async () => {
+    const response = await request(app).post('/askllm').send({
+      question: 'Pregunta de prueba',
+      correctAnswer: 'Respuesta correcta',
+    });
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Missing required fields: question, gameQuestion, correctAnswer');
+
+  });
+
+  it('Debe devolver 400 si falta "correctAnswer"', async () => {
+    const response = await request(app).post('/askllm').send({
+      question: 'Pregunta de prueba',
+      gameQuestion: 'Pregunta del juego',
+    });
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Missing required fields: question, gameQuestion, correctAnswer');
+
+  });
+
 });
