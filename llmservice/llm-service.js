@@ -73,7 +73,7 @@ function filterAnswer(answer,correctAnswer) {
 }
 
 // Generic function to send questions to LLM
-async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiKey, model = 'gemini') {
+async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiKey, model = 'empathy') {
   try {
     const config = llmConfigs[model];
     if (!config) {
@@ -96,10 +96,10 @@ async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiK
     };
 
     const response = await axios.post(url, requestData, { headers });
-    const llmAnswer = config.transformResponse(response);
+    let llmAnswer = config.transformResponse(response);
 
     // Filter the response to avoid revealing the correct answer
-    llmAnswer = this.filterAnswer(llmAnswer, correctAnswer);
+    llmAnswer = filterAnswer(llmAnswer, correctAnswer);
 
     return llmAnswer;
 
@@ -112,10 +112,10 @@ async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiK
 app.post('/ask', async (req, res) => {
   try {
     // Check if required fields are present in the request body
-    validateRequiredFields(req, ['question', 'model', 'apiKey']);
+    validateRequiredFields(req, ['question', 'gameQuestion', 'correctAnswer', 'model', 'apiKey']);
 
-    const { question, model, apiKey } = req.body;
-    const answer = await sendQuestionToLLM(question, apiKey, model);
+    const { question, gameQuestion, correctAnswer, model, apiKey } = req.body;
+    const answer = await sendQuestionToLLM(question, gameQuestion, correctAnswer, apiKey, model);
     res.json({ answer });
 
   } catch (error) {
