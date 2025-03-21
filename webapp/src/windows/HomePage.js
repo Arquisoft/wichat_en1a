@@ -14,10 +14,10 @@ const HomePage = () => {
   const {t} = useTranslation();
 
   const gameModes = [
-    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset/> },
-    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School/> },
-    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm/> },
-    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun/> }
+    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset/>, route: '/game/basic-quiz' },
+    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School/>, route: '/game/expert-domain' },
+    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm/>, route: '/game/time-attack' },
+    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun/>, route: '/game/endless-marathon' }
   ];
 
   const handleToggle = () => {
@@ -25,35 +25,39 @@ const HomePage = () => {
   };
 
   return (
-    <div className="window-container">
+    <div className = "window-container">
       <NavBar/>
-      <div className="menu-container">
-        <h1 className="menu-title">
+      <div className = "menu-container">
+        <h1 className = "menu-title">
           {t('homePage.welcome')}
         </h1>
-        <div className="menu-grid">
+        <div className = "menu-grid">
           {gameModes.map((mode) => (
-            <div key={mode.id}>
-              <Card className="menu-card">
+            <div key = {mode.id}>
+              <Card className = "menu-card">
                 <CardContent>
-                  <h2 className="menu-card-title"><Icon>{mode.icon} </Icon> {mode.name}</h2>
-                  <p className="menu-card-description">{mode.description}</p>
+                  <h2 className = "menu-card-title"><Icon>{mode.icon} </Icon> {mode.name}</h2>
+                  <p className = "menu-card-description">{mode.description}</p>
                   {/* Show a switch only for "Expert's domain" mode to randomize the topic */}
                   {mode.id === 2 && (
                     <FormControlLabel
-                      control={
+                      control = {
                         <Switch 
-                          checked={randomized} 
-                          onChange={handleToggle} 
-                          color="success"
+                          checked = {randomized} 
+                          onChange = {handleToggle} 
+                          color = "success"
                         />
                       }
-                      label={randomized ? t('homePage.randomizeON') : t('homePage.randomizeOFF')}
-                      sx={{ marginBottom: "0.5rem" }}
+                      label = {randomized ? t('homePage.randomizeON') : t('homePage.randomizeOFF')}
+                      sx = {{ marginBottom: "0.5rem" }}
                     />
                   )}
-                  <Button href="/game" 
-                    sx={{
+                  <Button 
+                    href = {mode.id === 2 
+                      ? (randomized ? "/game/roulette" : "/game/select-topic") 
+                      : mode.route
+                    }
+                    sx = {{
                       width: "100%",
                       padding: "0.5rem",
                       background: "rgb(164, 194, 165)",

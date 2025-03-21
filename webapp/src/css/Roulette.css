@@ -1,0 +1,49 @@
+.roulette-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+.roulette-wheel {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border: 4px solid #4a4a48;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.pointer {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+}
+  
+.roulette-topic {
+    position: absolute;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+  
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+  
+.selected-topic {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+  
