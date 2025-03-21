@@ -1,6 +1,6 @@
 import {React,useState} from 'react'
 import AddUser from '../components/AddUser';
-import {Card,Typography,Link,Grid,CardContent} from '@mui/material';
+import {Card,Typography,Link,Grid,CardContent, Divider} from '@mui/material';
 import Login from '../components/Login'
 import NavBar from '../components/NavBar'
 import { useParams } from 'react-router-dom';
@@ -16,13 +16,14 @@ const LogInOrUpPage = () => {
   }
   
   return (
-    <Grid container minHeight='100vh' flexDirection='column' alignItems='center'>
+    <Grid key={loginShown} container minHeight='100vh' flexDirection='column' alignItems='center'>
     <NavBar/>
     <Grid item md={4} margin={'2rem'}>
     {loginShown ? (
       <Card variant="outlined" sx={{borderRadius:'1rem'}}>
       <CardContent>
           <Login></Login>
+          <Divider></Divider>
           <Typography>
               Don't have an account? 
           </Typography>
@@ -34,7 +35,8 @@ const LogInOrUpPage = () => {
       ):(
       <Card variant="outlined">
       <CardContent>
-          <AddUser></AddUser>
+          <AddUser callback={switchAuthentificationMethod}></AddUser>
+          <Divider></Divider>
           <Typography>
             {t("signup.hasAccountAlreadyQuestion")}
           </Typography>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import GameComponent from '../components/GameComponent';
 import { Navigate } from "react-router-dom";
 import { Grid } from '@mui/material';
+import AiChat from '../components/AiChat';
 
 const GamePage = () => {
     const [questionNum,setQuestionNum] = useState(0);
@@ -30,7 +31,6 @@ const GamePage = () => {
     }, [loadedQuestions]);
     
     const handleQuestionAnswered = (correct) => {
-      console.log("change question")
         if(correct===true){
           setScore(score+1);
         }
@@ -44,7 +44,9 @@ const GamePage = () => {
     };
 
   return (
-    <Grid container minHeight='100vh' alignContent='center'>
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={3}><AiChat></AiChat></Grid>
+      <Grid item xs={12} md={9}>
         {loadedQuestions && questions? (
             endGame?(<Navigate to="/results"/>):(
           <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
@@ -52,7 +54,7 @@ const GamePage = () => {
           />)
       ) : (
         <div>Loading...</div>
-      )}
+      )}</Grid>
     </Grid>
   )
 }
