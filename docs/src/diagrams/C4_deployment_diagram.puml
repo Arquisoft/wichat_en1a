@@ -1,7 +1,7 @@
 @startuml C4_Deployment_Diagram
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
 
-title Deployment Diagram for the Quiz Application
+title Deployment Diagram for the WiChat Application
 
 Deployment_Node(clientNode, "Client Node", "Web Browser") {
     Container(client, "Web Client (UI)", 3000)
