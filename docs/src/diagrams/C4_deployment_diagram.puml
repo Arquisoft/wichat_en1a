@@ -1,42 +1,28 @@
-@startuml
+@startuml C4_Deployment_Diagram
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
-!include <c4/C4_Component.puml>
 
-title Deployment Diagram for the Wichat System (C4 Level 2)
+title Deployment Diagram for the Quiz Application
 
-
-Deployment_Node(wb, "Web Client", "Deployment Node: Chrome, Firefox, Edge..."){
-    Container(client, "Single-Page App", "Container: JavaScript and React")
-}
-Deployment_Node(wapi, "wichat-api", "Deployment Node: ubuntu-24_04-lts"){
-    Container(api, "Wichat API", "Container: REST API")
-}
-Deployment_Node(wqg, "wichat-qg", "Deployment Node: ubuntu-24_04-lts"){
-    Container(qg, "Question Generator", "Container:")
-}
-Deployment_Node(wdb, "wichat-db", "Deployment Node: ubuntu-24_04-lts"){
-    ContainerDb(db, "Database", "Container: MongoDB")
-}
-Deployment_Node(wdb, "wichat-db", "Deployment Node: ubuntu-24_04-lts"){
-    ContainerDb(db, "Database", "Container: MongoDB")
-}
-Deployment_Node(wwd, "wichat-wd", "Deployment Node"){
-    Container(wd, "WikiData API", "External system")
-}
-Deployment_Node(wllm, "wichat-llm", "Deployment Node"){
-    Container(llm, "LLM AI API", "External system")
+Deployment_Node(clientNode, "Client Node", "Web Browser") {
+    Container(client, "Web Client (UI)", 3000)
 }
 
+Deployment_Node(serverNode, "Application Server", "Ubuntu VM (Azure)") {
+    Container(gateway, "Gateway Service", 8000)
+    Container(users, "Users Service", 8001)
+    Container(auth, "User Authentication Service", 8002)
+    Container(qg, "Question Generator Service", 8004)
+    Container(llm, "LLM Service", 8003)
+    ContainerDb(db, "MongoDB", 27017)
+}
 
+client -> gateway: HTTP/HTTPS
+Rel(gateway, auth, "")
+Rel(gateway, users, "")
+Rel(gateway, qg, "")
+Rel(gateway, llm, "")
+BiRel(auth, db, "")
+BiRel(users, db, "")
+Rel(qg, db, "")
 
-Rel(client, llm, "", "HTTPS")
-Rel(client, api,"", "JSON, HTTPS")
-Rel(api, db,"", "TO BE DEFINED")
-Rel(qg, db,"", "TO BE DEFINED")
-Rel(qg, wd,"", "MQL, HTTPS")
-Rel(llm, wd,"", "MOL, HTTPS")
-
-
-
-SHOW_LEGEND()
 @enduml
