@@ -6,7 +6,7 @@ import AccessAlarm from "@mui/icons-material/AccessAlarm"
 import DirectionsRun from "@mui/icons-material/DirectionsRun"
 import NavBar from '../components/NavBarSignedIn'
 import { useTranslation } from 'react-i18next';
-import "../HomePage.css";
+import "../css/HomePage.css";
 
 const HomePage = () => {
 
@@ -52,18 +52,21 @@ const HomePage = () => {
                       sx={{ marginBottom: "0.5rem" }}
                     />
                   )}
-                  <Button href="/game" className="menu-card-button" 
-                  sx={{
-                    width: "100%",
-                    padding: "0.5rem",
-                    backgroundColor: "rgb(69, 128, 98)",
-                    color: "white",
-                    border: "1px solid rgb(5, 31, 2)",
-                    borderRadius: "0.5rem",
-                    "&:hover": {
-                      backgroundColor: "rgb(35, 45, 19)"
-                    }
-                  }}>{t('homePage.play')}</Button>
+                  <Button href="/game" 
+                    sx={{
+                      width: "100%",
+                      padding: "0.5rem",
+                      background: "rgb(164, 194, 165)",
+                      color: "rgb(0, 0, 0)",
+                      border: "1px solid rgb(74, 74, 72)",
+                      borderRadius: "0.5rem",
+                      "&:hover": {
+                        background: "rgb(86, 98, 70)",
+                        color: "rgb(255, 255, 255)",
+                      }
+                    }}
+                  >{t('homePage.play')}
+                  </Button>
                 </CardContent>
               </Card>
             </div>
