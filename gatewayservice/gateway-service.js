@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -14,6 +15,8 @@ const questionServiceURL = process.env.QUESTION_SERVICE_URL || 'http://localhost
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+const apiKey = process.env.API_KEY;
+
 
 app.use(cors());
 app.use(express.json());
@@ -47,14 +50,24 @@ app.post('/adduser', async (req, res) => {
   }
 });
 
+
 app.post('/askllm', async (req, res) => {
   try {
+    const { question, gameQuestion, correctAnswer, model } = req.body;
+    if (!question || !gameQuestion || !correctAnswer) {
+      return res.status(400).json({ error: 'Missing required fields: question, gameQuestion, correctAnswer' });
+    }
+    const requestData = {
+      ...req.body,
+      apiKey,
+      model: model || 'empathy'
+    };
+
     // Forward the add user request to the user service
-    const llmResponse = await axios.post(llmServiceUrl+'/ask', req.body);
+    const llmResponse = await axios.post(llmServiceUrl+'/ask', requestData);
     res.json(llmResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
-  }
+    res.status(500).json({ error: 'Failed to process request to LLM Service' });  }
 });
 
 app.get('/generate-questions', async (req, res) => {
