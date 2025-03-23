@@ -127,6 +127,9 @@ const server = app.listen(port, () => {
   console.log(`LLM Service listening at http://localhost:${port}`);
 });
 
-module.exports = server
+module.exports = {
+  filterAnswer,
+  server
+};
 
 

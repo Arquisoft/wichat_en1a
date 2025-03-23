@@ -1,10 +1,10 @@
 const request = require('supertest');
 const axios = require('axios');
-const app = require('./llm-service');
+//const app = require('./llm-service');
+const { filterAnswer, server } = require('./llm-service');
 
 jest.mock('axios');
 
-// Simulación de respuestas de los modelos LLM
 axios.post.mockImplementation((url) => {
     if (url.includes('generativelanguage')) {
         return Promise.resolve({ data: { candidates: [{ content: { parts: [{ text: 'llmanswer' }] } }] } });
@@ -14,10 +14,8 @@ axios.post.mockImplementation((url) => {
     return Promise.reject(new Error('API request failed'));
 });
 
-/**
- * Función auxiliar para probar solicitudes al LLM.
- */
-const testLLMRequest = async (body) => request(app).post('/ask').send(body);
+
+const testLLMRequest = async (body) => request(server).post('/ask').send(body);
 
 describe('LLM Service', () => {
     const validBody = {
@@ -32,9 +30,6 @@ describe('LLM Service', () => {
         jest.clearAllMocks();
     });
 
-    afterAll(() => {
-        app.close();
-    });
 
     it.each([
         ['Gemini', 'gemini'],
@@ -87,4 +82,46 @@ describe('LLM Service', () => {
     });
 
 
+});
+
+describe('filterAnswer function', () => {
+    const expectHintBlocked = (answer) => {
+        expect(filterAnswer(answer, 'Paris')).toBe("[Hint Blocked: Try Again]");
+    };
+
+    it('should return "Could not generate a hint." when no answer is provided', () => {
+        expect(filterAnswer(null, 'Paris')).toBe("Could not generate a hint.");
+        expect(filterAnswer('', 'Paris')).toBe("Could not generate a hint.");
+    });
+
+    it('should block direct matches of the correct answer', () => {
+        expectHintBlocked('Paris is the capital of France');
+        expectHintBlocked('PARIS is the capital of France');
+        expectHintBlocked('The capital of France is Paris');
+    });
+
+    it('should block common patterns revealing the answer', () => {
+        const blockedPatterns = [
+            'The answer is Paris',
+            'Correct answer is Paris',
+            'It is Paris',
+        ];
+
+        blockedPatterns.forEach(pattern => {
+            expectHintBlocked(pattern); // Usamos la función auxiliar aquí también
+        });
+    });
+
+    it('should return the original answer when it does not contain the correct answer or blocked patterns', () => {
+        const result = filterAnswer('The Eiffel Tower is in Paris', 'London');
+        expect(result).toBe('The Eiffel Tower is in Paris');
+
+        const result2 = filterAnswer('The capital of France is beautiful', 'London');
+        expect(result2).toBe('The capital of France is beautiful');
+    });
+
+});
+
+afterAll(() => {
+    server.close();
 });
