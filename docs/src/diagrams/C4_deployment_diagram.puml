@@ -3,11 +3,8 @@
 
 title Deployment Diagram for the WiChat Application
 
-Deployment_Node(clientNode, "Client Node", "Web Browser") {
-    Container(client, "Web Client (UI)", 3000)
-}
-
 Deployment_Node(serverNode, "Application Server", "Ubuntu VM (Azure)") {
+    Container(client, "Web Client (UI)", 3000)
     Container(gateway, "Gateway Service", 8000)
     Container(users, "Users Service", 8001)
     Container(auth, "User Authentication Service", 8002)
