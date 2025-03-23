@@ -19,7 +19,8 @@ Container(web_app, "Wichat Web Client", "React, JavaScript", "Runs in user's bro
 Container(api_gateway, "Wichat API", "Node.js", "Single entry point for client requests", $tags="Internal system")
 
 Container(backend, "Wichat Backend", "Node.js", "Handles business logic and API requests", $tags="Internal system") {
-    Component(auth_module, "Auth Module", "Node.js", "Handles authentication and session management", $tags="Component")
+    Component(user_service, "User Service", "Node.js", "Handles sign-up, user registration, and profile management", $tags="Component")
+    Component(auth_service, "Authentication Service", "Node.js", "Handles login, user identification, and session management", $tags="Component")
     Component(game_module, "Game Module", "Node.js", "Handles game-related requests and updates", $tags="Component")
     Component(statistics_module, "Statistics Module", "Node.js", "Manages player statistics", $tags="Component")
     Component(question_module, "Question Module", "Node.js", "Manages question generation and retrieval", $tags="Component")
@@ -27,7 +28,8 @@ Container(backend, "Wichat Backend", "Node.js", "Handles business logic and API 
 
 Container(question_generator, "Question Generator", "Node.js", "Generates questions from WikiData", $tags="Internal system")
 Container(llm_ai_chat, "LLM AI Chat Service", "Node.js", "Handles AI chat for hints", $tags="Internal system")
-ContainerDb(database, "Wichat Database", "MongoDB", "Stores all game and user data", $tags="Database")
+ContainerDb(game_data_db, "Wichat Game Database", "MongoDB", "Stores all game and user data", $tags="Database")
+ContainerDb(user_data_db, "User Data & Leaderboard Database", "SQLite", "Stores user profile data and leaderboard information", $tags="Database")
 }
 
 System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
@@ -36,7 +38,8 @@ System_Ext(llm_api, "LLM API (Empathy)", "REST API", $tags="External system")
 ' Relations
 Rel(player, web_app, "Uses", "HTTPS")
 Rel(web_app, api_gateway, "Sends requests", "JSON, HTTPS")
-Rel(api_gateway, auth_module, "Handles authentication requests", "JSON, HTTPS")
+Rel(api_gateway, user_service, "Handles sign-up requests", "JSON, HTTPS")
+Rel(api_gateway, auth_service, "Handles authentication requests", "JSON, HTTPS")
 Rel(api_gateway, game_module, "Handles game interactions", "JSON, HTTPS")
 Rel(api_gateway, statistics_module, "Retrieves statistics", "JSON, HTTPS")
 Rel(api_gateway, llm_ai_chat, "Requests hints", "JSON, HTTPS")
@@ -44,12 +47,17 @@ Rel(api_gateway, question_module, "Fetches questions", "JSON, HTTPS")
 
 Rel(question_generator, wikidata, "Fetches question data", "MQL, HTTPS")
 Rel(llm_ai_chat, llm_api, "Sends prompts & receives responses", "JSON, HTTPS")
-Rel(question_generator, database, "Stores questions", "JSON, MongoDB")
+Rel(question_generator, game_data_db, "Stores questions", "JSON, MongoDB")
 
 ' Relations for backend modules
 Rel(game_module, question_module, "Retrieves questions")
-Rel(question_module, database, "Stores game data", "JSON, MongoDB")
-Rel(statistics_module, database, "Stores player statistics", "JSON, MongoDB")
-Rel(auth_module, database, "Stores user sessions", "JSON, MongoDB")
-@enduml
+Rel(question_module, game_data_db, "Stores game data", "JSON, MongoDB")
+Rel(statistics_module, game_data_db, "Stores player statistics", "JSON, MongoDB")
+Rel(auth_service, game_data_db, "Stores user sessions", "JSON, MongoDB")
+Rel(user_service, user_data_db, "Stores user profiles", "JSON, SQLite")
 
+' User Data & Leaderboard Database Relations
+Rel(statistics_module, user_data_db, "Stores leaderboard info", "JSON, SQLite")
+Rel(auth_service, user_data_db, "Stores authentication data", "JSON, SQLite")
+Rel(game_module, user_data_db, "Updates user data", "JSON, SQLite")
+@enduml

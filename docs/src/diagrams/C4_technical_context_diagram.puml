@@ -19,9 +19,10 @@ System_Boundary(wichat, "Wichat application server") {
     Container(rest_api, "REST API", "Node.js", "Handles backend API requests", $tags="Internal system")
 
     Container(llm_service, "LLM AI Chat Service", "Node.js", "Handles AI-based hints for the game", $tags="Internal system")
-    Container(question_generator, "Question Generator", "Node.js", ".jar file", $tags="Internal system")
+    Container(question_generator, "Question Generator", "Node.js", ".jar file", "Periodically updates questions in the database", $tags="Internal system")
 
-    ContainerDb(database, "Wichat application database", "MongoDB", "Stores user data, questions, and game statistics", $tags="Database")
+    ContainerDb(main_database, "Wichat application database", "MongoDB", "Stores game data, questions, and game statistics", $tags="Database")
+    ContainerDb(user_database, "User Data & Leaderboard Database", "SQLite", "Stores user profile data, scores, and leaderboard information", $tags="Database")
 }
 
 System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
@@ -34,10 +35,14 @@ Rel(web_app, api_gateway, "Sends user and game requests", "JSON, HTTPS")
 Rel(api_gateway, rest_api, "Forwards requests to backend services", "JSON, HTTPS")
 
 Rel(rest_api, llm_service, "Routes AI-related requests", "JSON, HTTPS")
-Rel(rest_api, database, "Stores and retrieves game/user data", "JSON, HTTPS")
+Rel(rest_api, main_database, "Stores and retrieves game data", "JSON, HTTPS")
 Rel(rest_api, question_generator, "Requests new questions", "JSON, HTTPS")
 
+Rel(question_generator, main_database, "Updates questions", "MQL, HTTPS")  ' Updated relation to connect Question Generator with the main database
 Rel(question_generator, wikidata, "Fetches knowledge-based data", "MQL, HTTPS")
 Rel(llm_service, llm_api, "Sends user queries", "JSON, HTTPS")
-@enduml
 
+' User database connections
+Rel(rest_api, user_database, "Stores user data and leaderboard info", "JSON, HTTPS")
+Rel(main_database, user_database, "Synchronizes with user database for certain data", "SQL, HTTPS")
+@enduml
