@@ -14,7 +14,10 @@ app.use(express.json());
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/userdb';
 mongoose.connect(mongoUri);
 
-
+const sanitizeInput = (input) => {
+    // Eliminate special characters that can be used in inyections
+    return input.replace(/[^a-zA-Z0-9_]/g, '');
+};
 
 // Function to validate required fields in the request body
 function validateRequiredFields(req, requiredFields) {
@@ -35,6 +38,10 @@ function validateRequiredFields(req, requiredFields) {
     if (!passwordStrengthRegex.test(req.body.password)) {
         throw new Error('Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
     }
+    const usernameRegex = /^[a-zA-Z0-9_]+$/; // Solo caracteres alfanuméricos y guiones bajos
+    if (!usernameRegex.test(req.body.username)) {
+        throw new Error('Username can only contain alphanumeric characters and underscores');
+    }
 }
 
 app.post('/adduser', async (req, res) => {
@@ -43,10 +50,10 @@ app.post('/adduser', async (req, res) => {
         validateRequiredFields(req, ['username', 'password','repeatPassword']);
 
         // Sanitize username to prevent MongoDB injection attacks
-        const sanitizedUsername = req.body.username.replace(/[$.]/g, "");
+        const sanitizedUsername  = sanitizeInput(req.body.username);
 
         // Check if the user already exists
-        const existingUser = await User.findOne({ username: sanitizedUsername }).lean();
+        const existingUser = await User.findOne({ username : sanitizedUsername  }).lean();
         if (existingUser) {
             return res.status(400).json({ error: 'Username already taken' });
         }

@@ -75,4 +75,55 @@ describe('User Service', () => {
     const response = await registerUser(baseUser);
     expectError(response, 400, 'Username already taken');
   });
+
+  it('should return an error if username contains special characters', async () => {
+    const invalidUsername = { ...baseUser, username: 'test@user!' };
+    const response = await registerUser(invalidUsername);
+    expectError(response, 400, 'Username can only contain alphanumeric characters and underscores');
+  });
+  it('should return an error if password does not contain an uppercase letter', async () => {
+    const invalidPassword = { ...baseUser, password: 'testpassword1!', repeatPassword: 'testpassword1!' };
+    const response = await registerUser(invalidPassword);
+    expectError(response, 400, 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+  });
+
+  it('should return an error if password does not contain a lowercase letter', async () => {
+    const invalidPassword = { ...baseUser, password: 'TESTPASSWORD1!', repeatPassword: 'TESTPASSWORD1!' };
+    const response = await registerUser(invalidPassword);
+    expectError(response, 400, 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+  });
+
+  it('should return an error if password does not contain a number', async () => {
+    const invalidPassword = { ...baseUser, password: 'TestPassword!', repeatPassword: 'TestPassword!' };
+    const response = await registerUser(invalidPassword);
+    expectError(response, 400, 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+  });
+
+  it('should return an error if password does not contain a special character', async () => {
+    const invalidPassword = { ...baseUser, password: 'TestPassword1', repeatPassword: 'TestPassword1' };
+    const response = await registerUser(invalidPassword);
+    expectError(response, 400, 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+  });
+
+  it('should return an error if username is too short', async () => {
+    const shortUsername = { ...baseUser, username: 'ab' };
+    const response = await registerUser(shortUsername);
+    expectError(response, 400, 'User validation failed: username: Path `username` (`ab`) ' +
+        'is shorter than the minimum allowed length (3).');
+  });
+
+  it('should return an error if username is too long', async () => {
+    const longUsername = { ...baseUser, username: 'a'.repeat(51) }; // assuming max length is 50
+    const response = await registerUser(longUsername);
+    expectError(response, 400, 'User validation failed: username: Path `username` ' +
+        '(`aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`) ' +
+        'is longer than the maximum allowed length (30).');
+  });
+
+  it('should return an error if password is empty', async () => {
+    const invalidPassword = { ...baseUser, password: '', repeatPassword: '' };
+    const response = await registerUser(invalidPassword);
+    expectError(response, 400, 'Password must be at least 8 characters long');
+  });
+
 });
