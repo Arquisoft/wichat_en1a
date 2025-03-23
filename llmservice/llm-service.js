@@ -105,7 +105,7 @@ async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiK
 
   } catch (error) {
     console.error(`Error sending question to ${model}:`, error.message || error);
-    return null;
+    throw error;
   }
 }
 
