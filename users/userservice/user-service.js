@@ -42,9 +42,11 @@ app.post('/adduser', async (req, res) => {
         // Check if required fields are present in the request body
         validateRequiredFields(req, ['username', 'password','repeatPassword']);
 
+        // Sanitize username to prevent MongoDB injection attacks
+        const sanitizedUsername = req.body.username.replace(/[$.]/g, "");
 
         // Check if the user already exists
-        const existingUser = await User.findOne({ username: req.body.username });
+        const existingUser = await User.findOne({ username: sanitizedUsername }).lean();
         if (existingUser) {
             return res.status(400).json({ error: 'Username already taken' });
         }
