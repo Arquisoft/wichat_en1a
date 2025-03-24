@@ -4,16 +4,18 @@ import { Navigate } from "react-router-dom";
 import { Grid } from '@mui/material';
 import AiChat from '../components/AiChat';
 
-const GamePage = () => {
+const GamePage = ({ numQuestions,questionType,timePerQuestion }) => {
     const [questionNum,setQuestionNum] = useState(0);
     const [score,setScore] = useState(0);
 
     const [questions,setQuestions] = useState(null);
     const [loadedQuestions,setLoadedQuestions] =useState(false);
     const [endGame, setEndGame] = useState(false);
+    const apiEndpoint = process.env.REACT_APP_API_ENDPOINT||'http://localhost:8000'
+
     const fetchData = async () =>{ 
         try{
-            const response = await fetch('http://localhost:8000/generate-questions?type=flag&numQuestions=20');
+            const response = await fetch(apiEndpoint+'/generate-questions?type='+questionType+'&numQuestions='+numQuestions);
             if(!response.ok){
                 throw new Error('Network error')
             }
@@ -28,11 +30,11 @@ const GamePage = () => {
         if (!loadedQuestions) {
             fetchData();
         }
-    }, [loadedQuestions]);
+    });
     
     const handleQuestionAnswered = (correct) => {
         if(correct===true){
-          setScore(score+1);
+          setScore(score+100);
         }
         if (questionNum < questions.length - 1) { // Check if there are more questions
           setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
@@ -51,6 +53,7 @@ const GamePage = () => {
             endGame?(<Navigate to="/results"/>):(
           <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
           onQuestionAnswered={handleQuestionAnswered} // Pass callback
+          timePerQuestion={timePerQuestion}
           />)
       ) : (
         <div>Loading...</div>
@@ -58,5 +61,10 @@ const GamePage = () => {
     </Grid>
   )
 }
+GamePage.defaultProps ={
+  numQuestions:20,
+  questionType:'flag',
+  timePerQuestion:60,
+};
 
 export default GamePage

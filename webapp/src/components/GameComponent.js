@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Grid, LinearProgress, Typography, useTheme } from '@mui/material'
 
-const GameComponent = ({ question, onQuestionAnswered }) => {
+const GameComponent = ({ question, onQuestionAnswered,timePerQuestion }) => {
   const [responded,setResponded] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
-  const totalTime = 60;
+  const totalTime = timePerQuestion;
   const theme=useTheme();
 
   const getColor=(number)=>{
@@ -29,19 +29,19 @@ const GameComponent = ({ question, onQuestionAnswered }) => {
     <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{height:"100vh"}}>
       <Grid item xs={12}><Typography variant='h2' textAlign="center">{question.question}</Typography></Grid>
       
-      <Grid item xs={12} sm={8} component="img" src={question.image} alt="question hint" 
+      <Grid item xs={12} sm={8} component="img" src={question.image} alt="question hint image"
         sx={{maxHeight:500,width:"100%",borderRadius:2,boxShadow:3, objectFit:"contain",backgroundColor:theme.palette.primary.main}}></Grid>
 
       <Grid item xs={12}>
         <Typography variant="body2">Time left:</Typography>
-        <LinearProgress variant="determinate" value={(timeLeft / totalTime) * 100} sx={{ height: 15}} />
+        <LinearProgress data-testid="timeLeftBar" variant="determinate" value={(timeLeft / totalTime) * 100} sx={{ height: 15}} />
       </Grid>
 
       <Grid item container spacing={2} sx={{ width: "80%" }}>
       {question.answers.map((answer, index) => (
       <Grid item xs={6} key={index}>
         <Button variant='contained' fullWidth color={responded?(getColor(index)):'primary'} onClick={()=>handleAnswer(index)}>
-          <Typography variant="h5" component="h3">{answer}</Typography></Button>
+          <Typography variant="h5" data-testid={"answerButton"+index} component="h3">{answer}</Typography></Button>
       </Grid>
       ))}
       </Grid>
