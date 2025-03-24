@@ -12,6 +12,7 @@ const mockAxios = new MockAdapter(axios);
 describe('Game Page', () => {
     const questions=[{"question":"¿De qué país es esta bandera?","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Croatia.svg","correctAnswer":"Bandera de Croacia","correctAnswerId":1,"type":"flag","answers":["Bandera de los Países Bajos","Bandera de Croacia","bandera de Luxemburgo","Bandera de Polonia"]},{"question":"¿De qué Paiz es esta bandera?","image":"http://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20Luxembourg.svg","correctAnswer":"bandera de Luxemburgo","correctAnswerId":0,"type":"flag","answers":["bandera de Luxemburgo","Bandera de Burkina Faso","Bandera de Marruecos","bandera de Chipre"]}]
     beforeEach(() => {
+      sessionStorage.clear();
       mockAxios.reset();
       mockAxios.onGet('http://localhost:8000/generate-questions?type=flag&numQuestions=10').reply(200, questions);
     });
@@ -44,7 +45,7 @@ describe('Game Page', () => {
       <I18nextProvider i18n={i18n}>
         <MemoryRouter>
         <Routes>
-          <Route path='/' element={<GamePage questionType="city"/>}/>
+          <Route path='/' element={<GamePage/>}/>
           <Route path='/results' element={'Results page'}/>
         </Routes>
         </MemoryRouter>
@@ -78,7 +79,7 @@ describe('Game Page', () => {
     <I18nextProvider i18n={i18n}>
     <MemoryRouter>
     <Routes>
-      <Route path='/' element={<GamePage timePerQuestion={2} questionType="city"/>}/>
+      <Route path='/' element={<GamePage timePerQuestionTesting={2} />}/>
       <Route path='/results' element={'Results page'}/>
     </Routes>
     </MemoryRouter>
@@ -89,8 +90,10 @@ describe('Game Page', () => {
       expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
     },{timeout: 3000});
     expect(screen.getByText(questions[0].question)).toBeInTheDocument();
-    setTimeout(()=>{expect(screen.getByTextw(questions[1].question)).toBeInTheDocument()},2500)
-    setTimeout(()=>{expect(screen.getByText(/Results page/i)).toBeInTheDocument()},2500)
+    await waitFor(()=>{expect(screen.getByText(questions[1].question)).toBeInTheDocument()},{timeout: 3000})
+    await waitFor(()=>{expect(screen.queryByText(questions[1].question)).not.toBeInTheDocument()},{timeout: 3000})
+
+    await waitFor(()=>{expect(screen.getByText(/Results page/i)).toBeInTheDocument()});
     expect(sessionStorage.getItem("score")).toEqual("0");
     expect(sessionStorage.getItem("questionNum")).toEqual("2");
   });

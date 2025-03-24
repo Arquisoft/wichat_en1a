@@ -5,7 +5,7 @@ import { Grid } from '@mui/material';
 import AiChat from '../components/AiChat';
 import axios from 'axios';
 
-const GamePage = () => {
+const GamePage = ({timePerQuestionTesting}) => {
   const gatewayUrl = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
   const [questionNum,setQuestionNum] = useState(0);
   const [score,setScore] = useState(0);
@@ -19,11 +19,10 @@ const GamePage = () => {
   const params = new URLSearchParams(location.search);
   const numQuestions = (params.get('numQuestions'))?params.get('numQuestions'):10;  
   const questionType = (params.get('questionType'))?params.get('questionType'):'flag';  
-  const timePerQuestion = (params.get('timePerQuestion'))?params.get('timePerQuestion'):60;  
+  const timePerQuestion = (params.get('timePerQuestion'))?params.get('timePerQuestion'):60000;  
 
   const fetchData = async () =>{ 
     try{
-      console.log(`${gatewayUrl}/generate-questions?type=${questionType}&numQuestions=${numQuestions}`);
       const response = await axios.get(`${gatewayUrl}/generate-questions?type=${questionType}&numQuestions=${numQuestions}`);
       setQuestions(response.data);
       setLoadedQuestions(true);
@@ -39,10 +38,7 @@ const GamePage = () => {
   
   const handleQuestionAnswered = (correct) => {
       if(correct===true){
-        setScore(prevScore => {
-          const newScore = prevScore + 100;
-          return newScore;
-        });
+        setScore(score + 100);
       }
       if (questionNum < questions.length - 1) { // Check if there are more questions
         setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
@@ -66,7 +62,7 @@ const GamePage = () => {
             navigate?(<Navigate to="/results"/>):(
           <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
           onQuestionAnswered={handleQuestionAnswered} // Pass callback
-          timePerQuestion={timePerQuestion}
+          timePerQuestion={timePerQuestionTesting?timePerQuestionTesting:timePerQuestion}
           />)
       ) : (
         <div>Loading...</div>

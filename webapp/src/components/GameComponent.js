@@ -3,8 +3,8 @@ import { Button, Grid, LinearProgress, Typography, useTheme } from '@mui/materia
 
 const GameComponent = ({ question, onQuestionAnswered,timePerQuestion }) => {
   const [responded,setResponded] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60);
   const totalTime = timePerQuestion;
+  const [timeLeft, setTimeLeft] = useState(totalTime);
   const theme=useTheme();
 
   const getColor=(number)=>{
@@ -19,7 +19,7 @@ const GameComponent = ({ question, onQuestionAnswered,timePerQuestion }) => {
 
   useEffect(() => {
     if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      const timer = setTimeout(() => {setTimeLeft(timeLeft - 500);}, 500);
       return () => clearTimeout(timer);
     }else{
       handleAnswer(-1);//no answer provided in time, look for next question.
@@ -47,6 +47,11 @@ const GameComponent = ({ question, onQuestionAnswered,timePerQuestion }) => {
       </Grid>
     </Grid>
   )
+}
+GameComponent.defaultProps ={
+question:null,
+onQuestionAnswered:()=>{throw new Error("No parameters passed to component")},
+timePerQuestion:60000
 }
 
 export default GameComponent
