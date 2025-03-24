@@ -1,5 +1,6 @@
 node_modules
 coverage
 docs/build
-*.env
-webapp/*.env
+gatewayservice/.env
+webapp/.env
+.env

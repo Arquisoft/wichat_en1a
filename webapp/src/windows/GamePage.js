@@ -4,46 +4,46 @@ import { Navigate } from "react-router-dom";
 import { Grid } from '@mui/material';
 import AiChat from '../components/AiChat';
 
-const GamePage = ({ numQuestions,questionType,timePerQuestion }) => {
-    const [questionNum,setQuestionNum] = useState(0);
-    const [score,setScore] = useState(0);
+const GamePage = ({numQuestions,questionType,timePerQuestion}) => {
+  const gatewayUrl = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
+  const [questionNum,setQuestionNum] = useState(0);
+  const [score,setScore] = useState(0);
 
-    const [questions,setQuestions] = useState(null);
-    const [loadedQuestions,setLoadedQuestions] =useState(false);
-    const [endGame, setEndGame] = useState(false);
-    const apiEndpoint = process.env.REACT_APP_API_ENDPOINT||'http://localhost:8000'
-
-    const fetchData = async () =>{ 
-        try{
-            const response = await fetch(apiEndpoint+'/generate-questions?type='+questionType+'&numQuestions='+numQuestions);
-            if(!response.ok){
-                throw new Error('Network error')
-            }
-            const result = await response.json();
-            setQuestions(result);
-            setLoadedQuestions(true);
-        }catch(err){
-            console.error('Error fetching questions: ',err);
+  const [questions,setQuestions] = useState(null);
+  const [loadedQuestions,setLoadedQuestions] =useState(false);
+  const [endGame, setEndGame] = useState(false);
+  const fetchData = async () =>{ 
+    try{
+        const response = await fetch(gatewayUrl+'/generate-questions?type='+questionType+'&numQuestions='+numQuestions);
+        if(!response.ok){
+            throw new Error('Network error')
         }
+        const result = await response.json();
+        setQuestions(result);
+        setLoadedQuestions(true);
+    }catch(err){
+        console.error('Error fetching questions: ',err);
     }
-    useEffect(()=>{
-        if (!loadedQuestions) {
-            fetchData();
-        }
-    });
-    
-    const handleQuestionAnswered = (correct) => {
-        if(correct===true){
-          setScore(score+100);
-        }
-        if (questionNum < questions.length - 1) { // Check if there are more questions
-          setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
-        } else {
-          sessionStorage.setItem('score',score);
-          sessionStorage.setItem('questionNum',questionNum+1);
-          setEndGame(true);
-        }
-    };
+  }
+  useEffect(()=>{
+      if (!loadedQuestions) {
+          fetchData();
+      }
+  });
+  
+  const handleQuestionAnswered = (correct) => {
+    console.log("change question")
+      if(correct===true){
+        setScore(score+1);
+      }
+      if (questionNum < questions.length - 1) { // Check if there are more questions
+        setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
+      } else {
+        sessionStorage.setItem('score',score);
+        sessionStorage.setItem('questionNum',questionNum+1);
+        setEndGame(true);
+      }
+  };
 
   return (
     <Grid container spacing={2}>
