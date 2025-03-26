@@ -111,4 +111,4 @@ endif::arc42help[]
 - Robustness -> A bad input from a user must not neither crash nor break the system.
 - Continuity -> A user may play 20 games straight without pause. 
 - Intuitiveness -> The ui must be clean to enable non tech-savvy users to  enjoy the game within 15 minutes from picking up the game.
-- Freshness -> New questions muys be inserted into the db to avoid any repetition of questions in a single game. Questions are to be updated every 30 minutes
+- Freshness -> New questions must be inserted into the db to avoid any repetition of questions in a single game. Questions are to be updated every 30 minutes
