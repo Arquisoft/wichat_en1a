@@ -56,7 +56,7 @@ const Login = () => {
     <Snackbar open={snackbarStatus} onClose={()=>{setSnackbarStatus(false)}}>
       <Alert data-testid='errorNotification' severity='error'>Error: {t('login.error')}</Alert>
     </Snackbar>
-    <Button variant='contained' data-testid='loginButton' onClick={loginUser}>
+    <Button variant='contained' data-testid='loginButton' name='loginButton' onClick={loginUser}>
       {t('login.message')}
     </Button>
     </React.Fragment>

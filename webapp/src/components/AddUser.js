@@ -22,7 +22,7 @@ const AddUser = () => {
       sessionStorage.setItem("sessionToken",token);
       setSignupSuccess(true);
     } catch (error) {
-      setErrormsg(error);
+      setErrormsg(error.error);
       setOpenSnackbar(true);
     }
   };
@@ -64,9 +64,9 @@ const AddUser = () => {
     onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
-    <Alert data-testid='errorNotification' severity='error'>{t("signup.error") +errormsg}</Alert>
+    <Alert data-testid='errorNotification' severity='error'>{t("signup.error")+" "+errormsg}</Alert>
   </Snackbar>
-  <Button variant="contained" disabled={submitButton} data-testid='signupButton' onClick={addUser}>
+  <Button variant="contained" disabled={submitButton} name='addUserButton' data-testid='signupButton' onClick={addUser}>
     {t("signup.message")}
   </Button>
 </React.Fragment>
