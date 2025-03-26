@@ -29,7 +29,7 @@ Container(backend, "Wichat Backend", "Node.js", "Handles business logic and API 
 Container(question_generator, "Question Generator", "Node.js", "Generates questions from WikiData", $tags="Internal system")
 Container(llm_ai_chat, "LLM AI Chat Service", "Node.js", "Handles AI chat for hints", $tags="Internal system")
 ContainerDb(game_data_db, "Wichat Game Database", "MongoDB", "Stores all game and user data", $tags="Database")
-ContainerDb(user_data_db, "User Data & Leaderboard Database", "SQLite", "Stores user profile data and leaderboard information", $tags="Database")
+ContainerDb(user_data_db, "User Data & Leaderboard Database", "MongoDB", "Stores user profile data and leaderboard information", $tags="Database")
 }
 
 System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
@@ -54,10 +54,10 @@ Rel(game_module, question_module, "Retrieves questions")
 Rel(question_module, game_data_db, "Stores game data", "JSON, MongoDB")
 Rel(statistics_module, game_data_db, "Stores player statistics", "JSON, MongoDB")
 Rel(auth_service, game_data_db, "Stores user sessions", "JSON, MongoDB")
-Rel(user_service, user_data_db, "Stores user profiles", "JSON, SQLite")
+Rel(user_service, user_data_db, "Stores user profiles", "JSON, MongoDB")
 
 ' User Data & Leaderboard Database Relations
-Rel(statistics_module, user_data_db, "Stores leaderboard info", "JSON, SQLite")
-Rel(auth_service, user_data_db, "Stores authentication data", "JSON, SQLite")
-Rel(game_module, user_data_db, "Updates user data", "JSON, SQLite")
+Rel(statistics_module, user_data_db, "Stores leaderboard info", "JSON, MongoDB")
+Rel(auth_service, user_data_db, "Stores authentication data", "JSON, MongoDB")
+Rel(game_module, user_data_db, "Updates user data", "JSON, MongoDB")
 @enduml

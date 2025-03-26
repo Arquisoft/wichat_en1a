@@ -22,7 +22,7 @@ System_Boundary(wichat, "Wichat application server") {
     Container(question_generator, "Question Generator", "Node.js", ".jar file", "Periodically updates questions in the database", $tags="Internal system")
 
     ContainerDb(main_database, "Wichat application database", "MongoDB", "Stores game data, questions, and game statistics", $tags="Database")
-    ContainerDb(user_database, "User Data & Leaderboard Database", "SQLite", "Stores user profile data, scores, and leaderboard information", $tags="Database")
+    ContainerDb(user_database, "User Data & Leaderboard Database", "MongoDB", "Stores user profile data, scores, and leaderboard information", $tags="Database")
 }
 
 System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
@@ -44,5 +44,5 @@ Rel(llm_service, llm_api, "Sends user queries", "JSON, HTTPS")
 
 ' User database connections
 Rel(rest_api, user_database, "Stores user data and leaderboard info", "JSON, HTTPS")
-Rel(main_database, user_database, "Synchronizes with user database for certain data", "SQL, HTTPS")
+Rel(main_database, user_database, "Synchronizes with user database for certain data", "JSON, HTTPS")
 @enduml
