@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -14,6 +15,8 @@ const questionServiceURL = process.env.QUESTION_SERVICE_URL || 'http://localhost
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+const apiKey = process.env.API_KEY;
+
 
 app.use(cors());
 app.use(express.json());
@@ -47,19 +50,35 @@ app.post('/adduser', async (req, res) => {
   }
 });
 
+
 app.post('/askllm', async (req, res) => {
   try {
+    const { question, gameQuestion, correctAnswer, model } = req.body;
+    if (!question || !gameQuestion || !correctAnswer) {
+      return res.status(400).json({ error: 'Missing required fields: question, gameQuestion, correctAnswer' });
+    }
+    const requestData = {
+      ...req.body,
+      apiKey,
+      model: model || 'empathy'
+    };
+
     // Forward the add user request to the user service
-    const llmResponse = await axios.post(llmServiceUrl+'/ask', req.body);
+    const llmResponse = await axios.post(llmServiceUrl+'/ask', requestData);
     res.json(llmResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
-  }
+    res.status(500).json({ error: 'Failed to process request to LLM Service' });  }
 });
 
-app.get('/questions', async (req, res) => {
+app.get('/generate-questions', async (req, res) => {
   try {
-    const url = questionServiceURL + '/questions';
+    const { type, numQuestions } = req.query;
+    if (!type || !numQuestions || isNaN(numQuestions) || numQuestions <= 0) {
+      return res.status(400).json({
+        error: 'Debe proporcionar un tipo de pregunta y un número válido de preguntas.',
+      });
+    }
+    const url = questionServiceURL + '/generate-questions' + '?type=' + type + '&numQuestions=' + numQuestions;
     const questionsResponse = await axios.get(url);
     res.json(questionsResponse.data);
   } catch (error) {
@@ -68,17 +87,31 @@ app.get('/questions', async (req, res) => {
   }
 });
 
-app.post('/questions', async (req, res) => {
-  try {
-    const url = `${questionServiceURL}/questions`;
-    const questionsResponse = await axios.post(url, req.body);
+// Ruta GET: Obtain questions by type and limit
+app.get('/questions/:type/:limit', async (req, res) => {
+  const { type, limit } = req.params;
 
-    res.json(questionsResponse.data);
+  try {
+    const questions = await axios.get(`${questionServiceURL}/questions/${type}/${limit}`);
+    res.status(200).json(questions.data);
   } catch (error) {
-    console.error(error);
-    res.status(error.response ? error.response.status : 500).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
+
+// Ruta GET: Obtain random question
+app.get('/question', async (req, res) => {
+  try {
+    const randomQuestion = await axios.get(`${questionServiceURL}/question`);
+    if (!randomQuestion.data) {
+      return res.status(404).json({ error: 'No se encontró una pregunta' });
+    }
+    res.status(200).json(randomQuestion.data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 // Read the OpenAPI YAML file synchronously
 openapiPath='./openapi.yaml'

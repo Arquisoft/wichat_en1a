@@ -42,8 +42,38 @@ function validateRequiredFields(req, requiredFields) {
   }
 }
 
+// Filter out direct answers from LLM responses
+function filterAnswer(answer,correctAnswer) {
+  if (!answer) {
+    return "Could not generate a hint.";
+  }
+
+  const lowerAnswer = answer.toLowerCase();
+  const lowerCorrectAnswer = correctAnswer.toLowerCase();
+
+  // Block direct answer matches
+  if (lowerAnswer.includes(lowerCorrectAnswer)) {
+      return "[Hint Blocked: Try Again]";
+  }
+
+  // Block common answer-revealing patterns
+  const blockedPatterns = [
+      /\bthe answer is\b/i,
+      /\bcorrect answer is\b/i,
+      /\bit is\b\s+\w+/i,
+  ];
+
+  for (const pattern of blockedPatterns) {
+      if (pattern.test(answer)) {
+          return "[Hint Blocked: Try Again]";
+      }
+  }
+
+  return answer;
+}
+
 // Generic function to send questions to LLM
-async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
+async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiKey, model = 'empathy') {
   try {
     const config = llmConfigs[model];
     if (!config) {
@@ -51,7 +81,14 @@ async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
     }
 
     const url = config.url(apiKey);
-    const requestData = config.transformRequest(question);
+
+    // Modify the request to include game context
+    const prompt = `You are an assistant for a trivia game. 
+    The current question in the game is: "${gameQuestion}" 
+    The user is asking: "${userQuestion}". 
+    Provide a useful hint but DO NOT reveal the answer.`;
+
+    const requestData = config.transformRequest(prompt);
 
     const headers = {
       'Content-Type': 'application/json',
@@ -59,22 +96,26 @@ async function sendQuestionToLLM(question, apiKey, model = 'gemini') {
     };
 
     const response = await axios.post(url, requestData, { headers });
+    let llmAnswer = config.transformResponse(response);
 
-    return config.transformResponse(response);
+    // Filter the response to avoid revealing the correct answer
+    llmAnswer = filterAnswer(llmAnswer, correctAnswer);
+
+    return llmAnswer;
 
   } catch (error) {
     console.error(`Error sending question to ${model}:`, error.message || error);
-    return null;
+    throw error;
   }
 }
 
 app.post('/ask', async (req, res) => {
   try {
     // Check if required fields are present in the request body
-    validateRequiredFields(req, ['question', 'model', 'apiKey']);
+    validateRequiredFields(req, ['question', 'gameQuestion', 'correctAnswer', 'model', 'apiKey']);
 
-    const { question, model, apiKey } = req.body;
-    const answer = await sendQuestionToLLM(question, apiKey, model);
+    const { question, gameQuestion, correctAnswer, model, apiKey } = req.body;
+    const answer = await sendQuestionToLLM(question, gameQuestion, correctAnswer, apiKey, model);
     res.json({ answer });
 
   } catch (error) {
@@ -86,6 +127,9 @@ const server = app.listen(port, () => {
   console.log(`LLM Service listening at http://localhost:${port}`);
 });
 
-module.exports = server
+module.exports = {
+  filterAnswer,
+  server
+};
 
 

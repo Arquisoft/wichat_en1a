@@ -14,21 +14,48 @@ app.use(express.json());
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/userdb';
 mongoose.connect(mongoUri);
 
-
+const sanitizeInput = (input) => {
+    // Eliminate special characters that can be used in inyections
+    return  String(input).replace(/[^a-zA-Z0-9_]/g, '');
+};
 
 // Function to validate required fields in the request body
 function validateRequiredFields(req, requiredFields) {
     for (const field of requiredFields) {
-      if (!(field in req.body)) {
-        throw new Error(`Missing required field: ${field}`);
-      }
+    if (!(field in req.body)) {
+      throw new Error(`Missing required field: ${field}`);
+    }
+    }
+    if(req.body.password!=req.body.repeatPassword){
+    throw new Error('Passwords must match');
+    }
+
+    if (!req.body.password || req.body.password.length < 8) {
+      throw new Error('Password must be at least 8 characters long');
+    }
+    // Password strength validation (at least 8 characters, one uppercase, one lowercase, one digit, and one special character)
+    const passwordStrengthRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordStrengthRegex.test(req.body.password)) {
+        throw new Error('Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+    }
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(req.body.username)) {
+        throw new Error('Username can only contain alphanumeric characters and underscores');
     }
 }
 
 app.post('/adduser', async (req, res) => {
     try {
         // Check if required fields are present in the request body
-        validateRequiredFields(req, ['username', 'password']);
+        validateRequiredFields(req, ['username', 'password','repeatPassword']);
+
+        // Sanitize username to prevent MongoDB injection attacks
+        const sanitizedUsername  = sanitizeInput(req.body.username);
+
+        const existingUsers = await User.find({ username: sanitizedUsername }).lean();
+        if (existingUsers.length > 0) {
+            return res.status(400).json({ error: 'Username already taken' });
+        }
 
         // Encrypt the password before saving it
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
