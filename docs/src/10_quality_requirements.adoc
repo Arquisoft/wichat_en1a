@@ -62,7 +62,7 @@ endif::arc42help[]
 
 |Security
 |Individuality
-|User's actions must not disturb another's experience, this is one cannot press a button for another.
+|User's actions must not interfere with another user's experience. For example, pressing a button in one session should not affect any other user's game.
 |
 |Robustness
 |The user must not see anything he's not expected to.
@@ -72,7 +72,7 @@ endif::arc42help[]
 |A player must be able to continue playing without issue for as long as he wishes.
 |
 |Intuitiveness
-|The system must be easy to use
+|The system must be easy to understand and use
 |
 |Freshness
 |The questions on the sytem musn't become predictable nor be the same all the time.
@@ -106,7 +106,7 @@ Tabular or free form text.
 ****
 endif::arc42help[]
 - Responsiveness -> Every input from the frontend must have an appropiate response before a second has passed, else a loading page must be shown.
-- Concurrency -> One hundred users at least must be supported symultaneously
+- Concurrency -> One hundred users at least must be supported simultaneously
 - Individuality -> A user selecting the fourth option must not generate any option in another one's game. Each game is a separate entity.
 - Robustness -> A bad input from a user must not neither crash nor break the system.
 - Continuity -> A user may play 20 games straight without pause. 
