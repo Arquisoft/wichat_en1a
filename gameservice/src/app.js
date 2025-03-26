@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const gameRouter = require('./src/routes/game-routes');
+const gameRouter = require('./routes/game-routes');
 
 const app = express();
 app.disable("x-powered-by");

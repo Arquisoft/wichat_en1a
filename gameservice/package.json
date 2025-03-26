@@ -2,9 +2,9 @@
   "name": "gameservice",
   "version": "1.0.0",
   "description": "Game service, in charge of handling the game in the application",
-  "main": "service.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node services/game-service.js",
+    "start": "node src/index.js",
     "test": "jest"
   },
   "repository": {

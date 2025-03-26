@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-const User = require('../../../users/userservice/user-model');
-
 const scoreSchema = new mongoose.Schema({
     userId: {
         type: String, 
