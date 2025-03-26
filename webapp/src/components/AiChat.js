@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, colors, Drawer, Fab, IconButton, Typography, useTheme } from '@mui/material'
+import { Box, Drawer, Fab, IconButton, Typography, useTheme } from '@mui/material'
 import SparklesIcon from "@mui/icons-material/AutoAwesome"; // Magic sparkle icon
 import CloseIcon from "@mui/icons-material/Close";
 
