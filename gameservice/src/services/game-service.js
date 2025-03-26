@@ -1,14 +1,12 @@
 const mongoose = require('mongoose');
-const Score = require('../models/score-model'); // Solo una vez
+const Score = require('../models/score-model');  
 
-/**
- * 📌 Saves a user's score.
- * @param {string} userId - User ID.
- * @param {number} score - Score achieved.
- */
-const saveScore = async (userId, score) => {
+const saveScore = async (userId, score, gameMode) => {
+    if (!userId || score == null || !gameMode) {
+        return { success: false, error: 'Missing required fields' };
+    }
     try {
-        const newScore = new Score({ userId, score });
+        const newScore = new Score({ userId, score, gameMode });
         await newScore.save();
         return { success: true, newScore };
     } catch (error) {
@@ -16,14 +14,10 @@ const saveScore = async (userId, score) => {
     }
 };
 
-/**
- * 📌 Updates a user's score.
- * @param {string} userId - User ID.
- * @param {number} score - New score.
- */
-const updateScore = async (userId, score) => {
-    if (!userId || score == null) return { success: false, error: 'Invalid data' };
-
+const updateScore = async (userId, score, gameMode) => {
+    if (!userId || score == null || !gameMode) {
+        return { success: false, error: 'Invalid data' };
+    }
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
         return { success: false, error: 'Invalid userId format' };
@@ -31,7 +25,7 @@ const updateScore = async (userId, score) => {
 
     try {
         const updatedScore = await Score.findOneAndUpdate(
-            { userId: new mongoose.Types.ObjectId(userId) },
+            { userId: userId, gameMode },  
             { $set: { score } },
             { new: true }
         );
@@ -43,13 +37,10 @@ const updateScore = async (userId, score) => {
     }
 };
 
-/**
- * 📌 Retrieves a user's scores.
- * @param {string} userId - User ID.
- */
-const getScoresByUser = async (userId) => {
+const getScoresByUser = async (userId, gameMode) => {
     try {
-        const scores = await Score.find({ userId });
+        const query = gameMode ? { userId, gameMode } : { userId };
+        const scores = await Score.find(query);
 
         if (!scores || !scores.length) {
             return { success: false, error: 'No scores found for this user' };
@@ -61,14 +52,11 @@ const getScoresByUser = async (userId) => {
     }
 };
 
-/**
- * 📌 Retrieves the leaderboard (Top 10 players with the highest scores).
- */
-const getLeaderboard = async () => {
+const getLeaderboard = async (gameMode) => {
     try {
-        const leaderboard = await Score.find()
-            .populate('userId', 'username')  // Asegúrate de que el usuario esté poblado correctamente
-            .sort({ score: -1 })  // Ordenar por puntaje en orden descendente
+        const query = gameMode ? { gameMode } : {};  
+        const leaderboard = await Score.find(query)
+            .sort({ score: -1 })  
             .limit(10);
 
         return { success: true, leaderboard };
