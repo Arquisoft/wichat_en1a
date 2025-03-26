@@ -2,12 +2,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {Alert, Typography, TextField, Button, Snackbar } from '@mui/material';
-import { Navigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
-const AddUser = () => {
+const AddUser = ({callback}) => {
   const [formData, setFormData] = useState({username:'',password:'',repeatPassword:''});
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -17,12 +16,10 @@ const AddUser = () => {
 
   const addUser = async () => {
     try {
-      const response = await axios.post(`${apiEndpoint}/adduser`, formData);
-      const {token}=response.data;
-      sessionStorage.setItem("sessionToken",token);
+      await axios.post(`${apiEndpoint}/adduser`, formData);
       setSignupSuccess(true);
     } catch (error) {
-      setErrormsg(error);
+      setErrormsg(error.error);
       setOpenSnackbar(true);
     }
   };
@@ -64,9 +61,9 @@ const AddUser = () => {
     onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
-    <Alert data-testid='errorNotification' severity='error'>{t("signup.error") +errormsg}</Alert>
+    <Alert data-testid='errorNotification' severity='error'>{t("signup.error")+" "+errormsg}</Alert>
   </Snackbar>
-  <Button variant="contained" disabled={submitButton} data-testid='signupButton' onClick={addUser}>
+  <Button sx={{margin:1}} variant="contained" disabled={submitButton} data-testid='signupButton' name='addUserButton' onClick={addUser}>
     {t("signup.message")}
   </Button>
 </React.Fragment>
@@ -74,7 +71,7 @@ const AddUser = () => {
 
   return (
     <React.Fragment>
-      {signupSuccess?(<Navigate to="/home"/>)
+      {signupSuccess?(callback())
       :(signup)}
     </React.Fragment>
   );

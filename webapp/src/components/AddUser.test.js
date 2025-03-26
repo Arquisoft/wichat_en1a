@@ -9,14 +9,19 @@ import '../i18n';
 const mockAxios = new MockAdapter(axios);
 
 describe('AddUser component', () => {
+  let signedUp=false;
+  const callbackFunction=()=>{
+    signedUp=true
+  }
   beforeEach(() => {
     mockAxios.reset();
+    signedUp=false;
   });
 
   it('should add user successfully', async () => {
     render(<MemoryRouter>
           <Routes>
-            <Route path='/' element={<AddUser />}/>
+            <Route path='/' element={<AddUser callback={callbackFunction}/>}/>
             <Route path='/home' element={'HomePage'}/>
           </Routes>
           </MemoryRouter>);
@@ -27,7 +32,7 @@ describe('AddUser component', () => {
     const signupButton = screen.getByTestId('signupButton');
 
     // Mock the axios.post request to simulate a successful response
-    mockAxios.onPost('http://localhost:8000/adduser').reply(200,{token:'token'});
+    mockAxios.onPost('http://localhost:8000/adduser').reply(200,{});
 
     // Simulate user input
     fireEvent.change(usernameInput, { target: { value: 'testUser' } });
@@ -39,14 +44,14 @@ describe('AddUser component', () => {
 
     // Wait for the Snackbar to be open
     await waitFor(() => {
-      expect(screen.getByText(/HomePage/i)).toBeInTheDocument();
+      expect(signedUp).toBeTruthy();
     });
   });
 
   it('should handle error when adding user', async () => {
     render(<MemoryRouter>
       <Routes>
-        <Route path='/' element={<AddUser />}/>
+        <Route path='/' element={<AddUser callback={callbackFunction}/>}/>
         <Route path='/home' element={'HomePage'}/>
       </Routes>
       </MemoryRouter>);
@@ -71,5 +76,7 @@ describe('AddUser component', () => {
     await waitFor(() => {
         expect(screen.getByText(/An error ocurred during singup, please try again./i)).toBeInTheDocument();
     });
+    
+    expect(signedUp).toBeFalsy();
   });
 });
