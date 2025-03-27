@@ -16,7 +16,7 @@ const LogInOrUpPage = () => {
   }
   
   return (
-    <Grid container minHeight='100vh' flexDirection='column' alignItems='center'>
+    <Grid key={loginShown} container minHeight='100vh' flexDirection='column' alignItems='center'>
     <NavBar/>
     <Grid item md={4} margin={'2rem'}>
     {loginShown ? (
@@ -35,7 +35,7 @@ const LogInOrUpPage = () => {
       ):(
       <Card variant="outlined">
       <CardContent>
-          <AddUser></AddUser>
+          <AddUser callback={switchAuthentificationMethod}></AddUser>
           <Divider></Divider>
           <Typography>
             {t("signup.hasAccountAlreadyQuestion")}

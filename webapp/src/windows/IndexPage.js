@@ -21,7 +21,7 @@ const IndexPage = () => {
             </Typography>
             <Grid align='center'>
               <Button href="/auth/true" variant="outlined" style={{ marginRight: 10 }}>{t('login')}</Button>
-              <Button href="/auth/false" variant="outlined">{t('signup')}</Button>
+              <Button href="/auth/false" name="signup" variant="outlined">{t('signup')}</Button>
             </Grid>
           </Grid>
           <Grid item md={5}>
