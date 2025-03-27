@@ -2,48 +2,59 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    padding: 20px;
-  }
-  
+    gap: 3rem;
+    padding: 2rem;
+}
+
 .roulette-wheel {
     position: relative;
-    width: 200px;
-    height: 200px;
-    border: 4px solid #4a4a48;
+    width: 30rem;
+    height: 30rem;
+    border: 5px solid #ffffff;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: conic-gradient(
+        #fedd57 0deg 72deg,
+        #fe7575 72deg 144deg,
+        #746aff 144deg 216deg,
+        #76ff74 216deg 288deg,
+        #c36eff 288deg 360deg
+    );
 }
-  
+
 .pointer {
     position: absolute;
-    top: 5px;
+    top: 45%;
     left: 50%;
     transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    background-color: red;
-    border-radius: 50%;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid rgb(0, 0, 0);
 }
-  
+
 .roulette-topic {
     position: absolute;
-    text-align: center;
-    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
     font-weight: bold;
+    color: rgb(0, 0, 0);
+    text-shadow: 1px 1px 2px rgb(255, 255, 255);
 }
-  
+
 .buttons-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 1rem;
 }
-  
+
 .selected-topic {
     font-size: 1.2rem;
     font-weight: bold;
 }
-  
