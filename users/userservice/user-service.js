@@ -34,7 +34,7 @@ function validateRequiredFields(req, requiredFields) {
       throw new Error('Password must be at least 8 characters long');
     }
     // Password strength validation (at least 8 characters, one uppercase, one lowercase, one digit, and one special character)
-    const passwordStrengthRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_\-])[A-Za-z\d@$!%*?&_\-]{8,}$/;
+    const passwordStrengthRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_*])[A-Za-z\d@$!%*?_&]{8,}$/;
     if (!passwordStrengthRegex.test(req.body.password)) {
         throw new Error('Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
     }

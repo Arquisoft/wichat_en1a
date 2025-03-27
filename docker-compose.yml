@@ -12,9 +12,9 @@ services:
 
   questionservice:
     container_name: questionservice-wichat_en1a
-    image: ghcr.io/arquisoft/wichat_en1a/authservice:latest
+    image: ghcr.io/arquisoft/wichat_en1a/questionservice:latest
     profiles: ["dev", "prod"]
-    build: ./users/authservice
+    build: ./questionservice
     depends_on:
       - mongodb
     ports:
@@ -78,6 +78,7 @@ services:
     networks:
       - mynetwork
     environment:
+      QUESTION_SERVICE_URL: http://questionservice:8004
       AUTH_SERVICE_URL: http://authservice:8002
       USER_SERVICE_URL: http://userservice:8001
       LLM_SERVICE_URL: http://llmservice:8003
@@ -94,6 +95,9 @@ services:
       - gatewayservice
     ports:
       - "3000:3000"
+    environment:
+      GATEWAY_SERVICE_URL: http://gatewayservice:8000
+
 
   prometheus:
     image: prom/prometheus
