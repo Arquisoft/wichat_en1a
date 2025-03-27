@@ -28,6 +28,10 @@ paths:
                   type: string
                   description: User password.
                   example: pass
+                repeatPassword:
+                  type: string
+                  description: Repeat user password.
+                  example: pass
       responses:
         '200':
           description: User added successfully.
@@ -53,7 +57,7 @@ paths:
                     example: '2024-03-17T20:47:23.935Z'
                   ___v:
                     type: integer
-                    example: '0'                                        
+                    example: '0'
         '400':
           description: Failed to add user.
           content:
@@ -131,6 +135,400 @@ paths:
                     type: string
                     description: Shows the error info..
                     example: Invalid credentials
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Internal Server Error
+  /askllm:
+    post:
+      summary: Ask a question to the LLM service.
+      operationId: askLLM
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question:
+                  type: string
+                  description: Question to ask.
+                  example: What is the capital of France?
+                gameQuestion:
+                  type: string
+                  description: Game-related question.
+                  example: What is the main character's name in the game?
+                correctAnswer:
+                  type: string
+                  description: Correct answer to the game question.
+                  example: París
+                model:
+                  type: string
+                  description: Model to use for the LLM service.
+                  example: empathy
+      responses:
+        '200':
+          description: Question answered successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  answer:
+                    type: string
+                    description: Answer from LLM.
+                    example: The name of the capital of Paris begins with the letter P
+        '400':
+          description: Missing required fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example:
+                      Missing required fields: question, gameQuestion, correctAnswer
+        '500':
+          description: Failed to process request to LLM Service.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Failed to process request to LLM Service
+
+
+  /generate-questions:
+    get:
+      summary: Generate questions based on type and number.
+      operationId: generateQuestions
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Type of questions to generate.
+          example: city
+        - name: numQuestions
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Number of questions to generate.
+          example: 10
+      responses:
+        '200':
+          description: Questions generated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "67e41a6d752e3f6ba5f9f6c0"
+                        question:
+                          type: string
+                          description: Question text.
+                          example: ¿Qué ciudad es esta?
+                        answers:
+                          type: array
+                          items:
+                            type: string
+                          description: Answer options.
+                          example: [ "Busan", "Lund", "Los Ángeles", "Nankín" ]
+                        correctAnswerId:
+                          type: number
+                          description: Correct answer ID.
+                          example: 0
+                        type:
+                          type: string
+                          description: Type of question.
+                          example: city
+                        image:
+                          type: string
+                          description: Image URL.
+                          example: http://commons.wikimedia.org/wiki/Special:FilePath/Busan%20montage.png
+                example:
+                  - _id: "67e41a6d752e3f6ba5f9f6c0"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Busan", "Lund", "Los Ángeles", "Nankín" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://commons.wikimedia.org/wiki/Special:FilePath/Busan%20montage.png
+                  - _id: "67e41a6d752e3f6ba5f9f6c3"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Lund", "Busan", "Vianen", "Ballarat" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://commons.wikimedia.org/wiki/Special:FilePath/Stortorget%20lund%20080508.jpg
+                  - _id: "67e41a6d752e3f6ba5f9f6c6"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Nankín", "Kampen", "Los Ángeles", "Vianen" ]
+                    correctAnswerId: 1
+                    type: city
+                    image: http://commons.wikimedia.org/wiki/Special:FilePath/Kampen%20overview.jpg
+                  - _id: "67e41a6d752e3f6ba5f9f6c9"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "IJsselstein", "Constantinopla", "Lund", "Kampen" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://commons.wikimedia.org/wiki/Special:FilePath/IJsselstein.IJssel.jpg
+                  - _id: "67e41a6d752e3f6ba5f9f6d0"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "París", "Londres", "Berlín", "Madrid" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://example.com/image1.png
+                  - _id: "67e41a6d752e3f6ba5f9f6d1"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Nueva York", "Los Ángeles", "Chicago", "San Francisco" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://example.com/image2.png
+                  - _id: "67e41a6d752e3f6ba5f9f6d2"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Tokio", "Seúl", "Pekín", "Shanghái" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://example.com/image3.png
+                  - _id: "67e41a6d752e3f6ba5f9f6d3"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Roma", "París", "Londres", "Berlín" ]
+                    correctAnswerId: 1
+                    type: city
+                    image: http://example.com/image4.png
+                  - _id: "67e41a6d752e3f6ba5f9f6d4"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Sídney", "Melbourne", "Canberra", "Brisbane" ]
+                    correctAnswerId: 2
+                    type: city
+                    image: http://example.com/image5.png
+        '400':
+          description: Failed to generate questions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Invalid parameters
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Internal Server Error
+
+  /questions/{type}/{limit}:
+    get:
+      summary: Obtain questions by type and limit.
+      operationId: getQuestionsByTypeAndLimit
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Type of questions to retrieve.
+          example: city
+        - name: limit
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Number of questions to retrieve.
+          example: 10
+      responses:
+        '200':
+          description: Questions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "67e41a6d752e3f6ba5f9f6c0"
+                        question:
+                          type: string
+                          description: Question text.
+                          example: What is the capital of France?
+                        answers:
+                          type: array
+                          items:
+                            type: string
+                          description: Answer options.
+                          example: [ "Kampen", "París", "Vianen", "IJsselstein" ]
+                        correctAnswerId:
+                          type: number
+                          description: Correct answer ID.
+                          example: 1
+                        type:
+                          type: string
+                          description: Type of question.
+                          example: multiple-choice
+                        image:
+                          type: string
+                          description: Image URL.
+                          example: http://example.com/image.png
+                example:
+                  - _id: "67e41a6d752e3f6ba5f9f6c0"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Busan", "Lund", "Los Ángeles", "Nankín" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://commons.wikimedia.org/wiki/Special:FilePath/Busan%20montage.png
+                  - _id: "67e41a6d752e3f6ba5f9f6c3"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Lund", "Busan", "Vianen", "Ballarat" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://commons.wikimedia.org/wiki/Special:FilePath/Stortorget%20lund%20080508.jpg
+                  - _id: "67e41a6d752e3f6ba5f9f6c6"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Nankín", "Kampen", "Los Ángeles", "Vianen" ]
+                    correctAnswerId: 1
+                    type: city
+                    image: http://commons.wikimedia.org/wiki/Special:FilePath/Kampen%20overview.jpg
+                  - _id: "67e41a6d752e3f6ba5f9f6c9"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "IJsselstein", "Constantinopla", "Lund", "Kampen" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://commons.wikimedia.org/wiki/Special:FilePath/IJsselstein.IJssel.jpg
+                  - _id: "67e41a6d752e3f6ba5f9f6d0"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "París", "Londres", "Berlín", "Madrid" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://example.com/image1.png
+                  - _id: "67e41a6d752e3f6ba5f9f6d1"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Nueva York", "Los Ángeles", "Chicago", "San Francisco" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://example.com/image2.png
+                  - _id: "67e41a6d752e3f6ba5f9f6d2"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Tokio", "Seúl", "Pekín", "Shanghái" ]
+                    correctAnswerId: 0
+                    type: city
+                    image: http://example.com/image3.png
+                  - _id: "67e41a6d752e3f6ba5f9f6d3"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Roma", "París", "Londres", "Berlín" ]
+                    correctAnswerId: 1
+                    type: city
+                    image: http://example.com/image4.png
+                  - _id: "67e41a6d752e3f6ba5f9f6d4"
+                    question: ¿Qué ciudad es esta?
+                    answers: [ "Sídney", "Melbourne", "Canberra", "Brisbane" ]
+                    correctAnswerId: 2
+                    type: city
+                    image: http://example.com/image5.png
+        '400':
+          description: Failed to obtain questions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Invalid parameters
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Internal Server Error
+
+
+  /question:
+    get:
+      summary: Obtain a random question.
+      operationId: getRandomQuestion
+      responses:
+        '200':
+          description: Random question retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: "67e41a6d752e3f6ba5f9f6c0"
+                  question:
+                    type: string
+                    description: Question text.
+                    example: What is the capital of France?
+                  answers:
+                    type: array
+                    items:
+                      type: string
+                    description: Answer options.
+                    example: [ "Kampen", "París", "Vianen", "IJsselstein" ]
+                  correctAnswerId:
+                    type: number
+                    description: Correct answer ID.
+                    example: 1
+                  type:
+                    type: string
+                    description: Type of question.
+                    example: city
+                  image:
+                    type: string
+                    description: Image URL.
+                    example: http://example.com/image.png
+        '404':
+          description: No question found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: No se encontró una pregunta
         '500':
           description: Internal server error.
           content:
