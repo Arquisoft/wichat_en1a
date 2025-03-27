@@ -61,9 +61,9 @@ const AddUser = ({callback}) => {
     onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
-    <Alert data-testid='errorNotification' severity='error'>{t("signup.error") +" "+errormsg}</Alert>
+    <Alert data-testid='errorNotification' severity='error'>{t("signup.error")+" "+errormsg}</Alert>
   </Snackbar>
-  <Button sx={{margin:1}} variant="contained" disabled={submitButton} data-testid='signupButton' onClick={addUser}>
+  <Button sx={{margin:1}} variant="contained" disabled={submitButton} data-testid='signupButton' name='addUserButton' onClick={addUser}>
     {t("signup.message")}
   </Button>
 </React.Fragment>
