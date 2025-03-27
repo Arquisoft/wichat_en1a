@@ -21,8 +21,6 @@ const Login = () => {
       
       sessionStorage.setItem("sessionToken",token);
       setLoginSuccess(true);
-
-
     } catch (error) {
       setSnackbarStatus(true);
     }
@@ -56,7 +54,7 @@ const Login = () => {
     <Snackbar open={snackbarStatus} onClose={()=>{setSnackbarStatus(false)}}>
       <Alert data-testid='errorNotification' severity='error'>Error: {t('login.error')}</Alert>
     </Snackbar>
-    <Button variant='contained' data-testid='loginButton' onClick={loginUser}>
+    <Button sx={{margin:1}} variant='contained' data-testid='loginButton' name='loginButton' onClick={loginUser}>
       {t('login.message')}
     </Button>
     </React.Fragment>

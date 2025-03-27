@@ -33,10 +33,10 @@ function App() {
           <Route path='/' element={<IndexPage></IndexPage>} />
           <Route path="/auth/:loginRequested" element={<LogInOrUpPage></LogInOrUpPage>}/>
           <Route path="/auth" element={<LogInOrUpPage></LogInOrUpPage>}/>
-          <Route path="/home" element={<HomePage/>/*TODO remember to add loggedinRoutes */}/>
-          <Route path="/game/basic-quiz" element={<GamePage/>/*TODO remember to add loggedinRoutes */}/>
-          <Route path="/game/roulette" element={<RandomRulette/>/*TODO remember to add loggedinRoutes */}/>
-          <Route path="/results" element={<ResultsPage/>/*TODO remember to add loggedinRoutes */}/>
+          <Route path="/home" element={<LoggedInRoutes><HomePage/></LoggedInRoutes>}/>
+          <Route path="/game/basic-quiz" element={<LoggedInRoutes><GamePage/></LoggedInRoutes>}/>
+          <Route path="/game/roulette" element={<LoggedInRoutes><RandomRulette/></LoggedInRoutes>}/>
+          <Route path="/results" element={<LoggedInRoutes><ResultsPage/></LoggedInRoutes>}/>
         </Routes>
       </Router>
     </ThemeProvider>
