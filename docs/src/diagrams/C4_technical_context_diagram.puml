@@ -9,25 +9,40 @@ AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
 AddElementTag("Database", $bgColor="#darkgreen", $fontColor="#white")
 
 'Containers
-Person(player, Player's Browser, "Preferred browser (Firefox, Chrome, Opera...)")
+Person(player, "Player's Browser", "Preferred browser (Firefox, Chrome, Opera...)")
 
-System_Boundary(wichat, "Wichat application server"){
-    Container(proxy, "Proxy", "TO BE DEFINED", "TO BE DEFINED web server", $tags="Internal system")
-    Container(web_app, "Wichat application client", "React, JavaScript", "TO BE DEFINED web server", $tags="Internal system")
-    Container(backend_api, "Wichat REST API", "TO BE DEFINED", ".jar file", $tags="Internal system")
-    Container(question_generator, "Question generator", "TO BE DEFINED", ".jar file", $tags="Internal system")
-    ContainerDb(database, "Wichat application database", "MongoDB", "MongoDB docker container", $tags="Database")
+System_Boundary(wichat, "Wichat application server") {
+    Container(proxy, "Proxy", "TO BE DEFINED", "Handles requests and forwards them to the correct services", $tags="Internal system")
+    Container(web_app, "Wichat application client", "React, JavaScript", "Frontend interface for players", $tags="Internal system")
+
+    Container(api_gateway, "WiChat API", "Node.js", "Manages requests between frontend and backend services", $tags="Internal system")
+    Container(rest_api, "REST API", "Node.js", "Handles backend API requests", $tags="Internal system")
+
+    Container(llm_service, "LLM AI Chat Service", "Node.js", "Handles AI-based hints for the game", $tags="Internal system")
+    Container(question_generator, "Question Generator", "Node.js", ".jar file", "Periodically updates questions in the database", $tags="Internal system")
+
+    ContainerDb(main_database, "Wichat application database", "MongoDB", "Stores game data, questions, and game statistics", $tags="Database")
+    ContainerDb(user_database, "User Data & Leaderboard Database", "MongoDB", "Stores user profile data, scores, and leaderboard information", $tags="Database")
 }
+
 System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
-System_Ext(llm, "LLM AI Chat", "REST API", $tags="External system")
+System_Ext(llm_api, "LLM API", "REST API", $tags="External system")
 
 'RELATIONS
-Rel(player, proxy, "Uses", "HTTPS")
-Rel(proxy, web_app, "Serves", "HTTPS")
-Rel(question_generator, wikidata, "Asks for data", "MQL, HTTPS")
-Rel(llm, wikidata, "Asks for data", "MQL, HTTPS")
-Rel(web_app, backend_api, "Asks for user/game information", "JSON, HTTPS")
-Rel(web_app, llm, "Uses", "HTTPS")
-Rel(question_generator, database, "Stores questions", "TO BE DEFINED")
-Rel(backend_api, database, "Stores game/user information", "TO BE DEFINED")
+Rel(player, proxy, "Uses", "HTTPS")  ' New relation to connect Proxy and Player
+Rel(proxy, web_app, "Serves", "HTTPS")  ' Proxy forwards requests to Web App
+Rel(web_app, api_gateway, "Sends user and game requests", "JSON, HTTPS")
+Rel(api_gateway, rest_api, "Forwards requests to backend services", "JSON, HTTPS")
+
+Rel(rest_api, llm_service, "Routes AI-related requests", "JSON, HTTPS")
+Rel(rest_api, main_database, "Stores and retrieves game data", "JSON, HTTPS")
+Rel(rest_api, question_generator, "Requests new questions", "JSON, HTTPS")
+
+Rel(question_generator, main_database, "Updates questions", "MQL, HTTPS")  ' Updated relation to connect Question Generator with the main database
+Rel(question_generator, wikidata, "Fetches knowledge-based data", "MQL, HTTPS")
+Rel(llm_service, llm_api, "Sends user queries", "JSON, HTTPS")
+
+' User database connections
+Rel(rest_api, user_database, "Stores user data and leaderboard info", "JSON, HTTPS")
+Rel(main_database, user_database, "Synchronizes with user database for certain data", "JSON, HTTPS")
 @enduml
