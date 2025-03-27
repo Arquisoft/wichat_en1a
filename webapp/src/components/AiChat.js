@@ -29,7 +29,7 @@ const AiChat = ({question={
       })
 
       // Update chat with the AI response
-      setChatMessages([...chatMessages, { sender: "user", text: userInput }, { sender: "ai", text: response.data.message }]);
+      setChatMessages([...chatMessages, { sender: "user", text: userInput }, { sender: "ai", text: response.data.answer }]);
       setUserInput(""); // Clear input field
     } catch (error) {
       console.error("Error communicating with AI:", error);
