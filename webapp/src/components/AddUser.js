@@ -19,7 +19,7 @@ const AddUser = ({callback}) => {
       await axios.post(`${apiEndpoint}/adduser`, formData);
       setSignupSuccess(true);
     } catch (error) {
-      setErrormsg(error);
+      setErrormsg(error.response.data.error);
       setOpenSnackbar(true);
     }
   };
@@ -61,7 +61,7 @@ const AddUser = ({callback}) => {
     onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
-    <Alert data-testid='errorNotification' severity='error'>{t("signup.error") +errormsg}</Alert>
+    <Alert data-testid='errorNotification' severity='error'>{t("signup.error") +" "+errormsg}</Alert>
   </Snackbar>
   <Button sx={{margin:1}} variant="contained" disabled={submitButton} data-testid='signupButton' onClick={addUser}>
     {t("signup.message")}
