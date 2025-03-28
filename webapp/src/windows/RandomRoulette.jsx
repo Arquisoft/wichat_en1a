@@ -6,12 +6,13 @@ import { useTranslation } from 'react-i18next';
 import NavBar from '../components/NavBarSignedIn';
 import "../css/Roulette.css";
 
+// Still to be confirmed with the client, but for now we will use these mock topics:
 const topics = [
-  "Flags",
-  "Cities",
-  "Science",
-  "Sports",
-  "Celebrities"
+  t('roulette.topics.flags'),
+  t('roulette.topics.cities'),
+  t('roulette.topics.science'),
+  t('roulette.topics.sports'),
+  t('roulette.topics.celebrities')
 ];
 
 export default function Roulette() {
@@ -36,13 +37,13 @@ export default function Roulette() {
     const selectedIndex = (topics.length - Math.floor(winningAngle / sectorAngle)) % topics.length;
 
     setTimeout(() => {
-      setSelectedTopic(topics[selectedIndex]);
+      setSelectedTopic(topics[selectedIndex].toLowerCase());
       setSpinning(false);
     }, 3000);
   };
 
   const goToGame = () => {
-    navigate(`/game/expert-domain?topic=${encodeURIComponent(selectedTopic)}`);
+    navigate(`/game?mode=expert-domain&topic=${encodeURIComponent(selectedTopic)}`);
   };
 
   return (
