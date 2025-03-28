@@ -11,13 +11,13 @@ import "../css/HomePage.css";
 const HomePage = () => {
 
   const [randomized, setRandomized] = useState(false);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const gameModes = [
-    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset/>, route: '/game/basic-quiz' },
-    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School/>, route: '/game/expert-domain' },
-    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm/>, route: '/game/time-attack' },
-    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun/>, route: '/game/endless-marathon' }
+    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset />, route: '/game?mode=basic-quiz' },
+    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School />, route: randomized ? '/game?mode=roulette' : '/game?mode=expert-domain' },
+    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm />, route: '/game?mode=time-attack' },
+    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, route: '/game?mode=endless-marathon' }
   ];
 
   const handleToggle = () => {
