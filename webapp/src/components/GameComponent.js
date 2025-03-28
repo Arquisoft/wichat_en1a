@@ -6,7 +6,7 @@ const GameComponent = ({ question={
   image:"no image",
   correctAnswerId:0,
   correctAnswer:"None",
-  answers:{0:"None",1:"None",2:"None",3:"None"}}, onQuestionAnswered=()=>{throw new Error("No parameters passed to component")}
+  answers:{0:"None",1:"None",2:"None",3:"None"}}, onQuestionAnswered=()=>{console.error("No parameters passed to component")}
   ,timePerQuestion=60000 }) => {
   const [responded,setResponded] = useState(false);
   const totalTime = timePerQuestion;

@@ -16,41 +16,37 @@ describe('Game Page', () => {
       mockAxios.reset();
       mockAxios.onGet('http://localhost:8000/generate-questions?type=flag&numQuestions=10').reply(200, questions);
     });
-    test('renders the question component', async () => {
+
+    const renderGameComp=()=>{
       render(
         <I18nextProvider i18n={i18n}>
-      <MemoryRouter>
-      <Routes>
-        <Route path='/' element={<GamePage/>}/>
-        <Route path='/results' element={'Results page'}/>
-      </Routes>
-      </MemoryRouter>
-      </I18nextProvider>
-    );
-    
-    await waitFor(() => {
-      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
-    },{timeout: 3000});
-    expect(screen.getByText(questions[0].question)).toBeInTheDocument();
-    expect(screen.getByAltText('question hint image')).toBeInTheDocument();
-    expect(screen.getByTestId('timeLeftBar')).toBeInTheDocument();
-    expect(screen.getByTestId('answerButton0')).toBeInTheDocument();
-    expect(screen.getByTestId('answerButton1')).toBeInTheDocument();
-    expect(screen.getByTestId('answerButton2')).toBeInTheDocument();
-    expect(screen.getByTestId('answerButton3')).toBeInTheDocument();
+          <MemoryRouter>
+          <Routes>
+            <Route path='/' element={<GamePage/>}/>
+            <Route path='/results' element={'Results page'}/>
+          </Routes>
+          </MemoryRouter>
+        </I18nextProvider>
+      );
+    }
+
+    test('renders the question component', async () => {
+      renderGameComp();
+      
+      await waitFor(() => {
+        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+      },{timeout: 3000});
+      expect(screen.getByText(questions[0].question)).toBeInTheDocument();
+      expect(screen.getByAltText('question hint image')).toBeInTheDocument();
+      expect(screen.getByTestId('timeLeftBar')).toBeInTheDocument();
+      expect(screen.getByTestId('answerButton0')).toBeInTheDocument();
+      expect(screen.getByTestId('answerButton1')).toBeInTheDocument();
+      expect(screen.getByTestId('answerButton2')).toBeInTheDocument();
+      expect(screen.getByTestId('answerButton3')).toBeInTheDocument();
   });
 
   test('pushing the correct answers triggers the next question to be asked and finish the game correctly', async () => {
-    render(
-      <I18nextProvider i18n={i18n}>
-        <MemoryRouter>
-        <Routes>
-          <Route path='/' element={<GamePage/>}/>
-          <Route path='/results' element={'Results page'}/>
-        </Routes>
-        </MemoryRouter>
-      </I18nextProvider>
-    );
+    renderGameComp();
     
     await waitFor(() => {
       expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
