@@ -9,7 +9,7 @@ const AiChat = ({question={
   image:"no image",
   correctAnswerId:0,
   correctAnswer:"None",
-  answers:{0:"None",1:"None",2:"None",3:"None"}}}) => {
+  answers:["No answer","No answer","No answer","No answer"]}}) => {
     
   const gatewayUrl = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
   const theme = useTheme();
