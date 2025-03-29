@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('./user-model')
+const { check } = require('express-validator');
+
 
 const app = express();
 const port = 8001;
@@ -14,10 +16,6 @@ app.use(express.json());
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/userdb';
 mongoose.connect(mongoUri);
 
-const sanitizeInput = (input) => {
-    // Eliminate special characters that can be used in inyections
-    return  String(input).replace(/[^a-zA-Z0-9_]/g, '');
-};
 
 // Function to validate required fields in the request body
 function validateRequiredFields(req, requiredFields) {
@@ -44,15 +42,16 @@ function validateRequiredFields(req, requiredFields) {
     }
 }
 
-app.post('/adduser', async (req, res) => {
+app.post('/adduser', [
+    check('username').isLength({ min: 3 }).trim().escape()
+], async (req, res) => {
     try {
         // Check if required fields are present in the request body
         validateRequiredFields(req, ['username', 'password','repeatPassword']);
 
-        // Sanitize username to prevent MongoDB injection attacks
-        const sanitizedUsername  = sanitizeInput(req.body.username);
+        let username =req.body.username.toString();
 
-        const existingUsers = await User.find({ username: sanitizedUsername }).lean();
+        const existingUsers = await User.find({ username: username }).lean();
         if (existingUsers.length > 0) {
             return res.status(400).json({ error: 'Username already taken' });
         }
