@@ -15,7 +15,7 @@ const questionServiceURL = process.env.QUESTION_SERVICE_URL || 'http://localhost
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
-const apiKey = process.env.API_KEY;
+const apiKey = process.env.LLM_API_KEY;
 
 
 app.use(cors());
