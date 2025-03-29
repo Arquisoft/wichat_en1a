@@ -33,7 +33,7 @@ function App() {
           <Route path="/auth/:loginRequested" element={<LogInOrUpPage></LogInOrUpPage>}/>
           <Route path="/auth" element={<LogInOrUpPage></LogInOrUpPage>}/>
           <Route path="/home" element={<LoggedInRoutes><HomePage/></LoggedInRoutes>}/>
-          <Route path="/game" element={<GamePage/>}/>
+          <Route path="/game" element={<LoggedInRoutes><GamePage/></LoggedInRoutes>}/>
           <Route path="/results" element={<LoggedInRoutes><ResultsPage/></LoggedInRoutes>}/>
         </Routes>
       </Router>
