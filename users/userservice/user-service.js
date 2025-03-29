@@ -49,8 +49,9 @@ app.post('/adduser', [
         // Check if required fields are present in the request body
         validateRequiredFields(req, ['username', 'password','repeatPassword']);
 
+        let username =req.body.username.toString();
 
-        const existingUsers = await User.find({ username: req.body.username }).lean();
+        const existingUsers = await User.find({ username: username }).lean();
         if (existingUsers.length > 0) {
             return res.status(400).json({ error: 'Username already taken' });
         }
