@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, AppBar, Toolbar, Select, MenuItem, Button } from '@mui/material';
+import { Typography, AppBar, Toolbar, Select, MenuItem, ButtonGroup, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -21,24 +21,26 @@ const NavBarSignedIn = () => {
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           Wichat
-          <Button href="/home" color="inherit" sx={{
-            marginLeft: 10,
-            "&:hover": {
-              backgroundColor: "rgb(227, 235, 217)"
-            }
-          }}>{t('menu')}</Button>
-          <Button href="/leaderboard" color="inherit" sx={{
-            marginLeft: 10,
-            "&:hover": {
-              backgroundColor: "rgb(227, 235, 217)"
-            }
-          }}>{t('leaderboard')}</Button>
-          <Button href="/stats" color="inherit" sx={{
-            marginLeft: 10,
-            "&:hover": {
-              backgroundColor: "rgb(227, 235, 217)"
-            }
-          }}>{t('statistics')}</Button>
+          <ButtonGroup color="secondary" aria-label="Medium-sized button group">
+            <Button href="/home" color="inherit" sx={{
+              marginLeft: 10,
+              "&:hover": {
+                backgroundColor: "rgb(227, 235, 217)"
+              }
+            }}>{t('menu')}</Button>
+            <Button href="/leaderboard" color="inherit" sx={{
+              marginLeft: 10,
+              "&:hover": {
+                backgroundColor: "rgb(227, 235, 217)"
+              }
+            }}>{t('leaderboard')}</Button>
+            <Button href="/stats" color="inherit" sx={{
+              marginLeft: 10,
+              "&:hover": {
+                backgroundColor: "rgb(227, 235, 217)"
+              }
+            }}>{t('statistics')}</Button>
+          </ButtonGroup>
         </Typography>
         <Select onChange={handleLanguageChange} defaultValue="EN" variant="outlined" size="small" style={{ marginRight: 10 }}>
           <MenuItem value="EN">EN</MenuItem>
