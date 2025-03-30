@@ -52,15 +52,15 @@ describe('Gateway Service', () => {
   });
 
   it('should forward login request to auth service', async () => {
-    await checkPostSuccessResponse('/login', { username: 'testuser', password: 'testpassword' }, { token: 'mockedToken' }, { token: 'mockedToken' });
+    await checkPostSuccessResponse('/login', { username: '', password: '' }, { token: 'mockedToken' }, { token: 'mockedToken' });
   });
 
   it('should forward add user request to user service', async () => {
-    await checkPostSuccessResponse('/adduser', { username: 'newuser', password: 'newpassword' }, { userId: 'mockedUserId' }, { userId: 'mockedUserId' });
+    await checkPostSuccessResponse('/adduser', { username: '', password: '' }, { userId: 'mockedUserId' }, { userId: 'mockedUserId' });
   });
 
   it('should forward askllm request to the llm service', async () => {
-    await checkPostSuccessResponse('/askllm', { question: 'question', gameQuestion: 'gameQuestion', correctAnswer: 'llmanswer', apiKey: 'apiKey', model: 'empathy' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
+    await checkPostSuccessResponse('/askllm', { question: 'question', gameQuestion: 'gameQuestion', correctAnswer: 'llmanswer', model: 'empathy' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
   });
 
   it('should forward generate-questions request to the question service', async () => {
