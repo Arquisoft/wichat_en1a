@@ -17,10 +17,10 @@ const GamePage = ({timePerQuestionTesting}) => {
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const questionDomains = params.get('questionType') || 'all'; // For Expert's Domain mode, pass the type of the questions, for the rest, any.
-  const numQuestions = (params.get('numQuestions'))?params.get('numQuestions'):10;  
-  const questionType = (params.get('questionType'))?params.get('questionType'):'flag';  
-  const timePerQuestion = (params.get('timePerQuestion'))?params.get('timePerQuestion'):60000;  
+  const numQuestions = (params.get('numQuestions')) ? params.get('numQuestions') : 10; // By default, 10 questions. In endless mode and time attack it is infinite
+  const questionType = (params.get('questionType')) ? params.get('questionType') : 'any'; // By default, any type of questions. In expert's domain, it is a concrete topic.
+  const timePerQuestion = (params.get('timePerQuestion')) ? params.get('timePerQuestion') : 60000; // By default, 60 seconds per question. In time attack mode, it is total time. In endless, infinite time.
+  const isTimeAttack = (params.get('isTimeAttack')) ? params.get('isTimeAttack') : false; // By default, it is not time attack mode. In time attack mode, it is true.
 
   const fetchData = async () =>{ 
     try{
@@ -32,20 +32,20 @@ const GamePage = ({timePerQuestionTesting}) => {
     }
   }
   useEffect(()=>{
-      if (!loadedQuestions) {
-          fetchData();
-      }
+    if (!loadedQuestions) {
+      fetchData();
+    }
   });
   
   const handleQuestionAnswered = (correct) => {
-      if(correct===true){
-        setScore(score + 100);
-      }
-      if (questionNum < questions.length - 1) { // Check if there are more questions
-        setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
-      } else {
-        setEndGame(true);
-      }
+    if(correct===true){
+      setScore(score + 100);
+    }
+    if (questionNum < questions.length - 1) { // Check if there are more questions
+      setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
+    } else {
+      setEndGame(true);
+    }
   };
   useEffect(() => {
     // This will ensure sessionStorage is updated after score change

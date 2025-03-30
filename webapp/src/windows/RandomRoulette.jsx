@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { useTheme } from "@mui/material/styles";
 import NavBar from '../components/NavBarSignedIn';
 import "../css/Roulette.css";
 
@@ -10,8 +11,10 @@ export default function Roulette() {
   const [spinning, setSpinning] = useState(false);
   const [angle, setAngle] = useState(0);
   const [selectedTopic, setSelectedTopic] = useState(null);
+  
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const theme = useTheme();
 
   // Still to be confirmed with the client, but for now we will use these mock topics:
   const topics = [
@@ -47,7 +50,12 @@ export default function Roulette() {
   };
 
   return (
-    <div className="window-container">
+    <div 
+      className="window-container"
+      style={{ 
+        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
+      }}
+    >
       <NavBar />
       <div className="roulette-container">
         <div className="roulette-wheel-container">

@@ -12,14 +12,18 @@ import "../css/HomePage.css";
 const HomePage = () => {
 
   const [randomized, setRandomized] = useState(false);
+  const [numQuestions, setNumQuestions] = useState(10);
+  const [questionType, setQuestionType] = useState("any");
+  const [timePerQuestion, setTimePerQuestion] = useState(60000);
+
   const { t } = useTranslation();
   const theme = useTheme();
 
   const gameModes = [
-    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset />, route: '/game?mode=basic-quiz' },
-    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School />, route: randomized ? '/game?mode=roulette' : '/game?mode=expert-domain' },
-    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm />, route: '/game?mode=time-attack' },
-    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, route: '/game?mode=endless-marathon' }
+    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset />, mode: 'basic-quiz' },
+    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School />, mode: randomized ? 'roulette' : 'expert-domain' },
+    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm />, mode: 'time-attack' },
+    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, mode: 'endless-marathon' }
   ];
 
   const handleToggle = () => {
@@ -79,21 +83,18 @@ const HomePage = () => {
                       sx = {{ marginBottom: "0.5rem" }}
                     />
                   )}
-                  <Button 
-                    href = {mode.id === 2 
-                      ? (randomized ? "/roulette" : "/select-topic") 
-                      : mode.route
-                    }
-                    sx = {{
+                  <Button
+                    href={`/game?mode=${mode.mode}&numQuestions=${numQuestions}&questionType=${questionType}&timePerQuestion=${timePerQuestion}`}
+                    sx={{
                       width: "100%",
                       padding: "0.5rem",
-                      background: 'secondary.main',
-                      color: 'accent.main',
-                      border: "1px solid primary.main",
+                      background: `${theme.palette.secondary.main}`,
+                      color: `${theme.palette.accent.main}`,
+                      border: `1px solid ${theme.palette.primary.main}`,
                       borderRadius: "0.5rem",
                       "&:hover": {
-                        background: 'secondary.dark',
-                        color: 'accent.light',
+                        background: `${theme.palette.secondary.dark}`,
+                        color: `${theme.palette.accent.light}`,
                       }
                     }}
                   >{t('homePage.play')}
