@@ -30,16 +30,16 @@ const expectError = (response, status, message) => {
 
 const baseUser = {
   username: 'testuser',
-  password: 'Testpassword1!',
-  repeatPassword: 'Testpassword1!',
+  password: 'Testpassword1!', // NOSONAR: Mocked database, not a real user
+  repeatPassword: 'Testpassword1!', // NOSONAR: Mocked database, not a real user
 };
 
 const invalidPasswordTests = [
-  { password: 'short', error: 'Password must be at least 8 characters long' },
-  { password: 'weakpassword', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' },
-  { password: 'TestPassword!', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' },
-  { password: 'Testpassword1', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' },
-  { password: '', error: 'Password must be at least 8 characters long' },
+  { password: 'short', error: 'Password must be at least 8 characters long' }, // NOSONAR: Mocked database, not a real user
+  { password: 'weakpassword', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' }, // NOSONAR: Mocked database, not a real user
+  { password: 'TestPassword!', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' }, // NOSONAR: Mocked database, not a real user
+  { password: 'Testpassword1', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' }, // NOSONAR: Mocked database, not a real user
+  { password: '', error: 'Password must be at least 8 characters long' }, // NOSONAR: Mocked database, not a real user
 ];
 
 describe('User Service', () => {

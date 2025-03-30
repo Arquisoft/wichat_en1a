@@ -56,19 +56,21 @@ const GamePage = ({timePerQuestionTesting}) => {
     }
   }, [endGame,score,questionNum]);
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={3}><AiChat></AiChat></Grid>
-      <Grid item xs={12} md={9}>
-        {loadedQuestions && questions? (
-            navigate?(<Navigate to="/results"/>):(
-          <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
-          onQuestionAnswered={handleQuestionAnswered} // Pass callback
-          timePerQuestion={timePerQuestionTesting?timePerQuestionTesting:timePerQuestion}
-          />)
-      ) : (
-        <div>Loading...</div>
-      )}</Grid>
-    </Grid>
+    <React.Fragment>
+    {loadedQuestions && questions? (navigate?(<Navigate to="/results"/>):(
+    <Grid container spacing={2} justifyContent="center">
+      <Grid item><AiChat key={questionNum} question={questions[questionNum]}/></Grid>
+      <Grid item md={10}>
+        <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
+        onQuestionAnswered={handleQuestionAnswered} // Pass callback
+        timePerQuestion={timePerQuestionTesting?timePerQuestionTesting:timePerQuestion}
+        />
+      </Grid>
+    </Grid>)
+    ) : (
+      <div>Loading...</div>
+    )}
+    </React.Fragment>
   )
 }
 

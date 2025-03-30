@@ -15,7 +15,7 @@ const questionServiceURL = process.env.QUESTION_SERVICE_URL || 'http://localhost
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
-const apiKey = process.env.API_KEY;
+const apiKey = process.env.LLM_API_KEY;
 
 
 app.use(cors());
@@ -114,7 +114,7 @@ app.get('/question', async (req, res) => {
 
 
 // Read the OpenAPI YAML file synchronously
-openapiPath='./openapi.yaml'
+const openapiPath='./openapi.yaml'
 if (fs.existsSync(openapiPath)) {
   const file = fs.readFileSync(openapiPath, 'utf8');
 
