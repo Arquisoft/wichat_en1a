@@ -20,10 +20,14 @@ function App() {
         light: 'rgb(241, 242, 235)',
         main: 'rgb(164, 194, 165)',
         dark: 'rgb(86, 98, 70)'
-      }
+      },
+      accent: {
+        light: 'rgb(255, 255, 255)',
+        main: 'rgb(0, 0, 0)',
+        logout: 'rgb(105, 14, 11)',
+      },
     }
   });
-  
 
   return (
     <ThemeProvider theme={theme}>

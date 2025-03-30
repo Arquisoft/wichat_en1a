@@ -1,3 +1,4 @@
+/* Roulette.css */
 .roulette-container {
     display: flex;
     flex-direction: column;
@@ -10,7 +11,7 @@
     position: relative;
     width: 30rem;
     height: 30rem;
-    border: 5px solid #ffffff;
+    border: 5px solid;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -33,7 +34,7 @@
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-bottom: 40px solid rgb(0, 0, 0);
+    border-bottom: 40px solid;
 }
 
 .roulette-topic {
@@ -43,8 +44,6 @@
     justify-content: center;
     font-size: 1.5rem;
     font-weight: bold;
-    color: rgb(0, 0, 0);
-    text-shadow: 1px 1px 2px rgb(255, 255, 255);
 }
 
 .buttons-container {

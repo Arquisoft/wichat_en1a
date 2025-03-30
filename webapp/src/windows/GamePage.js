@@ -17,7 +17,7 @@ const GamePage = ({timePerQuestionTesting}) => {
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const mode = params.get('mode') || 'basic-quiz'; // Default game mode is 'basic-quiz' if not provided
+  const questionDomains = params.get('questionType') || 'all'; // For Expert's Domain mode, pass the type of the questions, for the rest, any.
   const numQuestions = (params.get('numQuestions'))?params.get('numQuestions'):10;  
   const questionType = (params.get('questionType'))?params.get('questionType'):'flag';  
   const timePerQuestion = (params.get('timePerQuestion'))?params.get('timePerQuestion'):60000;  

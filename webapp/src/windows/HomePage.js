@@ -6,12 +6,14 @@ import AccessAlarm from "@mui/icons-material/AccessAlarm"
 import DirectionsRun from "@mui/icons-material/DirectionsRun"
 import NavBar from '../components/NavBarSignedIn'
 import { useTranslation } from 'react-i18next';
+import { useTheme } from "@mui/material/styles";
 import "../css/HomePage.css";
 
 const HomePage = () => {
 
   const [randomized, setRandomized] = useState(false);
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const gameModes = [
     { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset />, route: '/game?mode=basic-quiz' },
@@ -25,19 +27,44 @@ const HomePage = () => {
   };
 
   return (
-    <div className = "window-container">
+    <div 
+      className = "window-container"
+      style = {{
+        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`
+      }}
+    >
       <NavBar/>
       <div className = "menu-container">
-        <h1 className = "menu-title">
+        <h1 
+          className = "menu-title"
+          style={{
+            color: `${theme.palette.secondary.light}`
+          }}
+        >
           {t('homePage.welcome')}
         </h1>
         <div className = "menu-grid">
           {gameModes.map((mode) => (
             <div key = {mode.id}>
-              <Card className = "menu-card">
+              <Card 
+                className = "menu-card"
+                style={{
+                  background: `${theme.palette.secondary.light}`
+                }}  
+              >
                 <CardContent>
-                  <h2 className = "menu-card-title"><Icon>{mode.icon} </Icon> {mode.name}</h2>
-                  <p className = "menu-card-description">{mode.description}</p>
+                  <h2 
+                    className = "menu-card-title"
+                    style = {{
+                      color: `${theme.palette.accent.main}`
+                    }}
+                  ><Icon>{mode.icon} </Icon> {mode.name}</h2>
+                  <p 
+                    className = "menu-card-description"
+                    style = {{
+                      color: `${theme.palette.accent.main}`
+                    }}  
+                  >{mode.description}</p>
                   {/* Show a switch only for "Expert's domain" mode to randomize the topic */}
                   {mode.id === 2 && (
                     <FormControlLabel
@@ -54,19 +81,19 @@ const HomePage = () => {
                   )}
                   <Button 
                     href = {mode.id === 2 
-                      ? (randomized ? "/game/roulette" : "/game/select-topic") 
+                      ? (randomized ? "/roulette" : "/select-topic") 
                       : mode.route
                     }
                     sx = {{
                       width: "100%",
                       padding: "0.5rem",
-                      background: "rgb(164, 194, 165)",
-                      color: "rgb(0, 0, 0)",
-                      border: "1px solid rgb(74, 74, 72)",
+                      background: 'secondary.main',
+                      color: 'accent.main',
+                      border: "1px solid primary.main",
                       borderRadius: "0.5rem",
                       "&:hover": {
-                        background: "rgb(86, 98, 70)",
-                        color: "rgb(255, 255, 255)",
+                        background: 'secondary.dark',
+                        color: 'accent.light',
                       }
                     }}
                   >{t('homePage.play')}

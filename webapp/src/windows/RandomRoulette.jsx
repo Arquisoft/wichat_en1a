@@ -6,21 +6,21 @@ import { useTranslation } from 'react-i18next';
 import NavBar from '../components/NavBarSignedIn';
 import "../css/Roulette.css";
 
-// Still to be confirmed with the client, but for now we will use these mock topics:
-const topics = [
-  t('roulette.topics.flags'),
-  t('roulette.topics.cities'),
-  t('roulette.topics.science'),
-  t('roulette.topics.sports'),
-  t('roulette.topics.celebrities')
-];
-
 export default function Roulette() {
   const [spinning, setSpinning] = useState(false);
   const [angle, setAngle] = useState(0);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // Still to be confirmed with the client, but for now we will use these mock topics:
+  const topics = [
+    t('roulette.topics.flags'),
+    t('roulette.topics.science'),
+    t('roulette.topics.cities'),
+    t('roulette.topics.sports'),
+    t('roulette.topics.celebrities')
+  ];
 
   const spin = () => {
     if (spinning) return;
@@ -38,7 +38,7 @@ export default function Roulette() {
 
     setTimeout(() => {
       setSelectedTopic(topics[selectedIndex].toLowerCase());
-      setSpinning(false);
+      // setSpinning(false); // Uncomment for testing several spins in a row
     }, 3000);
   };
 
@@ -55,13 +55,17 @@ export default function Roulette() {
             className="roulette-wheel"
             animate={{ rotate: angle }}
             transition={{ duration: 3, ease: "easeOut" }}
+            sx={{
+              borderColor: 'accent.light',
+            }}
           >
             {topics.map((topic, index) => (
               <div
                 key={topic}
                 className="roulette-topic"
                 style={{
-                  transform: `rotate(${(index / topics.length) * 360 + 90}deg) translate(8rem)`
+                  transform: `rotate(${(index / topics.length) * 360 + 90}deg) translate(8rem)`,
+                  color: 'accent.main'
                 }}
               >
                 {topic}
@@ -69,7 +73,12 @@ export default function Roulette() {
             ))}
           </motion.div>
         </div>
-        <div className="pointer"></div>
+        <div 
+          className="pointer"
+          sx={{
+            borderBottomColor: 'accent.main'
+          }}
+        ></div>
         <div className="buttons-container">
           <Button onClick={spin} disabled={spinning} variant="contained">
             {t('roulette.spin')}

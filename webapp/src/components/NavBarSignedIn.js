@@ -25,19 +25,19 @@ const NavBarSignedIn = () => {
             <Button href="/home" color="inherit" sx={{
               marginLeft: 10,
               "&:hover": {
-                backgroundColor: "rgb(227, 235, 217)"
+                backgroundColor: 'secondary.light'
               }
             }}>{t('menu')}</Button>
             <Button href="/leaderboard" color="inherit" sx={{
               marginLeft: 10,
               "&:hover": {
-                backgroundColor: "rgb(227, 235, 217)"
+                backgroundColor: 'secondary.light'
               }
             }}>{t('leaderboard')}</Button>
             <Button href="/stats" color="inherit" sx={{
               marginLeft: 10,
               "&:hover": {
-                backgroundColor: "rgb(227, 235, 217)"
+                backgroundColor: 'secondary.light'
               }
             }}>{t('statistics')}</Button>
           </ButtonGroup>
@@ -50,7 +50,7 @@ const NavBarSignedIn = () => {
             marginLeft: 5,
             marginRight: 2,
             "&:hover": {
-              color: "rgb(105, 14, 11)"
+              color: 'accent.logout',
             }
           }}>{t('logout')}</Button>
       </Toolbar>
