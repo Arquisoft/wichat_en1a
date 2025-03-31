@@ -4,7 +4,7 @@
   "description": "Game service, in charge of handling the game in the application",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node user-service.js",
     "test": "jest"
   },
   "repository": {
