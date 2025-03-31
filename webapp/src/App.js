@@ -4,7 +4,7 @@ import IndexPage from './windows/IndexPage';
 import HomePage from './windows/HomePage';
 import LoggedInRoutes from './LoggedInRoutes';
 import GamePage from './windows/GamePage';
-import RandomRulette from './windows/RandomRoulette';
+import RandomRulette from './components/RandomRoulette';
 import ResultsPage from './windows/ResultsPage';
 import {CssBaseline, ThemeProvider, createTheme} from '@mui/material/';
 import {BrowserRouter as Router,Route,Routes} from 'react-router-dom';

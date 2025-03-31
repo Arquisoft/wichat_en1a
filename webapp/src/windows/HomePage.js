@@ -8,10 +8,13 @@ import NavBar from '../components/NavBarSignedIn'
 import { useTranslation } from 'react-i18next';
 import { useTheme } from "@mui/material/styles";
 import "../css/HomePage.css";
+import Roulette from '../components/RandomRoulette';
 
 const HomePage = () => {
 
   const [randomized, setRandomized] = useState(false);
+  const [disableSwitch, setDisableSwitch] = useState(false);
+
   const [numQuestions, setNumQuestions] = useState(10);
   const [questionType, setQuestionType] = useState("any");
   const [timePerQuestion, setTimePerQuestion] = useState(60000);
@@ -84,27 +87,31 @@ const HomePage = () => {
                             checked = {randomized} 
                             onChange = {handleToggle} 
                             color = "success"
+                            disabled={disableSwitch}
                           />
                         }
                         label = {randomized ? t('homePage.randomizeON') : t('homePage.randomizeOFF')}
                         sx = {{ marginBottom: "0.5rem" }}
                       />
-                      <FormControl fullWidth id="select-topic" sx={{ marginBottom: "2rem", marginTop: "1rem" }}>
-                      <InputLabel id="select-label">Topic</InputLabel>
-                        <Select
-                          labelId="select-label"
-                          id="select"
-                          value={topicForExpertsDomain}
-                          label="Topic"
-                          onChange={handleChange}
-                        >
-                          <MenuItem value={10}>{t('roulette.topics.flags')}</MenuItem>
-                          <MenuItem value={20}>{t('roulette.topics.science')}</MenuItem>
-                          <MenuItem value={30}>{t('roulette.topics.cities')}</MenuItem>
-                          <MenuItem value={40}>{t('roulette.topics.sports')}</MenuItem>
-                          <MenuItem value={50}>{t('roulette.topics.celebrities')}</MenuItem>
-                        </Select>
-                      </FormControl>
+                      {!randomized ? (
+                        <FormControl fullWidth sx={{ marginBottom: "2rem", marginTop: "1rem" }}>
+                        <InputLabel id="select-label">Topic</InputLabel>
+                          <Select
+                            labelId="select-label"
+                            value={topicForExpertsDomain}
+                            label="Topic"
+                            onChange={handleChange}
+                          >
+                            <MenuItem value={10}>{t('roulette.topics.flags')}</MenuItem>
+                            <MenuItem value={20}>{t('roulette.topics.science')}</MenuItem>
+                            <MenuItem value={30}>{t('roulette.topics.cities')}</MenuItem>
+                            <MenuItem value={40}>{t('roulette.topics.sports')}</MenuItem>
+                            <MenuItem value={50}>{t('roulette.topics.celebrities')}</MenuItem>
+                          </Select>
+                        </FormControl>
+                      ) : (
+                        <Roulette onSelectTopic={setTopic} onClickSpin={() => setDisableSwitch(true)} />
+                      )}
                     </>
                   )}
                   <Button
