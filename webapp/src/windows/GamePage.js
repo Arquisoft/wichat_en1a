@@ -7,11 +7,11 @@ import axios from 'axios';
 
 const GamePage = ({timePerQuestionTesting}) => {
   const gatewayUrl = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
-  const [questionNum,setQuestionNum] = useState(0);
-  const [score,setScore] = useState(0);
+  const [questionNum, setQuestionNum] = useState(0);
+  const [score, setScore] = useState(0);
 
-  const [questions,setQuestions] = useState(null);
-  const [loadedQuestions,setLoadedQuestions] =useState(false);
+  const [questions ,setQuestions] = useState(null);
+  const [loadedQuestions, setLoadedQuestions] = useState(false);
   const [endGame, setEndGame] = useState(false);
   const [navigate, setNavigate] = useState(false);
 
