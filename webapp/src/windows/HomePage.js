@@ -1,5 +1,5 @@
 import { React, useState }  from 'react'
-import { Card, Button, CardContent, Switch, FormControlLabel, Icon } from '@mui/material';
+import { Card, Button, CardContent, Switch, FormControlLabel, FormControl, InputLabel, Select, MenuItem, Icon } from '@mui/material';
 import VideogameAsset from "@mui/icons-material/VideogameAsset"
 import School from "@mui/icons-material/School"
 import AccessAlarm from "@mui/icons-material/AccessAlarm"
@@ -26,8 +26,14 @@ const HomePage = () => {
     { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, mode: 'endless-marathon' }
   ];
 
+  const [topicForExpertsDomain, setTopic] = useState('');
+
   const handleToggle = () => {
     setRandomized((prev) => !prev); // Toggle the randomization state
+  };
+
+  const handleChange = (event) => {
+    setTopic(event.target.value);
   };
 
   return (
@@ -71,17 +77,35 @@ const HomePage = () => {
                   >{mode.description}</p>
                   {/* Show a switch only for "Expert's domain" mode to randomize the topic */}
                   {mode.id === 2 && (
-                    <FormControlLabel
-                      control = {
-                        <Switch 
-                          checked = {randomized} 
-                          onChange = {handleToggle} 
-                          color = "success"
-                        />
-                      }
-                      label = {randomized ? t('homePage.randomizeON') : t('homePage.randomizeOFF')}
-                      sx = {{ marginBottom: "0.5rem" }}
-                    />
+                    <>
+                      <FormControlLabel
+                        control = {
+                          <Switch 
+                            checked = {randomized} 
+                            onChange = {handleToggle} 
+                            color = "success"
+                          />
+                        }
+                        label = {randomized ? t('homePage.randomizeON') : t('homePage.randomizeOFF')}
+                        sx = {{ marginBottom: "0.5rem" }}
+                      />
+                      <FormControl fullWidth id="select-topic" sx={{ marginBottom: "2rem", marginTop: "1rem" }}>
+                      <InputLabel id="select-label">Topic</InputLabel>
+                        <Select
+                          labelId="select-label"
+                          id="select"
+                          value={topicForExpertsDomain}
+                          label="Topic"
+                          onChange={handleChange}
+                        >
+                          <MenuItem value={10}>{t('roulette.topics.flags')}</MenuItem>
+                          <MenuItem value={20}>{t('roulette.topics.science')}</MenuItem>
+                          <MenuItem value={30}>{t('roulette.topics.cities')}</MenuItem>
+                          <MenuItem value={40}>{t('roulette.topics.sports')}</MenuItem>
+                          <MenuItem value={50}>{t('roulette.topics.celebrities')}</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </>
                   )}
                   <Button
                     href={`/game?mode=${mode.mode}&numQuestions=${numQuestions}&questionType=${questionType}&timePerQuestion=${timePerQuestion}`}
