@@ -154,4 +154,5 @@ jobs:
         command: |
           wget https://raw.githubusercontent.com/arquisoft/wichat_en1a/master/docker-compose.yml -O docker-compose.yml
           docker compose --profile prod down
+          echo "LLM_API_KEY=${{ secrets.LLM_API_KEY }}" > .env
           docker compose --profile prod up -d --pull always
