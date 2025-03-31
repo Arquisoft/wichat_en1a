@@ -8,21 +8,21 @@ app.use(express.json());
 app.use(gameRoutes);
 
 jest.mock('../src/services/game-service', () => ({
-    saveScore: jest.fn().mockResolvedValue({ success: true, newScore: { userId: 'user123', score: 100, gameMode: 'classic' } }),
-    updateScore: jest.fn().mockResolvedValue({ success: true, updatedScore: { userId: 'user123', score: 200, gameMode: 'classic' } }),
+    saveScore: jest.fn().mockResolvedValue({ success: true, newScore: { userId: 'user123', score: 100, gameMode: 'basicQuiz' } }),
+    updateScore: jest.fn().mockResolvedValue({ success: true, updatedScore: { userId: 'user123', score: 200, gameMode: 'basicQuiz' } }),
     getScoresByUser: jest.fn().mockResolvedValue({
         success: true,
         scores: [
-            { userId: 'user123', score: 100, gameMode: 'classic' },
-            { userId: 'user123', score: 150, gameMode: 'arcade' }
+            { userId: 'user123', score: 100, gameMode: 'basicQuiz' },
+            { userId: 'user123', score: 150, gameMode: 'expertDomain' }
         ]
     }),
     getLeaderboard: jest.fn().mockResolvedValue({
         success: true,
         leaderboard: [
-            { userId: 'user1', score: 300, gameMode: 'classic' },
-            { userId: 'user2', score: 250, gameMode: 'classic' },
-            { userId: 'user3', score: 200, gameMode: 'classic' }
+            { userId: 'user1', score: 300, gameMode: 'basicQuiz' },
+            { userId: 'user2', score: 250, gameMode: 'basicQuiz' },
+            { userId: 'user3', score: 200, gameMode: 'basicQuiz' }
         ]
     }),
 }));
@@ -31,26 +31,26 @@ const { saveScore, updateScore, getScoresByUser, getLeaderboard} = require('../s
 
 describe('Game Service Tests', () => {
     it('should save a score successfully', async () => {
-        const result = await saveScore('user123',100,'classic');
+        const result = await saveScore('user123',100,'basicQuiz');
         expect(result).toEqual({
             success: true,
             newScore: {
                 userId: 'user123',
                 score: 100,
-                gameMode: 'classic'
+                gameMode: 'basicQuiz'
             }
         });
     });
 
     it('should update an existing score', async () => {
-        const result = await updateScore('user123', 200, 'classic');
+        const result = await updateScore('user123', 200, 'basicQuiz');
         
         expect(result).toEqual({
             success: true,
             updatedScore: {
                 userId: 'user123',
                 score: 200,
-                gameMode: 'classic'
+                gameMode: 'basicQuiz'
             }
         });
     });
@@ -61,8 +61,8 @@ describe('Game Service Tests', () => {
         expect(result).toEqual({
             success: true,
             scores: [
-                { userId: 'user123', score: 100, gameMode: 'classic' },
-                { userId: 'user123', score: 150, gameMode: 'arcade' }
+                { userId: 'user123', score: 100, gameMode: 'basicQuiz' },
+                { userId: 'user123', score: 150, gameMode: 'expertDomain' }
             ]
         });
     });
@@ -76,14 +76,14 @@ describe('Game Service Tests', () => {
     });
 
     it('should return a sorted leaderboard with game mode', async () => {
-        const result = await getLeaderboard('classic');
+        const result = await getLeaderboard('basicQuiz');
 
         expect(result).toEqual({
             success: true,
             leaderboard: [
-                { userId: 'user1', score: 300, gameMode: 'classic' },
-                { userId: 'user2', score: 250, gameMode: 'classic' },
-                { userId: 'user3', score: 200, gameMode: 'classic' }
+                { userId: 'user1', score: 300, gameMode: 'basicQuiz' },
+                { userId: 'user2', score: 250, gameMode: 'basicQuiz' },
+                { userId: 'user3', score: 200, gameMode: 'basicQuiz' }
             ]
         });
 
@@ -92,7 +92,7 @@ describe('Game Service Tests', () => {
     it('should handle leaderboard retrieval errors', async () => {
         getLeaderboard.mockResolvedValueOnce({ success: false, error: 'Error retrieving leaderboard' });
 
-        const result = await getLeaderboard('classic');
+        const result = await getLeaderboard('basicQuiz');
 
         expect(result).toEqual({ success: false, error: 'Error retrieving leaderboard' });
     });
@@ -104,12 +104,12 @@ describe('Game Routes Tests', () => {
     it('POST /saveScore should save a score successfully', async () => {
         const res = await request(app)
             .post('/saveScore')
-            .send({ userId: 'user123', score: 100, gameMode: 'classic' });
+            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz' });
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
-            newScore: { userId: 'user123', score: 100, gameMode: 'classic' }
+            newScore: { userId: 'user123', score: 100, gameMode: 'basicQuiz' }
         });
     });
 
@@ -123,12 +123,12 @@ describe('Game Routes Tests', () => {
     it('PUT /updateScore should update an existing score', async () => {
         const res = await request(app)
             .put('/updateScore')
-            .send({ userId: 'user123', score: 200, gameMode: 'classic' });
+            .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz' });
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
-            updatedScore: { userId: 'user123', score: 200, gameMode: 'classic' }
+            updatedScore: { userId: 'user123', score: 200, gameMode: 'basicQuiz' }
         });
     });
 
@@ -137,7 +137,7 @@ describe('Game Routes Tests', () => {
 
         const res = await request(app)
             .put('/updateScore')
-            .send({ userId: 'user999', score: 300, gameMode: 'classic' });
+            .send({ userId: 'user999', score: 300, gameMode: 'basicQuiz' });
 
         expect(res.status).toBe(404);
         expect(res.body).toEqual({ success: false, error: 'Score not found' });
@@ -150,8 +150,8 @@ describe('Game Routes Tests', () => {
         expect(res.body).toEqual({
             success: true,
             scores: [
-                { userId: 'user123', score: 100, gameMode: 'classic' },
-                { userId: 'user123', score: 150, gameMode: 'arcade' }
+                { userId: 'user123', score: 100, gameMode: 'basicQuiz' },
+                { userId: 'user123', score: 150, gameMode: 'expertDomain' }
             ]
         });
     });
@@ -166,15 +166,15 @@ describe('Game Routes Tests', () => {
     });
 
     it('GET /leaderboard/:gameMode should return a sorted leaderboard', async () => {
-        const res = await request(app).get('/leaderboard/classic');
+        const res = await request(app).get('/leaderboard/basicQuiz');
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
             leaderboard: [
-                { userId: 'user1', score: 300, gameMode: 'classic' },
-                { userId: 'user2', score: 250, gameMode: 'classic' },
-                { userId: 'user3', score: 200, gameMode: 'classic' }
+                { userId: 'user1', score: 300, gameMode: 'basicQuiz' },
+                { userId: 'user2', score: 250, gameMode: 'basicQuiz' },
+                { userId: 'user3', score: 200, gameMode: 'basicQuiz' }
             ]
         });
     });
