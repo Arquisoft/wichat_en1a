@@ -117,7 +117,7 @@ app.post('/saveScore', async (req, res) => {
 app.get('/scoresByUser/:userId', async (req, res) => {
   try {
       const userId = req.params.userId;
-      const response = await axios.get(`http://score-service/scoresByUser/${userId}`);
+      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
 
       if (!response.data || response.data.length === 0) {
           return res.status(404).json({ error: 'No scores found for this user' });
