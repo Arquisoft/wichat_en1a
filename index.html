@@ -1427,7 +1427,7 @@ In the best case you will get away with examples or simple signatures.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%201)%20-%20Business%20context%20diagram.png" alt="C4 Diagram (Level 1)   Business context diagram" width="663" height="857">
+<img src="./images/C4%20Diagram%20(Level%201)%20-%20Business%20context%20diagram.png" alt="C4 Diagram (Level 1)   Business context diagram" width="663" height="639">
 </div>
 <div class="title">Figure 3. Overall view of the business context</div>
 </div>
@@ -1459,7 +1459,7 @@ The purpose of this section is to provide a high-level view of the system and it
 <td class="tableblock halign-left valign-top"><p class="tableblock">The central application that facilitates player interaction, communication with external services, and question generation.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI API</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Provides hints to the player when requested.</p></td>
 </tr>
 <tr>
@@ -1489,7 +1489,7 @@ The purpose of this section is to provide a high-level view of the system and it
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application-LLM Interface</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Manages communication between the application and the LLM AI Chat to request hints.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages communication between the application and the LLM AI API to request hints.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application-WikiData Interface</p></td>
@@ -1578,11 +1578,11 @@ The purpose of this section is to provide a high-level view of the system and it
 </div>
 </div>
 <div class="sect3">
-<h4 id="_llm_ai_chat">5.1.3. LLM AI Chat</h4>
+<h4 id="_llm_ai_api">5.1.3. LLM AI API</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Purpose/Responsibility: Provides AI-generated hints to players based on their interactions within the game.</p>
+<p>Purpose/Responsibility: External service that provides AI-generated hints to players based on their interactions within the game.</p>
 </li>
 <li>
 <p>Interface(s):</p>
@@ -1660,7 +1660,7 @@ The purpose of this section is to provide a high-level view of the system and it
 <h3 id="_container_diagram_c4_level_2">5.2. Container Diagram (C4 Level 2)</h3>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%202)%20-%20Container%20context%20diagram.png" alt="C4 Diagram (Level 2)   Container context diagram" width="671" height="1131">
+<img src="./images/C4%20Diagram%20(Level%202)%20-%20Container%20context%20diagram.png" alt="C4 Diagram (Level 2)   Container context diagram" width="1188" height="1964">
 </div>
 <div class="title">Figure 4. Overall view of the technical context</div>
 </div>
@@ -1692,6 +1692,10 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <td class="tableblock halign-left valign-top"><p class="tableblock">User interface that interacts with the application.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WiChat API (API Gateway)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages requests between frontend and backend services, routes traffic to the correct backend service.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">REST API</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API that handles requests and responses between the client and server.</p></td>
 </tr>
@@ -1708,7 +1712,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <td class="tableblock halign-left valign-top"><p class="tableblock">External service providing data for generating questions about images and concepts.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI API</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">External service that generates hints for players.</p></td>
 </tr>
 </tbody>
@@ -1741,7 +1745,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <td class="tableblock halign-left valign-top"><p class="tableblock">Interface for retrieving information about images and questions for the game.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI API Interface</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Interface for generating hints and assisting players based on their interactions.</p></td>
 </tr>
 </tbody>
@@ -1831,21 +1835,66 @@ The system decomposition has been done to efficiently divide responsibilities, e
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rest_api">5.2.3. REST API</h4>
+<h4 id="_wichat_api_api_gateway">5.2.3. WiChat API (API Gateway)</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Purpose/Responsibility: Manages communication between the client and the database, allowing queries, inserts, and updates of data.</p>
+<p>Purpose/Responsibility: Manages requests between the frontend (Client) and backend services, routing them to the appropriate backend service.</p>
 </li>
 <li>
 <p>Interface(s):</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Endpoint to get questions from the Question Generator.</p>
+<p>Forwards requests from the Client to the REST API for further processing.</p>
 </li>
 <li>
-<p>Endpoint to record responses and retrieve results from the database.</p>
+<p>Routes AI-related requests to the LLM AI Chat Service.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Efficient request handling and routing, ensuring that each request reaches the correct backend service.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: src/gatewayservice</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements:  Efficient request routing.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: Potential bottlenecks if request routing becomes too complex.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_rest_api">5.2.4. REST API</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Handles requests and responses between the backend services and the client, through the WiChat API (API Gateway). This container interacts with services like the Question Generator, Database, and LLM AI Chat Service, but it only receives requests routed by the API Gateway.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Receives requests from the WiChat API (API Gateway), which routes requests from the client.</p>
+</li>
+<li>
+<p>Endpoint to fetch questions from the Question Generator.</p>
+</li>
+<li>
+<p>Endpoint to record answers and retrieve results from the Database.</p>
 </li>
 </ul>
 </div>
@@ -1857,23 +1906,23 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <li>
 <p>Fast response time and security for API calls.</p>
 </li>
+<li>
+<p>The routing logic is delegated to the API Gateway, allowing for a cleaner and more scalable approach.</p>
+</li>
 </ul>
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/api</p>
+<p>(Optional) Fulfilled Requirements:  Meets security and efficiency requirements for processing requests.</p>
 </li>
 <li>
-<p>(Optional) Fulfilled Requirements: Meets security and efficiency requirements.</p>
-</li>
-<li>
-<p>(Optional) Open Issues/Problems/Risks: Scalability for handling large traffic volumes in the future.</p>
+<p>(Optional) Open Issues/Problems/Risks: scalability to handle large traffic volumes in the future, especially if routing through the API Gateway introduces any bottlenecks.</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_database">5.2.4. Database</h4>
+<h4 id="_database">5.2.5. Database</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1921,7 +1970,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 </div>
 </div>
 <div class="sect3">
-<h4 id="_question_generator">5.2.5. Question Generator</h4>
+<h4 id="_question_generator">5.2.6. Question Generator</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1964,7 +2013,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <h3 id="_component_diagram_c4_level_3">5.3. Component Diagram (C4 Level 3)</h3>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%203)%20-%20Component%20diagram.png" alt="C4 Diagram (Level 3)   Component diagram" width="1274" height="1463">
+<img src="./images/C4%20Diagram%20(Level%203)%20-%20Component%20diagram.png" alt="C4 Diagram (Level 3)   Component diagram" width="2168" height="1523">
 </div>
 <div class="title">Figure 5. Overall view of the component context</div>
 </div>
@@ -2340,7 +2389,7 @@ when your infrastructure is more complex.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%202)%20-%20Deployment%20view%20diagram.png" alt="C4 Diagram (Level 2)   Deployment view diagram" width="634" height="648">
+<img src="./images/C4%20Diagram%20(Level%201)%20-%20Deployment%20view%20diagram.png" alt="C4 Diagram (Level 1)   Deployment view diagram" width="731" height="519">
 </div>
 <div class="title">Figure 10. Overview of the deployment infraestructure</div>
 </div>
@@ -2376,7 +2425,7 @@ when your infrastructure is more complex.</p>
 <dl>
 <dt class="hdlist1">Motivation</dt>
 <dd>
-<p>The above diagram shows the high-level deployment architecture of the WIChat application. The system is divided into three main components: the <strong>frontend</strong>, the <strong>backend</strong>, and the <strong>external services</strong> (LLM API and Wikidata). Each deployment block will be containerized in Docker packages to grant several quality features.</p>
+<p>The above diagram illustrates the high-level deployment architecture of the WIChat application. All components, including the web client (UI) and backend services, are containerized using Docker and deployed on a cloud-based Ubuntu VM (Azure). Although the web client executes in the user&#8217;s web browser, it is served as a container from the application server. When a user connects, the browser downloads and runs the web application, eliminating the need for a distinct "Client Node."</p>
 </dd>
 <dt class="hdlist1">Quality and/or Performance Features</dt>
 <dd>
@@ -2384,7 +2433,7 @@ when your infrastructure is more complex.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Modularity</strong>: The separation of concerns between the frontend, backend, and external services allows for independent development and deployment.</p>
+<p><strong>Modularity</strong>: All components are deployed as independent containers that can be updated and scaled separately.</p>
 </li>
 <li>
 <p><strong>Interchangeability</strong>: By the same reason as why it is modular, as long as the common API is mantained, the separation of the architecture will allow the replacement and upgrade of implementations without affecting the rest of the system.</p>
@@ -2414,19 +2463,19 @@ when your infrastructure is more complex.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Client/Frontend</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>webapp</code> subfolder.Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Client / Frontend</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>webapp</code> subfolder. Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>API/Backend</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Docker container hosted on Azure. Handles game logic, user management, and question generation. Communicates with the MongoDB database and external LLM API.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>APIs / Backend</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Docker container hosted on Azure. Handles game logic, user management and question generation. Communicates with the MongoDB database.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Gateway Service</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>gatewayservice</code> subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LLM API</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LLM Service</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>llmservice</code> subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed via HTTPS from the backend to generate conversational hints.</p></td>
 </tr>
 <tr>
@@ -2453,20 +2502,22 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_clientfrontend">7.2.1. Client/Frontend</h4>
+<h4 id="_client_frontend">7.2.1. Client / Frontend</h4>
 <div class="paragraph">
-<p>The <strong>frontend</strong> is a single-page application (SPA) that runs in the user&#8217;s web browser. It is built using React and communicates with the backend via the API. The frontend is containerized using Docker and deployed on a cloud platform. Static assets (e.g., images, CSS, JavaScript) are served via a CDN to reduce latency and improve load times.</p>
+<p>The <strong>frontend</strong> is a single-page application (SPA) that runs in the user&#8217;s web browser. It is built using React and communicates with the backend via the API. The frontend is containerized using Docker and deployed on a cloud platform together with the rest of the components of the application. Static assets (e.g., images, CSS, JavaScript) are served via a CDN to reduce latency and improve load times.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_apibackend">7.2.2. API/Backend</h4>
-
+<h4 id="_apis_backend">7.2.2. APIs / Backend</h4>
+<div class="paragraph">
+<p>The <strong>backend</strong> is a set of RESTful APIs that provide game logic, user management, and question generation services. It is built using Node.js and Express, and communicates with the MongoDB database. The backend is containerized using Docker and deployed on a cloud platform. The backend is stateless and horizontally scalable, allowing it to handle increased traffic by spinning up additional instances.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_conclusion">7.3. Conclusion</h3>
 <div class="paragraph">
-<p>The Deployment View provides a detailed overview of how the WIChat application will be deployed across different environments and infrastructure components. It ensures that the system meets the quality goal of scalability while supporting efficient development and deployment processes.</p>
+<p>The Deployment View provides a detailed overview of how the WiChat application will be deployed across different environments and infrastructure components. It ensures that the system meets the quality goal of scalability while supporting efficient development and deployment processes.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -2954,6 +3005,55 @@ concrete and measurable.</p>
 </div>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quality Category</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quality</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Performance</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Responsiveness</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system is expected to respond quickly to user inputs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Concurrency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiple users must have service at the same time</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Security</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Individuality</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User&#8217;s actions must not interfere with another user&#8217;s experience. For example, pressing a button in one session should not affect any other user&#8217;s game.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Robustness</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user must not see anything he&#8217;s not expected to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User experience</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Continuity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A player must be able to continue playing without issue for as long as he wishes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intuitiveness</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system must be easy to understand and use</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Freshness</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The questions on the sytem musn&#8217;t become predictable nor be the same all the time.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_quality_scenarios">10.2. Quality Scenarios</h3>
@@ -2994,6 +3094,31 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <p>Tabular or free form text.</p>
 </div>
 </div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Responsiveness &#8594; Every input from the frontend must have an appropiate response before a second has passed, else a loading page must be shown.</p>
+</li>
+<li>
+<p>Concurrency &#8594; One hundred users at least must be supported simultaneously</p>
+</li>
+<li>
+<p>Individuality &#8594; A user selecting the fourth option must not generate any option in another one&#8217;s game. Each game is a separate entity.</p>
+</li>
+<li>
+<p>Robustness &#8594; A bad input from a user must not neither crash nor break the system.</p>
+</li>
+<li>
+<p>Continuity &#8594; A user may play 20 games straight without pause.</p>
+</li>
+<li>
+<p>Intuitiveness &#8594; The ui must be clean to enable non tech-savvy users to  enjoy the game within 15 minutes from picking up the game.</p>
+</li>
+<li>
+<p>Freshness &#8594; New questions must be inserted into the db to avoid any repetition of questions in a single game. Questions are to be updated every 30 minutes</p>
+</li>
+</ul>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
