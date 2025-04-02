@@ -11,8 +11,11 @@ const AboutUsFooter = () => {
           <Typography variant="h5" gutterBottom>
             {t('about.title')}
           </Typography>
+          <Typography variant='body1'>
+            {t("about.message")}
+          </Typography>
           <Typography variant="body1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non malesuada massa. Sed id risus ut nunc.
+            {t("about.github")}<a href='https://github.com/Arquisoft/wichat_en1a'>GitHub</a>
           </Typography>
         </CardContent>
       </Card>
