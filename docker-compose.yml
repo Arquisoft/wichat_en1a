@@ -108,6 +108,7 @@ services:
       context: ./webapp
       args:
         LLM_API_KEY: ${LLM_API_KEY}
+        API_URI: ${GATEWAY_SERVICE_URL}
     depends_on:
       - gatewayservice
     ports:
