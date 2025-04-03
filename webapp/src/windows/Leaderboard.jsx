@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import NavBar from '../components/NavBarSignedIn';
 import { useTranslation } from 'react-i18next';
 import '../css/Leaderboard.css';
@@ -8,6 +9,7 @@ const Leaderboard = () => {
 
   const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
+  const theme = useTheme();
   const { t } = useTranslation();
   
   // TODO: Replace with actual logged-in player ID from auth context
@@ -37,7 +39,7 @@ const Leaderboard = () => {
         // Dictionary with keys as game mode names
         const data = {};
         gameModes.forEach((mode, index) => {
-          data[mode] = results[index];
+          data[mode] = results[index].leaderboard || [];
         });
         setLeaderboardData(data);
       } catch (err) {
@@ -53,7 +55,10 @@ const Leaderboard = () => {
   const renderLeaderboardSection = (modeKey, modeDisplayName) => {
     const results = leaderboardData[modeKey] || [];
     return (
-      <div key={modeKey} className="leaderboard-section">
+      <div 
+        key={modeKey} 
+        className="leaderboard-section"
+      >
         <Typography variant="h5" className="section-title">
           {modeDisplayName}
         </Typography>
@@ -81,7 +86,12 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="window-container">
+    <div 
+      className="window-container"
+      style = {{
+        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`
+      }}
+    >
       <NavBar />
       <div className="leaderboard-container">
         <Typography variant="h3" align="center" gutterBottom>
@@ -94,10 +104,7 @@ const Leaderboard = () => {
         )}
         {leaderboardData ? (
           <div className="leaderboard-grid">
-            {renderLeaderboardSection('basicQuiz', t('gameModes.basicQuiz.name'))}
-            {renderLeaderboardSection('expertDomain', t('gameModes.expertDomain.name'))}
-            {renderLeaderboardSection('timeAttack', t('gameModes.timeAttack.name'))}
-            {renderLeaderboardSection('endlessMarathon', t('gameModes.endlessMarathon.name'))}
+            {gameModes.map(mode => renderLeaderboardSection(mode, t(`gameModes.${mode}.name`)))}
           </div>
         ) : (
           !error && <Typography>{t('loading')}</Typography>

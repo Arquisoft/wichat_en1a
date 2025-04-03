@@ -40,7 +40,7 @@ function App() {
           <Route path="/home" element={<LoggedInRoutes><HomePage/></LoggedInRoutes>}/>
           <Route path="/game" element={<LoggedInRoutes><GamePage/></LoggedInRoutes>}/>
           <Route path="/results" element={<LoggedInRoutes><ResultsPage/></LoggedInRoutes>}/>
-          <Route path="/leaderboard" element={<LoggedInRoutes><Leaderboard/></LoggedInRoutes>}/>
+          <Route path="/leaderboard" element={<Leaderboard/>}/>
         </Routes>
       </Router>
     </ThemeProvider>
