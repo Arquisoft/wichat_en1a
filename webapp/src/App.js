@@ -4,7 +4,6 @@ import IndexPage from './windows/IndexPage';
 import HomePage from './windows/HomePage';
 import LoggedInRoutes from './LoggedInRoutes';
 import GamePage from './windows/GamePage';
-import RandomRulette from './components/RandomRoulette';
 import ResultsPage from './windows/ResultsPage';
 import {CssBaseline, ThemeProvider, createTheme} from '@mui/material/';
 import {BrowserRouter as Router,Route,Routes} from 'react-router-dom';
@@ -37,9 +36,8 @@ function App() {
           <Route path='/' element={<IndexPage></IndexPage>} />
           <Route path="/auth/:loginRequested" element={<LogInOrUpPage></LogInOrUpPage>}/>
           <Route path="/auth" element={<LogInOrUpPage></LogInOrUpPage>}/>
-          <Route path="/home" element={<HomePage/>}/>
+          <Route path="/home" element={<LoggedInRoutes><HomePage/></LoggedInRoutes>}/>
           <Route path="/game" element={<LoggedInRoutes><GamePage/></LoggedInRoutes>}/>
-          <Route path="/roulette" element={<RandomRulette/>}/>
           <Route path="/results" element={<LoggedInRoutes><ResultsPage/></LoggedInRoutes>}/>
         </Routes>
       </Router>
