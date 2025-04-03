@@ -6,50 +6,48 @@ import '../css/Leaderboard.css';
 
 const Leaderboard = () => {
 
+  const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+
   const { t } = useTranslation();
   
   // TODO: Replace with actual logged-in player ID from auth context
   const loggedInPlayerId = '0';
 
   // State to hold leaderboard data. 
-  // TODO: Fetch this from the corresponding API. 
   const [leaderboardData, setLeaderboardData] = useState(null);
+  const [error, setError] = useState(null);
+  const gameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
 
-  // Sample data simulating API response for each game mode.
-  // TODO: Extract this data from the corresponding API.
   useEffect(() => {
-    const sampleData = {
-      basicQuiz: [
-        { id: '1', name: 'María', score: 850 },
-        { id: '0', name: 'You', score: 740 },
-        { id: '4', name: 'Vicente', score: 680 },
-        { id: '2', name: 'Miguel', score: 590 },
-        { id: '3', name: 'Javier', score: 540 }
-      ],
-      expertDomain: [
-        { id: '2', name: 'Miguel', score: 770 },
-        { id: '4', name: 'Vicente', score: 610 },
-        { id: '3', name: 'Javier', score: 590 },
-        { id: '1', name: 'María', score: 540 },
-        { id: '0', name: 'You', score: 370 }
-      ],
-      timeAttack: [
-        { id: '0', name: 'You', score: 1510 },
-        { id: '1', name: 'María', score: 1460 },
-        { id: '2', name: 'Miguel', score: 1280 },
-        { id: '3', name: 'Javier', score: 1220 },
-        { id: '4', name: 'Vicente', score: 1110 }
-      ],
-      endlessMarathon: [
-        { id: '3', name: 'Javier', score: 1250 },
-        { id: '4', name: 'Vicente', score: 1110 },
-        { id: '1', name: 'María', score: 1050 },
-        { id: '2', name: 'Miguel', score: 950 },
-        { id: '0', name: 'You', score: 760 }
-      ]
+    const fetchLeaderboard = async () => {
+      try {
+        // Array of fetch promises for each game mode
+        const requests = gameModes.map(mode =>
+          fetch(`${gatewayUrl}/leaderboard/${mode}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Error fetching ${mode} leaderboard`);
+              }
+              return response.json();
+            })
+        );
+        
+        // Waiting for all fetch requests to complete
+        const results = await Promise.all(requests);
+        // Dictionary with keys as game mode names
+        const data = {};
+        gameModes.forEach((mode, index) => {
+          data[mode] = results[index];
+        });
+        setLeaderboardData(data);
+      } catch (err) {
+        console.error('Error fetching leaderboard data:', err);
+        setError(err.message);
+      }
     };
-    setLeaderboardData(sampleData);
-  }, []);
+
+    fetchLeaderboard();
+  }, [gatewayUrl]);
 
   // Auxiliary function to render each game mode section
   const renderLeaderboardSection = (modeKey, modeDisplayName) => {
@@ -89,6 +87,11 @@ const Leaderboard = () => {
         <Typography variant="h3" align="center" gutterBottom>
           {t('leaderboard')}
         </Typography>
+        {error && (
+          <Typography color="error">
+            {t('error')}: {error}
+          </Typography>
+        )}
         {leaderboardData ? (
           <div className="leaderboard-grid">
             {renderLeaderboardSection('basicQuiz', t('gameModes.basicQuiz.name'))}
@@ -97,7 +100,7 @@ const Leaderboard = () => {
             {renderLeaderboardSection('endlessMarathon', t('gameModes.endlessMarathon.name'))}
           </div>
         ) : (
-          <Typography>{t('loading')}</Typography>
+          !error && <Typography>{t('loading')}</Typography>
         )}
       </div>
     </div>
