@@ -244,11 +244,6 @@ describe('Gateway Service - Game Service', () => {
     await checkSuccessResponse('/scoresByUser/user1', mockScores, mockScores);
   });
 
-  it('should return 404 if scoresByUser not found', async () => {
-    axios.get.mockResolvedValue({ data: [] });
-    await checkErrorResponse('/scoresByUser/unknownUser', "No scores found for this user", 404);
-  });
-
   it('should forward leaderboard request to GameService', async () => {
     const mockLeaderboard = [{ userId: 'user1', score: 500 }];
     await checkSuccessResponse('/leaderboard', mockLeaderboard, mockLeaderboard);

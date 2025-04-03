@@ -132,7 +132,7 @@ app.get('/scoresByUser/:userId', async (req, res) => {
       const userId = req.params.userId;
       const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
 
-      if (!response.data || response.data.length === 0) {
+      if (!response.data) {
           return res.status(404).json({ error: 'No scores found for this user' });
       }
 
