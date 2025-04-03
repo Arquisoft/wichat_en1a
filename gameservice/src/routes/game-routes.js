@@ -8,14 +8,14 @@ router.post('/saveScore', async (req, res) => {
     const { userId, score, gameMode } = req.body;
 
     if (!userId || typeof userId !== 'string' || score == null || !gameMode) {
-        return res.status(400).json({ success: false, error: 'Missing required fields' });
+        return res.status(400).json({ error: 'Missing required fields' });
     }
 
     try {
         const result = await saveScore(userId, score, gameMode);
         res.status(200).json(result);
     } catch (error) {
-        res.status(500).json({ success: false, error: 'Error saving score' });
+        res.status(500).json({ error: 'Error saving score' });
     }
 });
 
@@ -24,17 +24,17 @@ router.put('/updateScore', async (req, res) => {
     const { userId, score, gameMode } = req.body;
 
     if (!userId || score == null || !gameMode) {
-        return res.status(400).json({ success: false, error: 'Missing required fields' });
+        return res.status(400).json({ error: 'Missing required fields' });
     }
 
     try {
         const result = await updateScore(userId, score, gameMode);
-        if (!result || result.success === false) {
-            return res.status(404).json({ success: false, error: 'Score not found' });
+        if (!result) {
+            return res.status(404).json({ error: 'Score not found' });
         }
         res.status(200).json(result);
     } catch (error) {
-        res.status(500).json({ success: false, error: 'Error updating score' });
+        res.status(500).json({ error: 'Error updating score' });
     }
 });
 
@@ -45,12 +45,12 @@ router.get('/scoresByUser/:userId', async (req, res) => {
 
     try {
         const result = await getScoresByUser(userId, gameMode);
-        if (!result || !result.scores || result.scores.length === 0) {
-            return res.status(404).json({ success: false, error: 'No scores found for this user' });
+        if (!result || !result.scores ) {
+            return res.status(500).json({ error: 'No scores found for this user' });
         }
         res.status(200).json(result);
     } catch (error) {
-        res.status(500).json({ success: false, error: 'Error retrieving scores' });
+        res.status(500).json({ error: 'Error retrieving scores' });
     }
 });
 
@@ -61,12 +61,12 @@ router.get('/leaderboard/:gameMode?', async (req, res) => {
 
     try {
         const result = await getLeaderboard(gameMode);
-        if (!result || !result.leaderboard || result.leaderboard.length === 0) {
-            return res.status(500).json({ success: false, error: 'No leaderboard data found' });
+        if (!result || !result.leaderboard ) {
+            return res.status(500).json({ error: 'No leaderboard data found' });
         }
         res.status(200).json(result);
     } catch (error) {
-        res.status(500).json({ success: false, error: 'Error retrieving leaderboard' });
+        res.status(500).json({ error: 'Error retrieving leaderboard' });
     }
 });
 
