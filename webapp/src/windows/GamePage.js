@@ -18,13 +18,13 @@ const GamePage = ({timePerQuestionTesting}) => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const numQuestions = (params.get('numQuestions')) ? params.get('numQuestions') : 10; // By default, 10 questions. In endless mode and time attack it is infinite
-  const questionType = (params.get('questionType')) ? params.get('questionType') : 'any'; // By default, any type of questions. In expert's domain, it is a concrete topic.
+  const questionType = (params.get('questionType')) ? params.get('questionType') : 'all'; // By default, any type of questions. In expert's domain, it is a concrete topic.
   const timePerQuestion = (params.get('timePerQuestion')) ? params.get('timePerQuestion') : 60000; // By default, 60 seconds per question. In time attack mode, it is total time. In endless, infinite time.
   const isTimeAttack = (params.get('isTimeAttack')) ? params.get('isTimeAttack') : false; // By default, it is not time attack mode. In time attack mode, it is true.
 
   const fetchData = async () =>{ 
     try{
-      const response = await axios.get(`${gatewayUrl}/generate-questions?type=${questionType}&numQuestions=${numQuestions}`);
+      const response = await axios.get(`${gatewayUrl}/questions/${questionType}/${numQuestions}`);
       setQuestions(response.data);
       setLoadedQuestions(true);
     }catch(err){
