@@ -24,7 +24,7 @@ const GamePage = ({timePerQuestionTesting}) => {
 
   const fetchData = async () =>{ 
     try{
-      const response = await axios.get(`${gatewayUrl}/generate-questions?type=${questionType}&numQuestions=${numQuestions}`);
+      const response = await axios.get(`${gatewayUrl}/questions/${questionType}/${numQuestions}`);
       setQuestions(response.data);
       setLoadedQuestions(true);
     }catch(err){
