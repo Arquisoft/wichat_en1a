@@ -185,7 +185,7 @@ describe('Game Routes Tests', () => {
         const res = await request(app).get('/leaderboard');
 
         expect(res.status).toBe(500);
-        expect(res.body).toEqual({ success: false, error: 'Error retrieving leaderboard' });
+        expect(res.body).toEqual({ success: false, error: 'No leaderboard data found' });
     });
 
 });
