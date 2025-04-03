@@ -11,7 +11,7 @@ const Login = () => {
   const [snackbarStatus, setSnackbarStatus] = useState(false);
   const{t} = useTranslation();
 
-  const apiEndpoint = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
+  const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
   const loginUser = async () => {
     try {
