@@ -4,7 +4,7 @@ import axios from 'axios';
 import {Alert, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-const apiEndpoint = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
 const AddUser = ({callback}) => {
   const [formData, setFormData] = useState({username:'',password:'',repeatPassword:''});
