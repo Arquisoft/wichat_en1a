@@ -4,6 +4,15 @@ import { Button } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import "../css/Roulette.css";
 
+// Function created to generate a random number between 0 and 1 using the CSPRNG available in modern browsers
+// Created by recommendation of the SonarQube static analysis tool, since it is safer than Math.random()
+function secureRandom() {
+  const array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+  // Convert the random value into a float between 0 and 1
+  return array[0] / (0xFFFFFFFF + 1);
+}
+
 export default function Roulette({onSelectTopic, onClickSpin}) {
   const [spinning, setSpinning] = useState(false);
   const [angle, setAngle] = useState(0);
@@ -25,8 +34,8 @@ export default function Roulette({onSelectTopic, onClickSpin}) {
     setSpinning(true);
     onClickSpin();
 
-    const turns = 8 + Math.floor(Math.random() * 10); // Between 8 and 17 turns
-    const finalAngle = angle + turns * 360 + Math.floor(Math.random() * 360);
+    const turns = 8 + Math.floor(secureRandom() * 10); // Between 8 and 17 turns
+    const finalAngle = angle + turns * 360 + Math.floor(secureRandom() * 360);
     setAngle(finalAngle);
 
     // Calculating the winning topic (the one in the section pointed by the pointer in the bottom):
