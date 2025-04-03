@@ -6,9 +6,9 @@ import AiChat from '../components/AiChat';
 import axios from 'axios';
 
 const GamePage = ({timePerQuestionTesting}) => {
-  const gatewayUrl = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
-  const [questionNum, setQuestionNum] = useState(0);
-  const [score, setScore] = useState(0);
+  const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
+  const [questionNum,setQuestionNum] = useState(0);
+  const [score,setScore] = useState(0);
 
   const [questions ,setQuestions] = useState(null);
   const [loadedQuestions, setLoadedQuestions] = useState(false);

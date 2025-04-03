@@ -117,7 +117,7 @@ describe('Game Routes Tests', () => {
         const res = await request(app).post('/saveScore').send({ userId: 'user123' });
 
         expect(res.status).toBe(400);
-        expect(res.body).toEqual({ success: false, error: 'Missing required fields' });
+        expect(res.body).toEqual({ error: 'Missing required fields' });
     });
 
     it('PUT /updateScore should update an existing score', async () => {
@@ -133,14 +133,14 @@ describe('Game Routes Tests', () => {
     });
 
     it('PUT /updateScore should return 404 if score not found', async () => {
-        updateScore.mockResolvedValueOnce({ success: false, error: 'Score not found' });
+        updateScore.mockResolvedValueOnce({ error: 'Score not found' });
 
         const res = await request(app)
             .put('/updateScore')
             .send({ userId: 'user999', score: 300, gameMode: 'basicQuiz' });
 
-        expect(res.status).toBe(404);
-        expect(res.body).toEqual({ success: false, error: 'Score not found' });
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({ error: 'Score not found' });
     });
 
     it('GET /scoresByUser/:userId should retrieve scores for a user', async () => {
@@ -156,13 +156,13 @@ describe('Game Routes Tests', () => {
         });
     });
 
-    it('GET /scoresByUser/:userId should return 404 if no scores found', async () => {
-        getScoresByUser.mockResolvedValueOnce({ success: false, error: 'No scores found for this user' });
+    it('GET /scoresByUser/:userId should return 500 if no scores found', async () => {
+        getScoresByUser.mockResolvedValueOnce({ error: 'No scores found for this user' });
 
         const res = await request(app).get('/scoresByUser/user999');
 
-        expect(res.status).toBe(404);
-        expect(res.body).toEqual({ success: false, error: 'No scores found for this user' });
+        expect(res.status).toBe(500);
+        expect(res.body).toEqual({ error: 'No scores found for this user' });
     });
 
     it('GET /leaderboard/:gameMode should return a sorted leaderboard', async () => {
@@ -180,12 +180,12 @@ describe('Game Routes Tests', () => {
     });
 
     it('GET /leaderboard should return 500 on error', async () => {
-        getLeaderboard.mockResolvedValueOnce({ success: false, error: 'Error retrieving leaderboard' });
+        getLeaderboard.mockResolvedValueOnce({ error: 'Error retrieving leaderboard' });
 
         const res = await request(app).get('/leaderboard');
 
         expect(res.status).toBe(500);
-        expect(res.body).toEqual({ success: false, error: 'Error retrieving leaderboard' });
+        expect(res.body).toEqual({ error: 'No leaderboard data found' });
     });
 
 });

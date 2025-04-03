@@ -3,24 +3,24 @@ const Score = require('../models/score-model');
 
 const saveScore = async (userId, score, gameMode) => {
     if (!userId || score == null || !gameMode) {
-        return { success: false, error: 'Missing required fields' };
+        return { error: 'Missing required fields' };
     }
     try {
         const newScore = new Score({ userId, score, gameMode });
         await newScore.save();
-        return { success: true, newScore };
+        return { newScore };
     } catch (error) {
-        return { success: false, error: `Error saving score: ${error.message}` };
+        return { error: `Error saving score: ${error.message}` };
     }
 };
 
 const updateScore = async (userId, score, gameMode) => {
     if (!userId || score == null || !gameMode) {
-        return { success: false, error: 'Invalid data' };
+        return { error: 'Invalid data' };
     }
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return { success: false, error: 'Invalid userId format' };
+        return { error: 'Invalid userId format' };
     }
 
     try {
@@ -30,10 +30,10 @@ const updateScore = async (userId, score, gameMode) => {
             { new: true }
         );
 
-        if (!updatedScore) return { success: false, error: 'Score not found' };
-        return { success: true, updatedScore };
+        if (!updatedScore) return { error: 'Score not found' };
+        return { updatedScore };
     } catch (error) {
-        return { success: false, error: `Error updating score: ${error.message}` };
+        return { error: `Error updating score: ${error.message}` };
     }
 };
 
@@ -43,12 +43,12 @@ const getScoresByUser = async (userId, gameMode) => {
         const scores = await Score.find(query);
 
         if (!scores || !scores.length) {
-            return { success: false, error: 'No scores found for this user' };
+            return { error: 'No scores found for this user' };
         }
 
-        return { success: true, scores };
+        return { scores };
     } catch (error) {
-        return { success: false, error: `Error retrieving scores: ${error.message}` };
+        return { error: `Error retrieving scores: ${error.message}` };
     }
 };
 
@@ -59,9 +59,9 @@ const getLeaderboard = async (gameMode) => {
             .sort({ score: -1 })  
             .limit(10);
 
-        return { success: true, leaderboard };
+        return { leaderboard };
     } catch (error) {
-        return { success: false, error: `Error retrieving leaderboard: ${error.message}` };
+        return { error: `Error retrieving leaderboard: ${error.message}` };
     }
 };
 
