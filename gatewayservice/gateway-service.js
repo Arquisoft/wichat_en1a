@@ -11,11 +11,12 @@ const YAML = require('yaml')
 const app = express();
 const port = 8000;
 
+const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8005';
 const questionServiceURL = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
-const apiKey = process.env.API_KEY;
+const apiKey = process.env.LLM_API_KEY;
 
 
 app.use(cors());
@@ -109,6 +110,45 @@ app.get('/question', async (req, res) => {
     res.status(200).json(randomQuestion.data);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/saveScore', async (req, res) => {
+  try {
+    const { userId, score, gameMode } = req.body;
+    if (!userId || typeof userId !== 'string' || score == null || !gameMode) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const response = await axios.post(`${gameServiceUrl}/saveScore`, req.body);
+    res.json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json({ error: error.message });
+  }
+});
+
+app.get('/scoresByUser/:userId', async (req, res) => {
+  try {
+      const userId = req.params.userId;
+      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
+
+      if (!response.data || response.data.length === 0) {
+          return res.status(404).json({ error: 'No scores found for this user' });
+      }
+
+      res.json(response.data);
+  } catch (error) {
+      res.status(500).json({ error: 'Error retrieving scores' });
+  }
+});
+app.get('/leaderboard/:gameMode?', async (req, res) => {
+  try {
+    const { gameMode } = req.params;
+
+    const response = await axios.get(`${gameServiceUrl}/leaderboard/${gameMode || ''}`);
+    res.json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json({ error: error.message });
   }
 });
 

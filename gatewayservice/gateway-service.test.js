@@ -40,6 +40,19 @@ const checkPostSuccessResponse = async (url, requestData, mockData, expectedData
   expect(response.body).toEqual(expectedData);
 };
 
+const checkPutSuccessResponse = async (url, requestData, mockData, expectedData) => {
+  axios.put.mockResolvedValue({ data: mockData });
+
+  const response = await request(app)
+      .put(url)
+      .send(requestData)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+  expect(response.body).toEqual(expectedData);
+};
+
+
 describe('Gateway Service', () => {
   axios.post.mockImplementation((url, data) => {
     if (url.endsWith('/login')) {
@@ -52,15 +65,15 @@ describe('Gateway Service', () => {
   });
 
   it('should forward login request to auth service', async () => {
-    await checkPostSuccessResponse('/login', { username: 'testuser', password: 'testpassword' }, { token: 'mockedToken' }, { token: 'mockedToken' });
+    await checkPostSuccessResponse('/login', { username: '', password: '' }, { token: 'mockedToken' }, { token: 'mockedToken' });
   });
 
   it('should forward add user request to user service', async () => {
-    await checkPostSuccessResponse('/adduser', { username: 'newuser', password: 'newpassword' }, { userId: 'mockedUserId' }, { userId: 'mockedUserId' });
+    await checkPostSuccessResponse('/adduser', { username: '', password: '' }, { userId: 'mockedUserId' }, { userId: 'mockedUserId' });
   });
 
   it('should forward askllm request to the llm service', async () => {
-    await checkPostSuccessResponse('/askllm', { question: 'question', gameQuestion: 'gameQuestion', correctAnswer: 'llmanswer', apiKey: 'apiKey', model: 'empathy' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
+    await checkPostSuccessResponse('/askllm', { question: 'question', gameQuestion: 'gameQuestion', correctAnswer: 'llmanswer', model: 'empathy' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
   });
 
   it('should forward generate-questions request to the question service', async () => {
@@ -199,6 +212,51 @@ describe('Gateway Service - LLM Service', () => {
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('Missing required fields: question, gameQuestion, correctAnswer');
 
+  });
+
+});
+
+describe('Gateway Service - Game Service', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should forward saveScore request to GameService', async () => {
+    await checkPostSuccessResponse(
+      '/saveScore',
+      { userId: 'user1', score: 100, gameMode: 'expertDomain' },
+      { success: true },
+      { success: true }
+    );
+  });
+
+  it('should return 400 if saveScore is missing fields', async () => {
+    const response = await request(app)
+      .post('/saveScore')
+      .send({})
+      .expect(400);
+
+    expect(response.body.error).toBe('Missing required fields');
+  });
+
+  it('should forward scoresByUser request to GameService', async () => {
+    const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain' }];
+    await checkSuccessResponse('/scoresByUser/user1', mockScores, mockScores);
+  });
+
+  it('should return 404 if scoresByUser not found', async () => {
+    axios.get.mockResolvedValue({ data: [] });
+    await checkErrorResponse('/scoresByUser/unknownUser', "No scores found for this user", 404);
+  });
+
+  it('should forward leaderboard request to GameService', async () => {
+    const mockLeaderboard = [{ userId: 'user1', score: 500 }];
+    await checkSuccessResponse('/leaderboard', mockLeaderboard, mockLeaderboard);
+  });
+
+  it('should return 500 if leaderboard request fails', async () => {
+    axios.get.mockRejectedValue(new Error('Internal Server Error'));
+    await checkErrorResponse('/leaderboard', 'Internal Server Error', 500);
   });
 
 });

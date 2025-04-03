@@ -6,20 +6,21 @@ import AiChat from '../components/AiChat';
 import axios from 'axios';
 
 const GamePage = ({timePerQuestionTesting}) => {
-  const gatewayUrl = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
+  const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const [questionNum,setQuestionNum] = useState(0);
   const [score,setScore] = useState(0);
 
-  const [questions,setQuestions] = useState(null);
-  const [loadedQuestions,setLoadedQuestions] =useState(false);
+  const [questions ,setQuestions] = useState(null);
+  const [loadedQuestions, setLoadedQuestions] = useState(false);
   const [endGame, setEndGame] = useState(false);
   const [navigate, setNavigate] = useState(false);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const numQuestions = (params.get('numQuestions'))?params.get('numQuestions'):10;  
-  const questionType = (params.get('questionType'))?params.get('questionType'):'flag';  
-  const timePerQuestion = (params.get('timePerQuestion'))?params.get('timePerQuestion'):60000;  
+  const numQuestions = (params.get('numQuestions')) ? params.get('numQuestions') : 10; // By default, 10 questions. In endless mode and time attack it is infinite
+  const questionType = (params.get('questionType')) ? params.get('questionType') : 'any'; // By default, any type of questions. In expert's domain, it is a concrete topic.
+  const timePerQuestion = (params.get('timePerQuestion')) ? params.get('timePerQuestion') : 60000; // By default, 60 seconds per question. In time attack mode, it is total time. In endless, infinite time.
+  const isTimeAttack = (params.get('isTimeAttack')) ? params.get('isTimeAttack') : false; // By default, it is not time attack mode. In time attack mode, it is true.
 
   const fetchData = async () =>{ 
     try{
@@ -31,20 +32,20 @@ const GamePage = ({timePerQuestionTesting}) => {
     }
   }
   useEffect(()=>{
-      if (!loadedQuestions) {
-          fetchData();
-      }
+    if (!loadedQuestions) {
+      fetchData();
+    }
   });
   
   const handleQuestionAnswered = (correct) => {
-      if(correct===true){
-        setScore(score + 100);
-      }
-      if (questionNum < questions.length - 1) { // Check if there are more questions
-        setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
-      } else {
-        setEndGame(true);
-      }
+    if(correct===true){
+      setScore(score + 100);
+    }
+    if (questionNum < questions.length - 1) { // Check if there are more questions
+      setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
+    } else {
+      setEndGame(true);
+    }
   };
   useEffect(() => {
     // This will ensure sessionStorage is updated after score change
@@ -55,19 +56,21 @@ const GamePage = ({timePerQuestionTesting}) => {
     }
   }, [endGame,score,questionNum]);
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={3}><AiChat></AiChat></Grid>
-      <Grid item xs={12} md={9}>
-        {loadedQuestions && questions? (
-            navigate?(<Navigate to="/results"/>):(
-          <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
-          onQuestionAnswered={handleQuestionAnswered} // Pass callback
-          timePerQuestion={timePerQuestionTesting?timePerQuestionTesting:timePerQuestion}
-          />)
-      ) : (
-        <div>Loading...</div>
-      )}</Grid>
-    </Grid>
+    <React.Fragment>
+    {loadedQuestions && questions? (navigate?(<Navigate to="/results"/>):(
+    <Grid container spacing={2} justifyContent="center">
+      <Grid item><AiChat key={questionNum} question={questions[questionNum]}/></Grid>
+      <Grid item md={10}>
+        <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
+        onQuestionAnswered={handleQuestionAnswered} // Pass callback
+        timePerQuestion={timePerQuestionTesting?timePerQuestionTesting:timePerQuestion}
+        />
+      </Grid>
+    </Grid>)
+    ) : (
+      <div>Loading...</div>
+    )}
+    </React.Fragment>
   )
 }
 

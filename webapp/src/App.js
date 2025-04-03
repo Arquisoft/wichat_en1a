@@ -4,6 +4,7 @@ import IndexPage from './windows/IndexPage';
 import HomePage from './windows/HomePage';
 import LoggedInRoutes from './LoggedInRoutes';
 import GamePage from './windows/GamePage';
+import RandomRulette from './components/RandomRoulette';
 import ResultsPage from './windows/ResultsPage';
 import Leaderboard from './windows/Leaderboard';
 import {CssBaseline, ThemeProvider, createTheme} from '@mui/material/';
@@ -20,6 +21,11 @@ function App() {
         light: 'rgb(241, 242, 235)',
         main: 'rgb(164, 194, 165)',
         dark: 'rgb(86, 98, 70)'
+      },
+      accent: {
+        light: 'rgb(255, 255, 255)',
+        main: 'rgb(0, 0, 0)',
+        logout: 'rgb(105, 14, 11)',
       }
     }
   });
@@ -32,8 +38,9 @@ function App() {
           <Route path='/' element={<IndexPage></IndexPage>} />
           <Route path="/auth/:loginRequested" element={<LogInOrUpPage></LogInOrUpPage>}/>
           <Route path="/auth" element={<LogInOrUpPage></LogInOrUpPage>}/>
-          <Route path="/home" element={<LoggedInRoutes><HomePage/></LoggedInRoutes>}/>
+          <Route path="/home" element={<HomePage/>}/>
           <Route path="/game" element={<LoggedInRoutes><GamePage/></LoggedInRoutes>}/>
+          <Route path="/roulette" element={<RandomRulette/>}/>
           <Route path="/results" element={<LoggedInRoutes><ResultsPage/></LoggedInRoutes>}/>
           <Route path="/leaderboard" element={<LoggedInRoutes><Leaderboard/></LoggedInRoutes>}/>
         </Routes>
