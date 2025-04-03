@@ -540,3 +540,212 @@ paths:
                     type: string
                     description: Error information.
                     example: Internal Server Error
+
+  /saveScore:
+    post:
+      summary: Save a user's score.
+      operationId: saveScore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: User ID.
+                  example: miguel
+                score:
+                  type: integer
+                  description: User score.
+                  example: 100
+                gameMode:
+                  type: string
+                  description: Game mode.
+                  example: expertDomain
+      responses:
+        '200':
+          description: Score saved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  newScore:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        description: User ID.
+                        example: miguel
+                      score:
+                        type: integer
+                        description: User score.
+                        example: 100
+                      gameMode:
+                        type: string
+                        description: Game mode.
+                        example: expertDomain
+                      _id:
+                        type: string
+                        description: Identification
+                        example: 67ee51a3442bd9689a7df279
+                      createdAt:
+                        type: string
+                        description: Creation date.
+                        example: '2025-04-03T09:15:15.279Z'
+                      __v:
+                        type: integer
+                        example: 0
+        '400':
+          description: Missing required fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Missing required fields
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Internal Server Error
+
+  /scoresByUser/{userId}:
+    get:
+      summary: Get scores by user ID.
+      operationId: getScoresByUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID.
+          example: dsfsdf
+      responses:
+        '200':
+          description: Scores retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scores:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "67ec1c69e5f897ad1c1108e5"
+                        userId:
+                          type: string
+                          description: User ID.
+                          example: dsfsdf
+                        score:
+                          type: integer
+                          description: User score.
+                          example: 500
+                        gameMode:
+                          type: string
+                          description: Game mode.
+                          example: expertDomain
+                        createdAt:
+                          type: string
+                          description: Creation date.
+                          example: '2025-04-01T17:03:37.136Z'
+                        __v:
+                          type: integer
+                          example: 0
+        '404':
+          description: No scores found for this user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: No scores found for this user
+        '500':
+          description: Error retrieving scores.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Error retrieving scores
+
+  /leaderboard/{gameMode}:
+    get:
+      summary: Get leaderboard by game mode.
+      operationId: getLeaderboard
+      parameters:
+        - name: gameMode
+          in: path
+          required: false
+          schema:
+            type: string
+          description: Game mode.
+          example: expertDomain
+      responses:
+        '200':
+          description: Leaderboard retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  leaderboard:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "67ec1c69e5f897ad1c1108e5"
+                        userId:
+                          type: string
+                          description: User ID.
+                          example: dsfsdf
+                        score:
+                          type: integer
+                          description: User score.
+                          example: 500
+                        gameMode:
+                          type: string
+                          description: Game mode.
+                          example: expertDomain
+                        createdAt:
+                          type: string
+                          description: Creation date.
+                          example: '2025-04-01T17:03:37.136Z'
+                        __v:
+                          type: integer
+                          example: 0
+        '500':
+          description: Error retrieving leaderboard.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Error retrieving leaderboard
