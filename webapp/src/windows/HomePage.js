@@ -16,7 +16,7 @@ const HomePage = () => {
   const [disableSwitch, setDisableSwitch] = useState(false);
 
   const [numQuestions, setNumQuestions] = useState(10);
-  const [questionType, setQuestionType] = useState("any");
+  const [questionType, setQuestionType] = useState("all");
   const [timePerQuestion, setTimePerQuestion] = useState(60000);
 
   const { t } = useTranslation();
