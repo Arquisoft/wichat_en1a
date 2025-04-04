@@ -11,7 +11,7 @@ const AiChat = ({question={
   correctAnswer:"None",
   answers:["No answer","No answer","No answer","No answer"]}}) => {
     
-  const gatewayUrl = process.env.GATEWAY_SERVICE_URL || 'http://localhost:8000';
+  const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const theme = useTheme();
   const aiChatRef = useRef(null);
   

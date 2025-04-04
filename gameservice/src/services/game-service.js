@@ -24,6 +24,7 @@ const saveScore = async (userId, score, gameMode, questionsPassed, accuracy) => 
     }
 };
 
+
 const updateScore = async (userId, score, gameMode, questionsPassed, accuracy) => {
     if (!userId || score == null || !gameMode || questionsPassed == null || accuracy == null) {
         return { error: 'Invalid data' };

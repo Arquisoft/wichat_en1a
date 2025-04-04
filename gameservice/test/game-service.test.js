@@ -129,6 +129,7 @@ describe('Game Routes Tests', () => {
         });
     });
 
+
     it('GET /scoresByUser/:userId should retrieve scores for a user', async () => {
         const res = await request(app).get('/scoresByUser/user123');
 
@@ -141,6 +142,7 @@ describe('Game Routes Tests', () => {
             ]
         });
     });
+
 
     it('GET /leaderboard/:gameMode should return a sorted leaderboard with accuracy', async () => {
         const res = await request(app).get('/leaderboard/basicQuiz');

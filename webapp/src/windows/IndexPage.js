@@ -17,15 +17,18 @@ const IndexPage = () => {
               {t('index.title')}
             </Typography>
             <Typography variant="body1" paragraph>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              {t("index.description")}
+            </Typography>
+            <Typography variant="body1" paragraph>
+              {t("index.howItWorks")}
             </Typography>
             <Grid align='center'>
-              <Button href="/auth/true" variant="outlined" style={{ marginRight: 10 }}>{t('login')}</Button>
-              <Button href="/auth/false" name="signup" variant="outlined">{t('signup')}</Button>
+              <Button href="/auth/true" name="login" variant="outlined" style={{ marginRight: 10 }}>{t('login.message')}</Button>
+              <Button href="/auth/false" name="signup" variant="outlined">{t('signup.message')}</Button>
             </Grid>
           </Grid>
           <Grid item md={5}>
-            <img src='colorPalleteProposed.png' alt='Placeholder image, proposed color pallete for the ui' 
+            <img src='GameDescriptionImage.png' alt='Description of the use of wikidata, and an ai chat for the triva-style game.' 
             style={{ width: '100%', height: 'auto', border:'solid'}}></img>
           </Grid>
         </Grid>

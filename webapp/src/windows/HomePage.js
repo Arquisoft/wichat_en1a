@@ -28,7 +28,7 @@ const HomePage = () => {
     <div className="window-container">
       <NavBar/>
       <div className="menu-container">
-        <h1 className="menu-title">
+        <h1 className="menu-title" id='home-title'>
           {t('homePage.welcome')}
         </h1>
         <div className="menu-grid">
