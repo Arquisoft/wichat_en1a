@@ -115,8 +115,8 @@ app.get('/question', async (req, res) => {
 
 app.post('/saveScore', async (req, res) => {
   try {
-    const { userId, score, gameMode } = req.body;
-    if (!userId || typeof userId !== 'string' || score == null || !gameMode) {
+    const { userId, score, gameMode, questionsPassed, accuracy } = req.body;
+    if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || accuracy == null) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 

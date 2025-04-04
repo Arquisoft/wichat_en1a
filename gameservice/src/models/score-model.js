@@ -14,10 +14,25 @@ const scoreSchema = new mongoose.Schema({
         enum: ['basicQuiz','expertDomain','timeAttack','endlessMarathon'], 
         required: true,
     },
+    gamesPlayed: {
+        type: Number,
+        default: 0,
+    },
+    questionsPassed: {
+        type: Number,
+        default: 0,
+    },
+    questionsFailed: {
+        type: Number,
+        default: 0,
+    },
+    accuracy: {
+        type: Number,
+        default: 0, 
+    },
     createdAt: {
         type: Date,
         default: Date.now,
-        required: false,
     },
 });
 

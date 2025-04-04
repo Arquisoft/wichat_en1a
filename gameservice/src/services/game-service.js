@@ -1,12 +1,22 @@
 const mongoose = require('mongoose');
-const Score = require('../models/score-model');  
+const Score = require('../models/score-model');
 
-const saveScore = async (userId, score, gameMode) => {
-    if (!userId || score == null || !gameMode) {
+const saveScore = async (userId, score, gameMode, questionsPassed, accuracy) => {
+    if (!userId || score == null || !gameMode || questionsPassed == null || accuracy == null) {
         return { error: 'Missing required fields' };
     }
+
     try {
-        const newScore = new Score({ userId, score, gameMode });
+        const newScore = new Score({
+            userId,
+            score,
+            gameMode,
+            gamesPlayed: 1, 
+            questionsPassed,
+            questionsFailed : 20 - questionsPassed,
+            accuracy
+        });
+
         await newScore.save();
         return { newScore };
     } catch (error) {
@@ -14,8 +24,8 @@ const saveScore = async (userId, score, gameMode) => {
     }
 };
 
-const updateScore = async (userId, score, gameMode) => {
-    if (!userId || score == null || !gameMode) {
+const updateScore = async (userId, score, gameMode, questionsPassed, accuracy) => {
+    if (!userId || score == null || !gameMode || questionsPassed == null || accuracy == null) {
         return { error: 'Invalid data' };
     }
 
@@ -24,13 +34,26 @@ const updateScore = async (userId, score, gameMode) => {
     }
 
     try {
+        const existingScore = await Score.findOne({ userId, gameMode });
+
+        if (!existingScore) {
+            return { error: 'Score not found' };
+        }
+
+        const updatedGamesPlayed = existingScore.gamesPlayed + 1;
+        const updatedQuestionsPassed = existingScore.questionsPassed + questionsPassed;
+        const updatedQuestionsFailed = existingScore.questionsFailed + (20 - questionsPassed);
+        const updatedAccuracy = existingScore.accuracy + accuracy;
+
         const updatedScore = await Score.findOneAndUpdate(
-            { userId: userId, gameMode },  
-            { $set: { score } },
+            { userId, gameMode },
+            {
+                $set: { score, accuracy: updatedAccuracy },
+                $inc: { gamesPlayed: 1, questionsPassed, questionsFailed }
+            },
             { new: true }
         );
 
-        if (!updatedScore) return { error: 'Score not found' };
         return { updatedScore };
     } catch (error) {
         return { error: `Error updating score: ${error.message}` };
@@ -54,7 +77,7 @@ const getScoresByUser = async (userId, gameMode) => {
 
 const getLeaderboard = async (gameMode) => {
     try {
-        const query = gameMode ? { gameMode } : {};  
+        const query = gameMode ? { gameMode } : {};
         const leaderboard = await Score.find(query)
             .sort({ score: -1 })  
             .limit(10);

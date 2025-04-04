@@ -224,7 +224,7 @@ describe('Gateway Service - Game Service', () => {
   it('should forward saveScore request to GameService', async () => {
     await checkPostSuccessResponse(
       '/saveScore',
-      { userId: 'user1', score: 100, gameMode: 'expertDomain' },
+      { userId: 'user1', score: 100, gameMode: 'expertDomain', questionsPassed : 13, accuracy :65 },
       { success: true },
       { success: true }
     );
@@ -240,7 +240,7 @@ describe('Gateway Service - Game Service', () => {
   });
 
   it('should forward scoresByUser request to GameService', async () => {
-    const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain' }];
+    const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain', questionsPassed : 11, questionsFailed: 9, accuracy :55 }];
     await checkSuccessResponse('/scoresByUser/user1', mockScores, mockScores);
   });
 
