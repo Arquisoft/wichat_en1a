@@ -34,7 +34,7 @@ const HomePage = () => {
   };
 
   const handleChange = (event) => {
-    setTopic(event.target.value);
+    setQuestionType(event.target.value);
   };
 
   return (
@@ -109,7 +109,7 @@ const HomePage = () => {
                           </Select>
                         </FormControl>
                       ) : (
-                        <Roulette onSelectTopic={setTopic} onClickSpin={() => setDisableSwitch(true)} />
+                        <Roulette onSelectTopic={setQuestionType} onClickSpin={() => setDisableSwitch(true)} />
                       )}
                     </>
                   )}
