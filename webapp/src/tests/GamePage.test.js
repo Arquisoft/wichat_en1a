@@ -14,7 +14,7 @@ describe('Game Page', () => {
     beforeEach(() => {
       sessionStorage.clear();
       mockAxios.reset();
-      mockAxios.onGet('http://localhost:8000/questions/flag/10').reply(200, questions);
+      mockAxios.onGet('http://localhost:8000/questions/all/10').reply(200, questions);
     });
 
     const renderGameComp=()=>{
