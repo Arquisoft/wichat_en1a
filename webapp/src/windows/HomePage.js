@@ -29,8 +29,6 @@ const HomePage = () => {
     { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, mode: 'endless-marathon' }
   ];
 
-  const [topicForExpertsDomain, setTopic] = useState('');
-
   const handleToggle = () => {
     setRandomized((prev) => !prev); // Toggle the randomization state
   };
@@ -99,7 +97,7 @@ const HomePage = () => {
                         <InputLabel id="select-label">Topic</InputLabel>
                           <Select
                             labelId="select-label"
-                            value={topicForExpertsDomain}
+                            value={questionType}
                             label="Topic"
                             onChange={handleChange}
                           >
