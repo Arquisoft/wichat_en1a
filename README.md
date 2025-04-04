@@ -20,6 +20,8 @@ This project comes from a template to ease our development as we had never used 
 If while using this application, at any point you encounter any bug, feel free to add a new issue on the github tab to notify us about the problem.
 Remember to add an appropiate label and type, and an extensive description if possible explaining the issue found to increase the chance of us replicating and fixing your issue.
 
+Feel free to contact support privately via [signal](https://signal.me/#eu/-gnbaFEXeBNhNFGqMfudDoDDlm3wNsL8Lp9-wxskdujg7n359tNPd4hCf2Tyb5wC)
+
 ## Contributors
 Contributor | Git Account | Contact Email
 -- | -- | --
