@@ -47,9 +47,10 @@ const HomePage = () => {
       }}
     >
       <NavBar/>
-      <div className = "menu-container">
-        <h1 
-          className = "menu-title"
+      <div className="menu-container">
+        <h1
+          className="menu-title"
+          id='home-title'
           style={{
             color: `${theme.palette.secondary.light}`
           }}
