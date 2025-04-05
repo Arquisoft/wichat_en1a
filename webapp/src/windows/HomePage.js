@@ -16,7 +16,7 @@ const HomePage = () => {
   const [disableSwitch, setDisableSwitch] = useState(false);
 
   const [numQuestions, setNumQuestions] = useState(10);
-  const [questionType, setQuestionType] = useState("any");
+  const [questionType, setQuestionType] = useState("all");
   const [timePerQuestion, setTimePerQuestion] = useState(60000);
 
   const { t } = useTranslation();
@@ -29,14 +29,12 @@ const HomePage = () => {
     { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, mode: 'endless-marathon' }
   ];
 
-  const [topicForExpertsDomain, setTopic] = useState('');
-
   const handleToggle = () => {
     setRandomized((prev) => !prev); // Toggle the randomization state
   };
 
   const handleChange = (event) => {
-    setTopic(event.target.value);
+    setQuestionType(event.target.value);
   };
 
   return (
@@ -47,9 +45,9 @@ const HomePage = () => {
       }}
     >
       <NavBar/>
-      <div className="menu-container">
-        <h1
-          className="menu-title"
+      <div className = "menu-container">
+        <h1 
+          className = "menu-title"
           id='home-title'
           style={{
             color: `${theme.palette.secondary.light}`
@@ -99,7 +97,7 @@ const HomePage = () => {
                         <InputLabel id="select-label">Topic</InputLabel>
                           <Select
                             labelId="select-label"
-                            value={topicForExpertsDomain}
+                            value={questionType}
                             label="Topic"
                             onChange={handleChange}
                           >
@@ -111,7 +109,7 @@ const HomePage = () => {
                           </Select>
                         </FormControl>
                       ) : (
-                        <Roulette onSelectTopic={setTopic} onClickSpin={() => setDisableSwitch(true)} />
+                        <Roulette onSelectTopic={setQuestionType} onClickSpin={() => setDisableSwitch(true)} />
                       )}
                     </>
                   )}
