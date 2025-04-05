@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Score = require('../models/score-model');
 
-const saveScore = async (userId, score, gameMode, questionsPassed, accuracy) => {
-    if (!userId || score == null || !gameMode || questionsPassed == null || accuracy == null) {
+const saveScore = async (userId, score, gameMode, questionsPassed,questionsFailed, accuracy) => {
+    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
         return { error: 'Missing required fields' };
     }
 
@@ -11,9 +11,8 @@ const saveScore = async (userId, score, gameMode, questionsPassed, accuracy) => 
             userId,
             score,
             gameMode,
-            gamesPlayed: 1, 
             questionsPassed,
-            questionsFailed : 20 - questionsPassed,
+            questionsFailed,
             accuracy
         });
 
@@ -25,8 +24,8 @@ const saveScore = async (userId, score, gameMode, questionsPassed, accuracy) => 
 };
 
 
-const updateScore = async (userId, score, gameMode, questionsPassed, accuracy) => {
-    if (!userId || score == null || !gameMode || questionsPassed == null || accuracy == null) {
+const updateScore = async (userId, score, gameMode, questionsPassed,questionsFailed, accuracy) => {
+    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
         return { error: 'Invalid data' };
     }
 
@@ -41,16 +40,15 @@ const updateScore = async (userId, score, gameMode, questionsPassed, accuracy) =
             return { error: 'Score not found' };
         }
 
-        const updatedGamesPlayed = existingScore.gamesPlayed + 1;
         const updatedQuestionsPassed = existingScore.questionsPassed + questionsPassed;
-        const updatedQuestionsFailed = existingScore.questionsFailed + (20 - questionsPassed);
+        const updatedQuestionsFailed = existingScore.questionsFailed + questionsFailed;
         const updatedAccuracy = existingScore.accuracy + accuracy;
 
         const updatedScore = await Score.findOneAndUpdate(
             { userId, gameMode },
             {
                 $set: { score, accuracy: updatedAccuracy },
-                $inc: { gamesPlayed: 1, questionsPassed, questionsFailed }
+                $inc: { questionsPassed, questionsFailed }
             },
             { new: true }
         );
@@ -70,7 +68,7 @@ const getScoresByUser = async (userId, gameMode) => {
             return { error: 'No scores found for this user' };
         }
 
-        return { scores };
+        return { scores, totalGames: scores.length };
     } catch (error) {
         return { error: `Error retrieving scores: ${error.message}` };
     }

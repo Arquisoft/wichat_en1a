@@ -5,14 +5,14 @@ const router = express.Router();
 
 // Guardar puntaje
 router.post('/saveScore', async (req, res) => {
-    const { userId, score, gameMode, questionsPassed, accuracy } = req.body;
+    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
 
-    if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || accuracy == null) {
+    if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
     try {
-        const result = await saveScore(userId, score, gameMode, questionsPassed, accuracy);
+        const result = await saveScore(userId, score, gameMode, questionsPassed, questionsFailed, accuracy);
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: 'Error saving score' });
@@ -21,14 +21,14 @@ router.post('/saveScore', async (req, res) => {
 
 // Actualizar puntaje
 router.put('/updateScore', async (req, res) => {
-    const { userId, score, gameMode, questionsPassed, accuracy } = req.body;
+    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
 
-    if (!userId || score == null || !gameMode || questionsPassed == null || accuracy == null) {
+    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
     try {
-        const result = await updateScore(userId, score, gameMode, questionsPassed, accuracy);
+        const result = await updateScore(userId, score, gameMode, questionsPassed, questionsFailed, accuracy);
         if (!result.updatedScore) {
             return res.status(404).json({ error: 'Score not found' });
         }
@@ -45,7 +45,7 @@ router.get('/scoresByUser/:userId', async (req, res) => {
 
     try {
         const result = await getScoresByUser(userId, gameMode);
-        if (!result.scores || result.scores.length === 0) {
+        if (!result.scores) {
             return res.status(404).json({ error: 'No scores found for this user' });
         }
         res.status(200).json(result);
@@ -61,7 +61,7 @@ router.get('/leaderboard/:gameMode?', async (req, res) => {
 
     try {
         const result = await getLeaderboard(gameMode);
-        if (!result.leaderboard || result.leaderboard.length === 0) {
+        if (!result.leaderboard) {
             return res.status(404).json({ error: 'No leaderboard data found' });
         }
         res.status(200).json(result);

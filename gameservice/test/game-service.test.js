@@ -35,7 +35,8 @@ jest.mock('../src/services/game-service', () => ({
         scores: [
             { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 },
             { userId: 'user123', score: 150, gameMode: 'expertDomain', questionsPassed: 15, questionsFailed: 5, accuracy: 75 }
-        ]
+        ],
+        totalGames: 2
     }),
     getLeaderboard: jest.fn().mockResolvedValue({
         success: true,
@@ -51,7 +52,7 @@ const { saveScore, updateScore, getScoresByUser, getLeaderboard } = require('../
 
 describe('Game Service Tests', () => {
     it('should save a score successfully', async () => {
-        const result = await saveScore('user123', 100, 'basicQuiz', 18, 80);
+        const result = await saveScore('user123', 100, 'basicQuiz', 18,2, 80);
         expect(result).toEqual({
             success: true,
             newScore: {
@@ -66,7 +67,7 @@ describe('Game Service Tests', () => {
     });
 
     it('should update an existing score', async () => {
-        const result = await updateScore('user123', 200, 'basicQuiz', 16, 80);
+        const result = await updateScore('user123', 200, 'basicQuiz', 16,4, 80);
         expect(result).toEqual({
             success: true,
             updatedScore: {
@@ -87,7 +88,8 @@ describe('Game Service Tests', () => {
             scores: [
                 { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 },
                 { userId: 'user123', score: 150, gameMode: 'expertDomain', questionsPassed: 15, questionsFailed: 5, accuracy: 75 }
-            ]
+            ],
+            totalGames: 2
         });
     });
 
@@ -108,7 +110,7 @@ describe('Game Routes Tests', () => {
     it('POST /saveScore should save a score successfully', async () => {
         const res = await request(app)
             .post('/saveScore')
-            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, accuracy: 80 });
+            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
@@ -120,7 +122,7 @@ describe('Game Routes Tests', () => {
     it('PUT /updateScore should update an existing score', async () => {
         const res = await request(app)
             .put('/updateScore')
-            .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz', questionsPassed: 16, accuracy: 80 });
+            .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz', questionsPassed: 16,questionsFailed: 4, accuracy: 80 });
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
@@ -132,14 +134,15 @@ describe('Game Routes Tests', () => {
 
     it('GET /scoresByUser/:userId should retrieve scores for a user', async () => {
         const res = await request(app).get('/scoresByUser/user123');
-
+    
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
             scores: [
                 { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 },
                 { userId: 'user123', score: 150, gameMode: 'expertDomain', questionsPassed: 15, questionsFailed: 5, accuracy: 75 }
-            ]
+            ],
+            totalGames: 2
         });
     });
 

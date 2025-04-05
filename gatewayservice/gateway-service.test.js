@@ -224,7 +224,7 @@ describe('Gateway Service - Game Service', () => {
   it('should forward saveScore request to GameService', async () => {
     await checkPostSuccessResponse(
       '/saveScore',
-      { userId: 'user1', score: 100, gameMode: 'expertDomain', questionsPassed : 13, accuracy :65 },
+      { userId: 'user1', score: 100, gameMode: 'expertDomain', questionsPassed : 13,questionsFailed : 7, accuracy :65 },
       { success: true },
       { success: true }
     );
