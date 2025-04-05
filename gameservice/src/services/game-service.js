@@ -83,9 +83,6 @@ const updateScore = async (userId, score, gameMode, questionsPassed, questionsFa
     }
 };
 
-
-const mongoose = require('mongoose');
-
 const getScoresByUser = async (userId, gameMode) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(userId)) {
