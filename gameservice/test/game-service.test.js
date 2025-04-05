@@ -172,6 +172,29 @@ describe('Game Routes Tests', () => {
         expect(res.body.error).toBe('Error saving score');
     });
 
+    it('POST /saveScore should return 400 if gameMode is invalid', async () => {
+        const res = await request(app)
+            .post('/saveScore')
+            .send({ userId: 'user123', score: 100, gameMode: 'invalidMode', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
+    
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Invalid game mode');
+    });
+
+    it('POST /saveScore should return 500 if there is a database error', async () => {
+        saveScore.mockImplementationOnce(() => {
+            throw new Error('Database error');
+        });
+    
+        const res = await request(app)
+            .post('/saveScore')
+            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
+    
+        expect(res.status).toBe(500);
+        expect(res.body.error).toBe('Error saving score');
+    });
+    
+
     it('PUT /updateScore should update an existing score', async () => {
         const res = await request(app)
             .put('/updateScore')
