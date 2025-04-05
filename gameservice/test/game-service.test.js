@@ -119,6 +119,25 @@ describe('Game Routes Tests', () => {
         });
     });
 
+    it('POST /saveScore should return 400 if required fields are missing', async () => {
+        const res = await request(app).post('/saveScore').send({});
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Missing required fields');
+    });
+
+    it('POST /saveScore should return 500 on internal error', async () => {
+        saveScore.mockImplementationOnce(() => {
+            throw new Error('Something went wrong');
+        });
+
+        const res = await request(app)
+            .post('/saveScore')
+            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 10, questionsFailed: 5, accuracy: 80 });
+
+        expect(res.status).toBe(500);
+        expect(res.body.error).toBe('Error saving score');
+    });
+
     it('PUT /updateScore should update an existing score', async () => {
         const res = await request(app)
             .put('/updateScore')
@@ -131,6 +150,25 @@ describe('Game Routes Tests', () => {
         });
     });
 
+    it('PUT /updateScore should return 400 if required fields are missing', async () => {
+        const res = await request(app)
+            .put('/updateScore')
+            .send({ userId: 'user123', score: 200 });
+
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Missing required fields');
+    });
+
+    it('PUT /updateScore should return 404 if score is not found', async () => {
+        updateScore.mockResolvedValueOnce({ error: 'Score not found' });
+
+        const res = await request(app)
+            .put('/updateScore')
+            .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz', questionsPassed: 16, questionsFailed: 4, accuracy: 80 });
+
+        expect(res.status).toBe(404);
+        expect(res.body.error).toBe('Score not found');
+    });
 
     it('GET /scoresByUser/:userId should retrieve scores for a user', async () => {
         const res = await request(app).get('/scoresByUser/user123');
@@ -146,6 +184,14 @@ describe('Game Routes Tests', () => {
         });
     });
 
+    it('GET /scoresByUser/:userId should return 404 if no scores found', async () => {
+        getScoresByUser.mockResolvedValueOnce({ error: 'No scores found for this user' });
+
+        const res = await request(app).get('/scoresByUser/unknownUser');
+
+        expect(res.status).toBe(404);
+        expect(res.body.error).toBe('No scores found for this user');
+    });
 
     it('GET /leaderboard/:gameMode should return a sorted leaderboard with accuracy', async () => {
         const res = await request(app).get('/leaderboard/basicQuiz');
@@ -159,6 +205,15 @@ describe('Game Routes Tests', () => {
                 { userId: 'user3', score: 200, gameMode: 'basicQuiz', accuracy: 80 }
             ]
         });
+    });
+
+    it('GET /leaderboard/:gameMode should return 404 if no leaderboard data', async () => {
+        getLeaderboard.mockResolvedValueOnce({ error: 'No leaderboard data found' });
+
+        const res = await request(app).get('/leaderboard/basicQuiz');
+
+        expect(res.status).toBe(404);
+        expect(res.body.error).toBe('No leaderboard data found');
     });
 });
 
