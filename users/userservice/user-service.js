@@ -43,7 +43,7 @@ function validateRequiredFields(req, requiredFields) {
 }
 
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'UP' });
+    res.status(200).json({ status: 'OK' });
 });
 
 app.post('/adduser', [

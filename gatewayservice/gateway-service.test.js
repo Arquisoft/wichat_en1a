@@ -255,3 +255,48 @@ describe('Gateway Service - Game Service', () => {
   });
 
 });
+
+const checkHealthErrorResponse = async (url, expectedMessage, statusCode) => {
+  const response = await request(app)
+      .get(url)
+      .expect('Content-Type', /json/)
+      .expect(statusCode);
+
+  expect(response.body.status).toBe('DOWN');
+  expect(response.body.message).toBe(expectedMessage);
+};
+
+describe('Health Check Endpoints', () => {
+
+
+  test('should return OK for /health', async () => {
+    await checkSuccessResponse('/health', { status: 'OK' }, { status: 'OK' });
+  });
+
+
+  test('should return health status for userservice', async () => {
+    await checkSuccessResponse('/userservice/health', { status: 'UP', service: 'User Service' }, { status: 'UP', service: 'User Service' });
+  });
+
+
+  test('should return health status for authservice', async () => {
+    await checkSuccessResponse('/authservice/health', { status: 'UP', service: 'Auth Service' }, { status: 'UP', service: 'Auth Service' });
+  });
+
+
+  test('should return 500 for llmservice when down', async () => {
+    axios.get.mockRejectedValue(new Error('LLM Service not available'));
+    await checkHealthErrorResponse('/llmservice/health', 'LLM Service not available', 500);
+  });
+
+
+  test('should return health status for questionservice', async () => {
+    await checkSuccessResponse('/questionservice/health', { status: 'UP', service: 'Question Service' }, { status: 'UP', service: 'Question Service' });
+  });
+
+
+  test('should return 500 for gameservice when down', async () => {
+    axios.get.mockRejectedValue(new Error('Game Service not available'));
+    await checkHealthErrorResponse('/gameservice/health', 'Game Service not available', 500);
+  });
+});

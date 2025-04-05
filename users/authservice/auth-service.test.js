@@ -43,3 +43,12 @@ describe('Auth Service', () => {
     expect(response.body).toHaveProperty('username', 'testuser');
   });
 });
+
+describe('Health Check Endpoints', () => {
+  test('should return OK for /health', async () => {
+    const response = await request(server).get('/health');
+
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe('OK');
+  });
+});
