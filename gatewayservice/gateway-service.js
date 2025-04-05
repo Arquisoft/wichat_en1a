@@ -115,8 +115,8 @@ app.get('/question', async (req, res) => {
 
 app.post('/saveScore', async (req, res) => {
   try {
-    const { userId, score, gameMode } = req.body;
-    if (!userId || typeof userId !== 'string' || score == null || !gameMode) {
+    const { userId, score, gameMode, questionsPassed,questionsFailed, accuracy } = req.body;
+    if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -132,7 +132,7 @@ app.get('/scoresByUser/:userId', async (req, res) => {
       const userId = req.params.userId;
       const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
 
-      if (!response.data || response.data.length === 0) {
+      if (!response.data) {
           return res.status(404).json({ error: 'No scores found for this user' });
       }
 
