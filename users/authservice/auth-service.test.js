@@ -46,7 +46,7 @@ describe('Auth Service', () => {
 
 describe('Health Check Endpoints', () => {
   test('should return OK for /health', async () => {
-    const response = await request(server).get('/health');
+    const response = await request(app).get('/health');
 
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('OK');
