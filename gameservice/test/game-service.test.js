@@ -104,6 +104,40 @@ describe('Game Service Tests', () => {
             ]
         });
     });
+
+    it('should return an empty array if user has no scores', async () => {
+        getScoresByUser.mockResolvedValueOnce({
+            scores: [],
+            totalGames: 0
+        });
+
+        const result = await getScoresByUser('userNotFound');
+        expect(result).toEqual({
+            scores: [],
+            totalGames: 0
+        });
+    });
+
+    it('should return an empty leaderboard if no scores are present', async () => {
+        getLeaderboard.mockResolvedValueOnce({
+            leaderboard: []
+        });
+
+        const result = await getLeaderboard('basicQuiz');
+        expect(result).toEqual({
+            leaderboard: []
+        });
+    });
+
+    it('should handle an internal error when getting scores for a user', async () => {
+        getScoresByUser.mockRejectedValueOnce(new Error('Internal Server Error'));
+
+        try {
+            await getScoresByUser('user123');
+        } catch (error) {
+            expect(error.message).toBe('Internal Server Error');
+        }
+    });
 });
 
 describe('Game Routes Tests', () => {
