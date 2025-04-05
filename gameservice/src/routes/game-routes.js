@@ -3,6 +3,10 @@ const { saveScore, updateScore, getScoresByUser, getLeaderboard } = require('../
 
 const router = express.Router();
 
+router.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK' });
+});
+
 // Guardar puntaje
 router.post('/saveScore', async (req, res) => {
     const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
