@@ -1,6 +1,8 @@
 const request = require('supertest');
 const express = require('express');
 const gameRoutes = require('../src/routes/game-routes');
+const gameService = require('../src/services/game-service');
+const gameModel = require('../src/models/score-model');
 
 // Configuración de la app con Express y rutas
 const app = express();
