@@ -78,7 +78,7 @@ describe('Roulette component', () => {
     await waitFor(() => {
         // Our mock example returns 0 for secureRandom, so the calculated winning index will be 0.
         // This means that the selected topic will be the lowercase version of the first topic (flags).
-        const expectedTopic = i18n.t('roulette.topics.flags').toLowerCase();
+        const expectedTopic = i18n.t('roulette.topics.flags').split()[0].toLowerCase();
         expect(onSelectTopicMock).toHaveBeenCalledWith(expectedTopic);    
         expect(screen.getByText(new RegExp(i18n.t('roulette.topic'), 'i'))).toBeInTheDocument();
     });
