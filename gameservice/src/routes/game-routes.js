@@ -15,6 +15,11 @@ router.post('/saveScore', async (req, res) => {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    const validGameModes = ['basicQuiz','expertDomain','timeAttack','endlessMarathon']; 
+    if (!validGameModes.includes(gameMode)) {
+        return res.status(400).json({ error: 'Invalid game mode' });
+    }
+
     try {
         const result = await saveScore(userId, score, gameMode, questionsPassed, questionsFailed, accuracy);
         res.status(200).json(result);
