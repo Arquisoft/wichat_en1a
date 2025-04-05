@@ -83,17 +83,18 @@ const updateScore = async (userId, score, gameMode, questionsPassed, questionsFa
     }
 };
 
-
 const getScoresByUser = async (userId, gameMode) => {
     try {
-        if (!userId || typeof userId !== 'string') {
-            return { error: 'Invalid userId' };
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return { error: 'Invalid userId format' };
         }
 
         const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
         const isValidGameMode = gameMode && allowedGameModes.includes(gameMode);
 
-        const query = { userId };
+        const query = {
+            userId: mongoose.Types.ObjectId(userId)
+        };
 
         if (isValidGameMode) {
             query.gameMode = gameMode;
@@ -110,6 +111,7 @@ const getScoresByUser = async (userId, gameMode) => {
         return { error: `Error retrieving scores: ${error.message}` };
     }
 };
+
 
 const getLeaderboard = async (gameMode) => {
     try {
