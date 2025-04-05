@@ -19,7 +19,7 @@ const AddUser = ({callback}) => {
       await axios.post(`${apiEndpoint}/adduser`, formData);
       setSignupSuccess(true);
     } catch (error) {
-      setErrormsg(error.error);
+      setErrormsg(error.response.data.error);
       setOpenSnackbar(true);
     }
   };

@@ -4,7 +4,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to right, #243c28, #7f8866);
   padding: 1.5rem;
 }
 
@@ -20,7 +19,6 @@
 .menu-title {
   font-size: 2rem;
   font-weight: bold;
-  color: white;
   margin-bottom: 2rem;
 }
 
@@ -38,7 +36,6 @@
 }
 
 .menu-card {
-  background: white;
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -46,18 +43,15 @@
 }
 
 .menu-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.25);
 }
 
 .menu-card-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #040e1c;
 }
 
 .menu-card-description {
   font-size: 1.2rem;
-  color: #1c1e1c;
   margin-top: 0.5rem;
 }
