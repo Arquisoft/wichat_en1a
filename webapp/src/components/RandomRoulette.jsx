@@ -22,11 +22,11 @@ export default function Roulette({onSelectTopic, onClickSpin}) {
 
   // Still to be confirmed with the client, but for now we will use these mock topics:
   const topics = [
-    t('roulette.topics.flags'),
-    t('roulette.topics.science'),
-    t('roulette.topics.cities'),
-    t('roulette.topics.sports'),
-    t('roulette.topics.celebrities')
+    { key: "flag", label: t('roulette.topics.flags') },
+    { key: "science", label: t('roulette.topics.science') },
+    { key: "city", label: t('roulette.topics.cities') },
+    { key: "sport", label: t('roulette.topics.sports') },
+    { key: "celebrity", label: t('roulette.topics.celebrities') }
   ];
 
   const spin = () => {
@@ -45,7 +45,7 @@ export default function Roulette({onSelectTopic, onClickSpin}) {
     const selectedIndex = (topics.length - Math.floor(winningAngle / sectorAngle)) % topics.length;
 
     setTimeout(() => {
-      const topic = topics[selectedIndex].toLowerCase();
+      const topic = topics[selectedIndex].key;
       setSelectedTopic(topic);
       onSelectTopic(topic); // Call the function passed as prop
       // setSpinning(false); // Uncomment for testing several spins in a row
@@ -63,14 +63,14 @@ export default function Roulette({onSelectTopic, onClickSpin}) {
         >
           {topics.map((topic, index) => (
             <div
-              key={topic}
+              key={topic.key}
               className="roulette-topic"
               style={{
                 transform: `rotate(${(index / topics.length) * 360 + 90}deg) translate(8rem)`,
                 color: 'accent.main'
               }}
             >
-              {topic}
+              {topic.label}
             </div>
           ))}
         </motion.div>
@@ -85,7 +85,11 @@ export default function Roulette({onSelectTopic, onClickSpin}) {
         <Button onClick={spin} disabled={spinning} variant="contained">
           {t('roulette.spin')}
         </Button>
-        {selectedTopic && (<p className="selected-topic">{t('roulette.topic')} {selectedTopic}</p>)}
+        {selectedTopic && (
+          <p className="selected-topic">
+            {t('roulette.topic')} {selectedTopic}
+          </p>
+        )}
       </div>
     </div>
   );
