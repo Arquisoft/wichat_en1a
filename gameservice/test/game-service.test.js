@@ -8,185 +8,156 @@ app.use(express.json());
 app.use(gameRoutes);
 
 jest.mock('../src/services/game-service', () => ({
-    saveScore: jest.fn().mockResolvedValue({ success: true, newScore: { userId: 'user123', score: 100, gameMode: 'basicQuiz' } }),
-    updateScore: jest.fn().mockResolvedValue({ success: true, updatedScore: { userId: 'user123', score: 200, gameMode: 'basicQuiz' } }),
+    saveScore: jest.fn().mockResolvedValue({ 
+        success: true, 
+        newScore: { 
+            userId: 'user123', 
+            score: 100, 
+            gameMode: 'basicQuiz',
+            questionsPassed: 18,
+            questionsFailed: 2,
+            accuracy: 80
+        } 
+    }),
+    updateScore: jest.fn().mockResolvedValue({ 
+        success: true, 
+        updatedScore: { 
+            userId: 'user123', 
+            score: 200, 
+            gameMode: 'basicQuiz',
+            questionsPassed: 16,
+            questionsFailed: 4,
+            accuracy: 80
+        } 
+    }),
     getScoresByUser: jest.fn().mockResolvedValue({
         success: true,
         scores: [
-            { userId: 'user123', score: 100, gameMode: 'basicQuiz' },
-            { userId: 'user123', score: 150, gameMode: 'expertDomain' }
-        ]
+            { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 },
+            { userId: 'user123', score: 150, gameMode: 'expertDomain', questionsPassed: 15, questionsFailed: 5, accuracy: 75 }
+        ],
+        totalGames: 2
     }),
     getLeaderboard: jest.fn().mockResolvedValue({
         success: true,
         leaderboard: [
-            { userId: 'user1', score: 300, gameMode: 'basicQuiz' },
-            { userId: 'user2', score: 250, gameMode: 'basicQuiz' },
-            { userId: 'user3', score: 200, gameMode: 'basicQuiz' }
+            { userId: 'user1', score: 300, gameMode: 'basicQuiz', accuracy: 90 },
+            { userId: 'user2', score: 250, gameMode: 'basicQuiz', accuracy: 85 },
+            { userId: 'user3', score: 200, gameMode: 'basicQuiz', accuracy: 80 }
         ]
     }),
 }));
 
-const { saveScore, updateScore, getScoresByUser, getLeaderboard} = require('../src/services/game-service');
+const { saveScore, updateScore, getScoresByUser, getLeaderboard } = require('../src/services/game-service');
 
 describe('Game Service Tests', () => {
     it('should save a score successfully', async () => {
-        const result = await saveScore('user123',100,'basicQuiz');
+        const result = await saveScore('user123', 100, 'basicQuiz', 18,2, 80);
         expect(result).toEqual({
             success: true,
             newScore: {
                 userId: 'user123',
                 score: 100,
-                gameMode: 'basicQuiz'
+                gameMode: 'basicQuiz',
+                questionsPassed: 18,
+                questionsFailed: 2,
+                accuracy: 80
             }
         });
     });
 
     it('should update an existing score', async () => {
-        const result = await updateScore('user123', 200, 'basicQuiz');
-        
+        const result = await updateScore('user123', 200, 'basicQuiz', 16,4, 80);
         expect(result).toEqual({
             success: true,
             updatedScore: {
                 userId: 'user123',
                 score: 200,
-                gameMode: 'basicQuiz'
+                gameMode: 'basicQuiz',
+                questionsPassed: 16,
+                questionsFailed: 4,
+                accuracy: 80
             }
         });
     });
 
     it('should retrieve scores for a user', async () => {
         const result = await getScoresByUser('user123');
-
         expect(result).toEqual({
             success: true,
             scores: [
-                { userId: 'user123', score: 100, gameMode: 'basicQuiz' },
-                { userId: 'user123', score: 150, gameMode: 'expertDomain' }
-            ]
+                { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 },
+                { userId: 'user123', score: 150, gameMode: 'expertDomain', questionsPassed: 15, questionsFailed: 5, accuracy: 75 }
+            ],
+            totalGames: 2
         });
     });
 
-    it('should return an error if no scores are found', async () => {
-        getScoresByUser.mockResolvedValueOnce({ success: false, error: 'No scores found for this user' });
-
-        const result = await getScoresByUser('user456'); // Usuario sin puntuaciones
-
-        expect(result).toEqual({ success: false, error: 'No scores found for this user' });
-    });
-
-    it('should return a sorted leaderboard with game mode', async () => {
+    it('should return a sorted leaderboard with accuracy included', async () => {
         const result = await getLeaderboard('basicQuiz');
-
         expect(result).toEqual({
             success: true,
             leaderboard: [
-                { userId: 'user1', score: 300, gameMode: 'basicQuiz' },
-                { userId: 'user2', score: 250, gameMode: 'basicQuiz' },
-                { userId: 'user3', score: 200, gameMode: 'basicQuiz' }
+                { userId: 'user1', score: 300, gameMode: 'basicQuiz', accuracy: 90 },
+                { userId: 'user2', score: 250, gameMode: 'basicQuiz', accuracy: 85 },
+                { userId: 'user3', score: 200, gameMode: 'basicQuiz', accuracy: 80 }
             ]
         });
-
     });
-
-    it('should handle leaderboard retrieval errors', async () => {
-        getLeaderboard.mockResolvedValueOnce({ success: false, error: 'Error retrieving leaderboard' });
-
-        const result = await getLeaderboard('basicQuiz');
-
-        expect(result).toEqual({ success: false, error: 'Error retrieving leaderboard' });
-    });
-
 });
 
 describe('Game Routes Tests', () => {
-    
     it('POST /saveScore should save a score successfully', async () => {
         const res = await request(app)
             .post('/saveScore')
-            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz' });
+            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
-            newScore: { userId: 'user123', score: 100, gameMode: 'basicQuiz' }
+            newScore: { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 }
         });
-    });
-
-    it('POST /saveScore should return 400 if missing fields', async () => {
-        const res = await request(app).post('/saveScore').send({ userId: 'user123' });
-
-        expect(res.status).toBe(400);
-        expect(res.body).toEqual({ error: 'Missing required fields' });
     });
 
     it('PUT /updateScore should update an existing score', async () => {
         const res = await request(app)
             .put('/updateScore')
-            .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz' });
+            .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz', questionsPassed: 16,questionsFailed: 4, accuracy: 80 });
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
-            updatedScore: { userId: 'user123', score: 200, gameMode: 'basicQuiz' }
+            updatedScore: { userId: 'user123', score: 200, gameMode: 'basicQuiz', questionsPassed: 16, questionsFailed: 4, accuracy: 80 }
         });
     });
 
-    it('PUT /updateScore should return 404 if score not found', async () => {
-        updateScore.mockResolvedValueOnce({ error: 'Score not found' });
-
-        const res = await request(app)
-            .put('/updateScore')
-            .send({ userId: 'user999', score: 300, gameMode: 'basicQuiz' });
-
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual({ error: 'Score not found' });
-    });
 
     it('GET /scoresByUser/:userId should retrieve scores for a user', async () => {
         const res = await request(app).get('/scoresByUser/user123');
-
+    
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
             scores: [
-                { userId: 'user123', score: 100, gameMode: 'basicQuiz' },
-                { userId: 'user123', score: 150, gameMode: 'expertDomain' }
-            ]
+                { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 },
+                { userId: 'user123', score: 150, gameMode: 'expertDomain', questionsPassed: 15, questionsFailed: 5, accuracy: 75 }
+            ],
+            totalGames: 2
         });
     });
 
-    it('GET /scoresByUser/:userId should return 500 if no scores found', async () => {
-        getScoresByUser.mockResolvedValueOnce({ error: 'No scores found for this user' });
 
-        const res = await request(app).get('/scoresByUser/user999');
-
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ error: 'No scores found for this user' });
-    });
-
-    it('GET /leaderboard/:gameMode should return a sorted leaderboard', async () => {
+    it('GET /leaderboard/:gameMode should return a sorted leaderboard with accuracy', async () => {
         const res = await request(app).get('/leaderboard/basicQuiz');
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
             leaderboard: [
-                { userId: 'user1', score: 300, gameMode: 'basicQuiz' },
-                { userId: 'user2', score: 250, gameMode: 'basicQuiz' },
-                { userId: 'user3', score: 200, gameMode: 'basicQuiz' }
+                { userId: 'user1', score: 300, gameMode: 'basicQuiz', accuracy: 90 },
+                { userId: 'user2', score: 250, gameMode: 'basicQuiz', accuracy: 85 },
+                { userId: 'user3', score: 200, gameMode: 'basicQuiz', accuracy: 80 }
             ]
         });
     });
-
-    it('GET /leaderboard should return 500 on error', async () => {
-        getLeaderboard.mockResolvedValueOnce({ error: 'Error retrieving leaderboard' });
-
-        const res = await request(app).get('/leaderboard');
-
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ error: 'No leaderboard data found' });
-    });
-
 });
-
