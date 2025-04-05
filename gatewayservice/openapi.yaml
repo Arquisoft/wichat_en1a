@@ -564,6 +564,18 @@ paths:
                   type: string
                   description: Game mode.
                   example: expertDomain
+                questionsPassed:
+                  type: integer
+                  description: Questions passed.
+                  example: 12
+                questionsFailed:
+                  type: integer
+                  description: Questions failed.
+                  example: 8
+                accuracy:
+                  type: integer
+                  description: Percentage of questions passed.
+                  example: 67
       responses:
         '200':
           description: Score saved successfully.
@@ -575,6 +587,10 @@ paths:
                   newScore:
                     type: object
                     properties:
+                      _id:
+                        type: string
+                        description: Identification
+                        example: 67ee51a3442bd9689a7df279
                       userId:
                         type: string
                         description: User ID.
@@ -587,10 +603,18 @@ paths:
                         type: string
                         description: Game mode.
                         example: expertDomain
-                      _id:
-                        type: string
-                        description: Identification
-                        example: 67ee51a3442bd9689a7df279
+                      questionsPassed:
+                        type: integer
+                        description: Questions passed.
+                        example: 12
+                      questionsFailed:
+                        type: integer
+                        description: Questions failed.
+                        example: 8
+                      accuracy:
+                        type: integer
+                        description: Percentage of questions passed.
+                        example: 67
                       createdAt:
                         type: string
                         description: Creation date.
@@ -652,7 +676,7 @@ paths:
                         userId:
                           type: string
                           description: User ID.
-                          example: dsfsdf
+                          example: Miguel
                         score:
                           type: integer
                           description: User score.
@@ -661,6 +685,18 @@ paths:
                           type: string
                           description: Game mode.
                           example: expertDomain
+                        questionsPassed:
+                          type: integer
+                          description: Questions passed.
+                          example: 12
+                        questionsFailed:
+                          type: integer
+                          description: Questions failed.
+                          example: 8
+                        accuracy:
+                          type: integer
+                          description: Percentage of questions passed.
+                          example: 67
                         createdAt:
                           type: string
                           description: Creation date.
@@ -668,6 +704,10 @@ paths:
                         __v:
                           type: integer
                           example: 0
+                  totalGames:
+                    type: integer
+                    description: Total number of games played.
+                    example: 4
         '404':
           description: No scores found for this user.
           content:
@@ -722,7 +762,7 @@ paths:
                         userId:
                           type: string
                           description: User ID.
-                          example: dsfsdf
+                          example: Miguel
                         score:
                           type: integer
                           description: User score.
@@ -731,6 +771,18 @@ paths:
                           type: string
                           description: Game mode.
                           example: expertDomain
+                        questionsPassed:
+                          type: integer
+                          description: Questions passed.
+                          example: 12
+                        questionsFailed:
+                          type: integer
+                          description: Questions failed.
+                          example: 12
+                        accuracy:
+                          type: integer
+                          description: Percentage of questions passed.
+                          example: 67
                         createdAt:
                           type: string
                           description: Creation date.
