@@ -24,8 +24,17 @@ const saveScore = async (userId, score, gameMode, questionsPassed,questionsFaile
 };
 
 
-const updateScore = async (userId, score, gameMode, questionsPassed,questionsFailed, accuracy) => {
-    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
+const updateScore = async (userId, score, gameMode, questionsPassed, questionsFailed, accuracy) => {
+    const allowedGameModes = ['basicQuiz','expertDomain','timeAttack','endlessMarathon'];
+
+    if (
+        !userId ||
+        score == null ||
+        !gameMode ||
+        questionsPassed == null ||
+        questionsFailed == null ||
+        accuracy == null
+    ) {
         return { error: 'Invalid data' };
     }
 
@@ -33,19 +42,34 @@ const updateScore = async (userId, score, gameMode, questionsPassed,questionsFai
         return { error: 'Invalid userId format' };
     }
 
-    try {
-        const existingScore = await Score.findOne({ userId, gameMode });
+    if (!allowedGameModes.includes(gameMode)) {
+        return { error: 'Invalid game mode' };
+    }
 
+    if (
+        typeof score !== 'number' ||
+        typeof questionsPassed !== 'number' ||
+        typeof questionsFailed !== 'number' ||
+        typeof accuracy !== 'number'
+    ) {
+        return { error: 'Invalid data types for score details' };
+    }
+
+    try {
+        const query = {
+            userId: mongoose.Types.ObjectId(userId),
+            gameMode
+        };
+
+        const existingScore = await Score.findOne(query);
         if (!existingScore) {
             return { error: 'Score not found' };
         }
 
-        const updatedQuestionsPassed = existingScore.questionsPassed + questionsPassed;
-        const updatedQuestionsFailed = existingScore.questionsFailed + questionsFailed;
         const updatedAccuracy = existingScore.accuracy + accuracy;
 
         const updatedScore = await Score.findOneAndUpdate(
-            { userId, gameMode },
+            query,
             {
                 $set: { score, accuracy: updatedAccuracy },
                 $inc: { questionsPassed, questionsFailed }
@@ -59,12 +83,25 @@ const updateScore = async (userId, score, gameMode, questionsPassed,questionsFai
     }
 };
 
+
 const getScoresByUser = async (userId, gameMode) => {
     try {
-        const query = gameMode ? { userId, gameMode } : { userId };
+        if (!userId || typeof userId !== 'string') {
+            return { error: 'Invalid userId' };
+        }
+
+        const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
+        const isValidGameMode = gameMode && allowedGameModes.includes(gameMode);
+
+        const query = { userId };
+
+        if (isValidGameMode) {
+            query.gameMode = gameMode;
+        }
+
         const scores = await Score.find(query);
 
-        if (!scores || !scores.length) {
+        if (!scores?.length) {
             return { error: 'No scores found for this user' };
         }
 
