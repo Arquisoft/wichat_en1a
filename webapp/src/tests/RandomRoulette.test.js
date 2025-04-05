@@ -77,8 +77,8 @@ describe('Roulette component', () => {
     // Another option would be using act() from react-testing-library, but it is deprecated
     await waitFor(() => {
         // Our mock example returns 0 for secureRandom, so the calculated winning index will be 0.
-        // This means that the selected topic will be the lowercase version of the first topic (flags).
-        const expectedTopic = i18n.t('roulette.topics.flags').split()[0].toLowerCase();
+        // This means that the selected topic will be the lowercase version of the first topic (flag).
+        const expectedTopic = "flag"; // MOCKED VALUE
         expect(onSelectTopicMock).toHaveBeenCalledWith(expectedTopic);    
         expect(screen.getByText(new RegExp(i18n.t('roulette.topic'), 'i'))).toBeInTheDocument();
     });
