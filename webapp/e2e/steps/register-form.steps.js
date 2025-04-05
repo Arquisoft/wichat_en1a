@@ -46,6 +46,28 @@ defineFeature(feature, test => {
       await page.waitForSelector('button[name="loginButton"]');//wait for redirection
     });
   })
+  
+  test('The user is registered in the site', ({given,when,then}) => {
+    
+    let username;
+    let password;
+    
+    given('A registered user', async () => {
+      username = "pablo"
+      password = "Pablo15&asw"
+      await page.waitForSelector('input[name="username"]');//wait for redirection
+    });
+    
+    when('I fill the data in the login form and press submit', async () => {
+      await expect(page).toFill('input[name="username"]', username);
+      await expect(page).toFill('input[name="password"]', password);
+      await expect(page).toClick('button[name="loginButton"]');
+    });
+    
+    then('I am redirected to the home page', async () => {
+      await page.waitForSelector('h1[id="home-title"]');//wait for redirection
+    });
+  })
 
   afterAll(async ()=>{
     browser.close()

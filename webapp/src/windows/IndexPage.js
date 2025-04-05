@@ -23,7 +23,7 @@ const IndexPage = () => {
               {t("index.howItWorks")}
             </Typography>
             <Grid align='center'>
-              <Button href="/auth/true" variant="outlined" style={{ marginRight: 10 }}>{t('login.message')}</Button>
+              <Button href="/auth/true" name="login" variant="outlined" style={{ marginRight: 10 }}>{t('login.message')}</Button>
               <Button href="/auth/false" name="signup" variant="outlined">{t('signup.message')}</Button>
             </Grid>
           </Grid>
