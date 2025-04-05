@@ -43,7 +43,7 @@ const GamePage = ({timePerQuestionTesting}) => {
       if (questionNum < questions.length - 1) { // Check if there are more questions
         setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
       } else {
-        setEndGame(true);
+        setTimeout(() => setEndGame(true), 1000);
       }
   };
   useEffect(() => {
