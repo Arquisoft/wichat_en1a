@@ -23,7 +23,7 @@ const ResultsPage = () => {
         <Card sx={{textAlign:"center",bgcolor:"secondary.light"}}>
           <CardContent>
             <Avatar sx={{ margin: "auto", width: 60, height: 60 }} />
-            <Typography component="h2" variant="h5">{t("results.title")}</Typography>
+            <Typography id="results-title" component="h2" variant="h5">{t("results.title")}</Typography>
             {(stats.length!==0)?(<>
             <TableContainer sx={{padding:"1rem"}}>
               <Table data-testid='statsTable'>
@@ -36,7 +36,7 @@ const ResultsPage = () => {
                 <TableBody>
                   {stats.map((stat, index) => (
                     <TableRow key={index}>
-                      <TableCell data-testId={stat.name}>{t("results.stat."+stat.name)}</TableCell>
+                      <TableCell id={stat.name+"-gameStat"} data-testId={stat.name}>{t("results.stat."+stat.name)}</TableCell>
                       <TableCell data-testId={stat.value}>{stat.value}</TableCell>
                     </TableRow>
                   ))}

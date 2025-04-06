@@ -15,9 +15,9 @@ const HomePage = () => {
   const [randomized, setRandomized] = useState(false);
   const [disableSwitch, setDisableSwitch] = useState(false);
 
-  const [numQuestions, setNumQuestions] = useState(10);
+  const [numQuestions] = useState(10);
   const [questionType, setQuestionType] = useState("all");
-  const [timePerQuestion, setTimePerQuestion] = useState(60000);
+  const [timePerQuestion] = useState(60000);
 
   const { t } = useTranslation();
   const theme = useTheme();
@@ -114,6 +114,7 @@ const HomePage = () => {
                     </>
                   )}
                   <Button
+                    id={mode.mode+"Button"}
                     href={`/game?mode=${mode.mode}&numQuestions=${numQuestions}&questionType=${questionType}&timePerQuestion=${timePerQuestion}`}
                     sx={{
                       width: "100%",

@@ -83,7 +83,7 @@ const GamePage = ({timePerQuestionTesting}) => {
       saveResult(failed,accuracy);
       setNavigate(true);
     }
-  }, [endGame]);
+  }, [endGame,answersCorrect, gamemode, numQuestions, questionNum, questionType, saveResult, score, timePerQuestion]);
   return (
     <React.Fragment>
     {loadedQuestions && questions? (navigate?(<Navigate to="/results"/>):(
