@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import GameComponent from '../components/GameComponent';
 import { Navigate, useLocation } from "react-router-dom";
 import { Grid } from '@mui/material';
@@ -34,7 +34,7 @@ const GamePage = ({timePerQuestionTesting}) => {
       throw new Error('Network error:'+err)
     }
   }
-  const saveResult = async(questionsFailed,accuracy)=>{
+  const saveResult = useCallback(async(questionsFailed,accuracy)=>{
     let done=false;
     do{
       try{
@@ -51,7 +51,7 @@ const GamePage = ({timePerQuestionTesting}) => {
         console.error("An error ocurred while saving your result. Trying again...");
       }
     }while(!done);
-  }
+  },[score, gamemode, answersCorrect,gatewayUrl]);
   useEffect(()=>{
     if (!loadedQuestions) {
       fetchData();

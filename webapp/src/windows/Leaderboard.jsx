@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import NavBar from '../components/NavBarSignedIn';
@@ -29,7 +29,7 @@ const Leaderboard = () => {
   const loggedInPlayerId = getLoggedInUserId();
   const [leaderboardData, setLeaderboardData] = useState(null);
   const [error, setError] = useState(null);
-  const gameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
+  const gameModes = useMemo(()=>['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'],[]);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
