@@ -1,1 +1,60 @@
 /* Statistics.css */
+
+.statistics-container {
+    width: 100%;
+    margin: 2rem auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.statistics-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.statistics-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 1rem;
+    overflow: hidden;
+}
+
+.statistics-card .MuiCardContent-root {
+    padding: 1rem;
+}
+
+.statistics-card ul {
+    list-style: none;
+}
+
+.statistics-card li {
+    padding: 0.5rem 0;
+}
+
+.statistics-card .MuiDivider-root {
+    margin: 0.5rem 0;
+}
+
+.MuiTabs-root {
+    margin-bottom: 1rem;
+}
+
+.MuiTab-root {
+    text-transform: none;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .statistics-container {
+        padding: 0.5rem;
+    }
+}
+
+.recharts-surface {
+    width: 100%;
+}
