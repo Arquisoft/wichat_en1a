@@ -42,6 +42,10 @@ function validateRequiredFields(req, requiredFields) {
     }
 }
 
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK' });
+});
+
 app.post('/adduser', [
     check('username').isLength({ min: 3 }).trim().escape()
 ], async (req, res) => {

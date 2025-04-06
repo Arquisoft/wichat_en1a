@@ -3,4 +3,7 @@ module.exports = {
 
     // Otras configuraciones opcionales
     verbose: true, // Muestra más detalles de las pruebas en la consola
+    collectCoverage: true,
+    coverageDirectory: "coverage",
+    coverageReporters: ["lcov", "text"],
 };

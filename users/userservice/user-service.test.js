@@ -101,3 +101,12 @@ describe('User Service', () => {
         'is longer than the maximum allowed length (30).');
   });
 });
+
+describe('Health Check Endpoints', () => {
+  test('should return OK for /health', async () => {
+    const response = await request(app).get('/health');
+
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe('OK');
+  });
+});
