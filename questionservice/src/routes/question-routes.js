@@ -5,6 +5,10 @@ const { saveQuestions, addQuestion, getQuestions, getRandomQuestion, getQuestion
 
 const router = express.Router();
 
+router.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK' });
+});
+
 router.get('/generate-questions', generateQuestionsController);
 
 

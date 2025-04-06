@@ -12,7 +12,7 @@ const app = express();
 const port = 8000;
 
 const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8005';
-const questionServiceURL = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
+const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
@@ -29,6 +29,51 @@ app.use(metricsMiddleware);
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
+});
+
+app.get('/userservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(userServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'Authorization Service not available' });
+  }
+});
+
+app.get('/authservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(authServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'Authorization Service not available' });
+  }
+});
+
+app.get('/llmservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(llmServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'LLM Service not available' });
+  }
+});
+
+app.get('/questionservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(questionServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'Question Service not available' });
+  }
+});
+
+app.get('/gameservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(gameServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'Game Service not available' });
+  }
 });
 
 app.post('/login', async (req, res) => {
@@ -79,7 +124,7 @@ app.get('/generate-questions', async (req, res) => {
         error: 'Debe proporcionar un tipo de pregunta y un número válido de preguntas.',
       });
     }
-    const url = questionServiceURL + '/generate-questions' + '?type=' + type + '&numQuestions=' + numQuestions;
+    const url = questionServiceUrl + '/generate-questions' + '?type=' + type + '&numQuestions=' + numQuestions;
     const questionsResponse = await axios.get(url);
     res.json(questionsResponse.data);
   } catch (error) {
@@ -93,7 +138,7 @@ app.get('/questions/:type/:limit', async (req, res) => {
   const { type, limit } = req.params;
 
   try {
-    const questions = await axios.get(`${questionServiceURL}/questions/${type}/${limit}`);
+    const questions = await axios.get(`${questionServiceUrl}/questions/${type}/${limit}`);
     res.status(200).json(questions.data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -103,7 +148,7 @@ app.get('/questions/:type/:limit', async (req, res) => {
 // Ruta GET: Obtain random question
 app.get('/question', async (req, res) => {
   try {
-    const randomQuestion = await axios.get(`${questionServiceURL}/question`);
+    const randomQuestion = await axios.get(`${questionServiceUrl}/question`);
     if (!randomQuestion.data) {
       return res.status(404).json({ error: 'No se encontró una pregunta' });
     }

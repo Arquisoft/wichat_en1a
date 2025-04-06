@@ -109,6 +109,10 @@ async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiK
   }
 }
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
+});
+
 app.post('/ask', async (req, res) => {
   try {
     // Check if required fields are present in the request body
