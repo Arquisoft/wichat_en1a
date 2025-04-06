@@ -15,18 +15,18 @@ const HomePage = () => {
   const [randomized, setRandomized] = useState(false);
   const [disableSwitch, setDisableSwitch] = useState(false);
 
-  const [numQuestions, setNumQuestions] = useState(10);
+  const [numQuestions] = useState(10);
   const [questionType, setQuestionType] = useState("all");
-  const [timePerQuestion, setTimePerQuestion] = useState(60000);
+  const [timePerQuestion] = useState(60000);
 
   const { t } = useTranslation();
   const theme = useTheme();
 
   const gameModes = [
-    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset />, mode: 'basic-quiz' },
-    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School />, mode: randomized ? 'roulette' : 'expert-domain' },
-    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm />, mode: 'time-attack' },
-    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, mode: 'endless-marathon' }
+    { id: 1, name: t('gameModes.basicQuiz.name'), description: t('gameModes.basicQuiz.description'), icon: <VideogameAsset />, mode: 'basicQuiz' },
+    { id: 2, name: t('gameModes.expertDomain.name'), description: t('gameModes.expertDomain.description'), icon: <School />, mode: randomized ? 'roulette' : 'expertDomain' },
+    { id: 3, name: t('gameModes.timeAttack.name'), description: t('gameModes.timeAttack.description'), icon: <AccessAlarm />, mode: 'timeAttack' },
+    { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, mode: 'endlessMarathon' }
   ];
 
   const handleToggle = () => {
@@ -114,6 +114,7 @@ const HomePage = () => {
                     </>
                   )}
                   <Button
+                    id={mode.mode+"Button"}
                     href={`/game?mode=${mode.mode}&numQuestions=${numQuestions}&questionType=${questionType}&timePerQuestion=${timePerQuestion}`}
                     sx={{
                       width: "100%",

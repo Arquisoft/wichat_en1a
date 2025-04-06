@@ -33,7 +33,7 @@ const GameComponent = ({ question={
   });
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center" >
-      <Grid item xs={12}><Typography variant='h2' textAlign="center">{question.question}</Typography></Grid>
+      <Grid item xs={12}><Typography id="gameQuestion" variant='h2' textAlign="center">{question.question}</Typography></Grid>
       
       <Grid item xs={8} component="img" flexGrow={1} src={question.image} alt="question hint image"
         sx={{maxHeight:"60vh",width:"100%",borderRadius:2,boxShadow:3, objectFit:"contain",backgroundColor:theme.palette.primary.main}}></Grid>
@@ -46,7 +46,7 @@ const GameComponent = ({ question={
       <Grid item container spacing={2} sx={{ width: "80%" }}>
       {question.answers.map((answer, index) => (
       <Grid item xs={6} key={index}>
-        <Button variant='contained' fullWidth color={responded?(getColor(index)):'primary'} onClick={()=>handleAnswer(index)}>
+        <Button variant='contained' id={"gameAnswer"+index} fullWidth color={responded?(getColor(index)):'primary'} onClick={()=>handleAnswer(index)}>
           <Typography variant="h5" data-testid={"answerButton"+index} component="h3">{answer}</Typography></Button>
       </Grid>
       ))}

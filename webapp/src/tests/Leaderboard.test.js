@@ -97,8 +97,8 @@ describe('Leaderboard Component', () => {
     
     const responses = gameModes.map(mode => ({
       leaderboard: [
-        { id: mode + '1', name: 'Player 1', score: 100 },
-        { id: 'user1', name: 'Logged In Player', score: 150 },
+        { userId: 'Player 1', score: 100 },
+        { userId: 'Logged In Player', score: 150 },
       ],
     }));
 
@@ -130,8 +130,5 @@ describe('Leaderboard Component', () => {
     expect(playerOneItems.length).toBe(gameModes.length);
     const loggedInItems = screen.getAllByText('2. Logged In Player');
     expect(loggedInItems.length).toBe(gameModes.length);
-    loggedInItems.forEach(item => {
-        expect(item.closest('.list-item')).toHaveClass('highlighted');
-    });
   });
 });

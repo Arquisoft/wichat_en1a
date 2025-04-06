@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import NavBar from '../components/NavBarSignedIn';
@@ -29,7 +29,7 @@ const Leaderboard = () => {
   const loggedInPlayerId = getLoggedInUserId();
   const [leaderboardData, setLeaderboardData] = useState(null);
   const [error, setError] = useState(null);
-  const gameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
+  const gameModes = useMemo(()=>['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'],[]);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -60,7 +60,7 @@ const Leaderboard = () => {
     };
 
     fetchLeaderboard();
-  }, [gatewayUrl]);
+  }, [gatewayUrl,gameModes]);
 
   // Auxiliary function to render each game mode section
   const renderLeaderboardSection = (modeKey, modeDisplayName) => {
@@ -82,7 +82,7 @@ const Leaderboard = () => {
                     className={result.id === loggedInPlayerId ? 'list-item highlighted' : 'list-item'}
                   >
                     <ListItemText 
-                      primary={`${index + 1}. ${result.name}`}
+                      primary={`${index + 1}. ${result.userId}`}
                       secondary={`${t('score')}: ${result.score}`} 
                     />
                   </ListItem>
@@ -100,7 +100,8 @@ const Leaderboard = () => {
     <div 
       className="window-container"
       style = {{
-        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`
+        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
+        height: '100vh',
       }}
     >
       <NavBar />
