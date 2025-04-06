@@ -39,7 +39,7 @@ const GamePage = ({timePerQuestionTesting}) => {
     do{
       try{
         await axios.post(`${gatewayUrl}/saveScore`, {
-          "userId":sessionStorage.getItem("sessionToken"),
+          "userId":sessionStorage.getItem("loggedInUser"),
           "score":score,
           "gameMode":gamemode,
           "questionsPassed":answersCorrect,

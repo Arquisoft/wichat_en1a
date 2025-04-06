@@ -17,9 +17,10 @@ const Login = () => {
     try {
       const response = await axios.post(`${apiEndpoint}/login`, formData);
       // Extract data from the response
-      const { token } = response.data;
+      const { token, username } = response.data;
       
       sessionStorage.setItem("sessionToken",token);
+      sessionStorage.setItem("loggedInUser",username);
       setLoginSuccess(true);
     } catch (error) {
       setSnackbarStatus(true);
