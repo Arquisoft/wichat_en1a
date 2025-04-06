@@ -1,9 +1,15 @@
 import React from 'react'
 import { Avatar, Box, Button, Card, CardContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import NavBarSignedIn from '../components/NavBarSignedIn'
+import { useTranslation } from 'react-i18next';
 
 const ResultsPage = () => {
-  const stats = [{name:"Questions answered",value:"20"},{name:"Score",value:"400"}];//TODO switch for generated values
+  const {t} = useTranslation();
+  const stats = JSON.parse(sessionStorage.getItem("gameResults"))||[];
+  const lastGamemode=sessionStorage.getItem('lastGamemode');
+  const lastTopic=sessionStorage.getItem('lastTopic');
+  const lastQuestionNum=sessionStorage.getItem('lastQuestionNum');
+  const timePerQuestion=sessionStorage.getItem('timePerQuestion');
   return (
     <Box>
       <NavBarSignedIn />
@@ -11,26 +17,28 @@ const ResultsPage = () => {
         <Card sx={{textAlign:"center",bgcolor:"secondary.light"}}>
           <CardContent>
             <Avatar sx={{ margin: "auto", width: 60, height: 60 }} />
-            <Typography component="h2" variant="h5">Your statistics:</Typography>
+            <Typography component="h2" variant="h5">{t("results.title")}</Typography>
+            {(stats.length!==0)?(<>
             <TableContainer sx={{padding:"1rem"}}>
-              <Table>
+              <Table data-testid='statsTable'>
                 <TableHead>
                   <TableRow>
-                    <TableCell><b>Stat</b></TableCell>
-                    <TableCell><b>Value</b></TableCell>
+                    <TableCell>{t("results.header.name")}</TableCell>
+                    <TableCell>{t("results.header.value")}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {stats.map((stat, index) => (
                     <TableRow key={index}>
-                      <TableCell>{stat.name}</TableCell>
+                      <TableCell>{t("results.stat."+stat.name)}</TableCell>
                       <TableCell>{stat.value}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
-            <Button fullWidth variant='outlined'>Play again</Button>
+            <Button data-testId="playAgainButton" href={`/game?mode=${lastGamemode}&numQuestions=${lastQuestionNum}&questionType=${lastTopic}&timePerQuestion=${timePerQuestion}`} fullWidth variant='outlined'>Play again</Button>
+            </>):(<Typography variant='body1'>{t("results.none")}</Typography>)}
           </CardContent>
         </Card>
       </Box>
