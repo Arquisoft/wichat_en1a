@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import NavBar from '../components/NavBarSignedIn';
+import { jwtDecode } from 'jwt-decode';
 import { useTranslation } from 'react-i18next';
+
 import '../css/Leaderboard.css';
 
 const Leaderboard = () => {
@@ -12,10 +14,19 @@ const Leaderboard = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   
-  // TODO: Replace with actual logged-in player ID from auth context
-  const loggedInPlayerId = '0';
+  const getLoggedInUserId = () => {
+    const token = localStorage.getItem('sessionToken');
+    if (!token) return null;
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.userId;
+    } catch (error) {
+      console.error('Invalid token', error);
+      return null;
+    }
+  };
 
-  // State to hold leaderboard data. 
+  const loggedInPlayerId = getLoggedInUserId();
   const [leaderboardData, setLeaderboardData] = useState(null);
   const [error, setError] = useState(null);
   const gameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
