@@ -1,6 +1,7 @@
 const request = require('supertest');
 const express = require('express');
 const gameRoutes = require('../src/routes/game-routes');
+const jwt = require('jsonwebtoken');
 
 // Configuración de la app con Express y rutas
 const app = express();
@@ -140,10 +141,16 @@ describe('Game Service Tests', () => {
     });
 });
 
+const generateToken = (userId) => {
+    return jwt.sign({ userId }, 'your-secret-key', { expiresIn: '1h' });
+};
+
 describe('Game Routes Tests', () => {
     it('POST /saveScore should save a score successfully', async () => {
+        const token = generateToken('user123');  // Generar el token
         const res = await request(app)
             .post('/saveScore')
+            .set('Authorization', `Bearer ${token}`)  // Incluir el token en los encabezados
             .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
 
         expect(res.status).toBe(200);
@@ -154,18 +161,25 @@ describe('Game Routes Tests', () => {
     });
 
     it('POST /saveScore should return 400 if required fields are missing', async () => {
-        const res = await request(app).post('/saveScore').send({});
+        const token = generateToken('user123');
+        const res = await request(app)
+            .post('/saveScore')
+            .set('Authorization', `Bearer ${token}`)
+            .send({}); // Enviar sin campos obligatorios
+
         expect(res.status).toBe(400);
         expect(res.body.error).toBe('Missing required fields');
     });
 
     it('POST /saveScore should return 500 on internal error', async () => {
+        const token = generateToken('user123');
         saveScore.mockImplementationOnce(() => {
             throw new Error('Something went wrong');
         });
 
         const res = await request(app)
             .post('/saveScore')
+            .set('Authorization', `Bearer ${token}`)
             .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 10, questionsFailed: 5, accuracy: 80 });
 
         expect(res.status).toBe(500);
@@ -173,8 +187,10 @@ describe('Game Routes Tests', () => {
     });
 
     it('POST /saveScore should return 400 if gameMode is invalid', async () => {
+        const token = generateToken('user123');
         const res = await request(app)
             .post('/saveScore')
+            .set('Authorization', `Bearer ${token}`)
             .send({ userId: 'user123', score: 100, gameMode: 'invalidMode', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
 
         expect(res.status).toBe(400);
@@ -182,12 +198,14 @@ describe('Game Routes Tests', () => {
     });
 
     it('POST /saveScore should return 500 if there is a database error', async () => {
+        const token = generateToken('user123');
         saveScore.mockImplementationOnce(() => {
             throw new Error('Database error');
         });
 
         const res = await request(app)
             .post('/saveScore')
+            .set('Authorization', `Bearer ${token}`)
             .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
 
         expect(res.status).toBe(500);
@@ -196,9 +214,11 @@ describe('Game Routes Tests', () => {
 
 
     it('PUT /updateScore should update an existing score', async () => {
+        const token = generateToken('user123');
         const res = await request(app)
             .put('/updateScore')
-            .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz', questionsPassed: 16,questionsFailed: 4, accuracy: 80 });
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz', questionsPassed: 16, questionsFailed: 4, accuracy: 80 });
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
@@ -208,8 +228,10 @@ describe('Game Routes Tests', () => {
     });
 
     it('PUT /updateScore should return 400 if required fields are missing', async () => {
+        const token = generateToken('user123');
         const res = await request(app)
             .put('/updateScore')
+            .set('Authorization', `Bearer ${token}`)
             .send({ userId: 'user123', score: 200 });
 
         expect(res.status).toBe(400);
@@ -217,10 +239,12 @@ describe('Game Routes Tests', () => {
     });
 
     it('PUT /updateScore should return 404 if score is not found', async () => {
+        const token = generateToken('user123');
         updateScore.mockResolvedValueOnce({ error: 'Score not found' });
 
         const res = await request(app)
             .put('/updateScore')
+            .set('Authorization', `Bearer ${token}`)
             .send({ userId: 'user123', score: 200, gameMode: 'basicQuiz', questionsPassed: 16, questionsFailed: 4, accuracy: 80 });
 
         expect(res.status).toBe(404);
@@ -228,7 +252,10 @@ describe('Game Routes Tests', () => {
     });
 
     it('GET /scoresByUser/:userId should retrieve scores for a user', async () => {
-        const res = await request(app).get('/scoresByUser/user123');
+        const token = generateToken('user123');
+        const res = await request(app)
+            .get('/scoresByUser/user123')
+            .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
@@ -242,16 +269,20 @@ describe('Game Routes Tests', () => {
     });
 
     it('GET /scoresByUser/:userId should return 404 if no scores found', async () => {
+        const token = generateToken('user123');
         getScoresByUser.mockResolvedValueOnce({ error: 'No scores found for this user' });
 
-        const res = await request(app).get('/scoresByUser/unknownUser');
+        const res = await request(app).get('/scoresByUser/unknownUser').set('Authorization', `Bearer ${token}`);;
 
         expect(res.status).toBe(404);
         expect(res.body.error).toBe('No scores found for this user');
     });
 
     it('GET /leaderboard/:gameMode should return a sorted leaderboard with accuracy', async () => {
-        const res = await request(app).get('/leaderboard/basicQuiz');
+        const token = generateToken('user123');
+        const res = await request(app)
+            .get('/leaderboard/basicQuiz')
+            .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
