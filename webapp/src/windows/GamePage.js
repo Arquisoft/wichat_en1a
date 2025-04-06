@@ -17,10 +17,13 @@ const GamePage = ({timePerQuestionTesting}) => {
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
+  const gamemode = (params.get('mode')?params.get('mode'):'basic');
   const numQuestions = (params.get('numQuestions')) ? params.get('numQuestions') : 10; // By default, 10 questions. In endless mode and time attack it is infinite
   const questionType = (params.get('questionType')) ? params.get('questionType') : 'all'; // By default, any type of questions. In expert's domain, it is a concrete topic.
   const timePerQuestion = (params.get('timePerQuestion')) ? params.get('timePerQuestion') : 60000; // By default, 60 seconds per question. In time attack mode, it is total time. In endless, infinite time.
-  const isTimeAttack = (params.get('isTimeAttack')) ? params.get('isTimeAttack') : false; // By default, it is not time attack mode. In time attack mode, it is true.
+  
+  //score
+  const [answersCorrect,setAnswersCorrect]=useState(0);
 
   const fetchData = async () =>{ 
     try{
@@ -31,6 +34,24 @@ const GamePage = ({timePerQuestionTesting}) => {
       throw new Error('Network error:'+err)
     }
   }
+  const saveResult = async(questionsFailed,accuracy)=>{
+    let done=false;
+    do{
+      try{
+        await axios.post(`${gatewayUrl}/saveScore`, {
+          "userId":sessionStorage.getItem("sessionToken"),
+          "score":score,
+          "gameMode":gamemode,
+          "questionsPassed":answersCorrect,
+          "questionsFailed":questionsFailed,
+          "accuracy":accuracy,
+        });
+        done=true;
+      }catch(err){
+        console.error("An error ocurred while saving your result. Trying again...");
+      }
+    }while(!done);
+  }
   useEffect(()=>{
     if (!loadedQuestions) {
       fetchData();
@@ -38,23 +59,31 @@ const GamePage = ({timePerQuestionTesting}) => {
   });
   
   const handleQuestionAnswered = (correct) => {
-    if(correct===true){
-      setScore(score + 100);
-    }
-    if (questionNum < questions.length - 1) { // Check if there are more questions
-      setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
-    } else {
-      setEndGame(true);
-    }
+      if(correct===true){
+        setScore(score + 100);
+        setAnswersCorrect(answersCorrect+1);
+      }
+      if (questionNum < questions.length - 1) { // Check if there are more questions
+        setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
+      } else {
+        setTimeout(() => setEndGame(true), 1000);
+      }
   };
   useEffect(() => {
     // This will ensure sessionStorage is updated after score change
     if(endGame){
-      sessionStorage.setItem('score',score);
-      sessionStorage.setItem('questionNum',questionNum+1);
+      let failed=(questionNum+1)-answersCorrect;
+      let accuracy=(answersCorrect*100/(questionNum+1));
+      let results = [{name:"gameMode",value:gamemode},{name:"score",value:score},{name:"questionsPassed",value:answersCorrect},{name:"questionsFailed",value:failed},{name:"accuracy",value:accuracy+"%"}];
+      sessionStorage.setItem('gameResults',JSON.stringify(results));
+      sessionStorage.setItem('lastGamemode',gamemode);
+      sessionStorage.setItem('lastTopic',questionType);
+      sessionStorage.setItem('lastQuestionNum',numQuestions);
+      sessionStorage.setItem('timePerQuestion',timePerQuestion);
+      saveResult(failed,accuracy);
       setNavigate(true);
     }
-  }, [endGame,score,questionNum]);
+  }, [endGame]);
   return (
     <React.Fragment>
     {loadedQuestions && questions? (navigate?(<Navigate to="/results"/>):(
