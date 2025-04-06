@@ -4,7 +4,7 @@ COPY . /app
 WORKDIR /app
 
 #Install the dependencies
-RUN npm install
+RUN npm install --omit=dev
 
 ARG API_URI="http://localhost:8000"
 ARG LLM_API_KEY
