@@ -114,6 +114,7 @@ const HomePage = () => {
                     </>
                   )}
                   <Button
+                    id={mode.mode+"Button"}
                     href={`/game?mode=${mode.mode}&numQuestions=${numQuestions}&questionType=${questionType}&timePerQuestion=${timePerQuestion}`}
                     sx={{
                       width: "100%",
