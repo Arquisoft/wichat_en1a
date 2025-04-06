@@ -123,7 +123,7 @@ const getLeaderboard = async (gameMode) => {
             .sort({ score: -1 })  
             .limit(10);
 
-        return { leaderboard };
+        return { leaderboard : leaderboard || []};
     } catch (error) {
         return { error: `Error retrieving leaderboard: ${error.message}` };
     }
