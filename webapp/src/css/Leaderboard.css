@@ -1,0 +1,38 @@
+/* Leaderboard.css */
+
+.leaderboard-container {
+    margin: 1rem auto;
+    padding: 1rem;
+    color: #ffffff;
+}
+
+.leaderboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5rem;
+}
+
+.leaderboard-section {
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    margin: 1rem 0;
+}
+
+.leaderboard-card {
+    margin-bottom: 1rem;
+    width: 100%;
+    height: 60vh;
+    overflow-y: auto;
+}
+
+.list-item {
+    background-color: transparent;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.list-item.highlighted {
+    background-color: rgba(76, 175, 80, 0.3);
+}
