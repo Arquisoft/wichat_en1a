@@ -82,7 +82,7 @@ const Leaderboard = () => {
                     className={result.id === loggedInPlayerId ? 'list-item highlighted' : 'list-item'}
                   >
                     <ListItemText 
-                      primary={`${index + 1}. ${result.name}`}
+                      primary={`${index + 1}. ${result.userId}`}
                       secondary={`${t('score')}: ${result.score}`} 
                     />
                   </ListItem>
@@ -100,7 +100,8 @@ const Leaderboard = () => {
     <div 
       className="window-container"
       style = {{
-        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`
+        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
+        height: '100vh',
       }}
     >
       <NavBar />
