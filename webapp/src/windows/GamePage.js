@@ -46,6 +46,7 @@ const GamePage = ({timePerQuestionTesting}) => {
           "questionsFailed":questionsFailed,
           "accuracy":accuracy,
         });
+        done=true;
       }catch(err){
         console.error("An error ocurred while saving your result. Trying again...");
       }
