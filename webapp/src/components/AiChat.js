@@ -26,7 +26,7 @@ const AiChat = ({question={
       const response = await axios.post(`${gatewayUrl}/askllm`, {
         question: userInput,
         gameQuestion: question.question, // Replace with actual game question
-        correctAnswer: question.correctAnswer // Replace with actual correct answer
+        correctAnswer: question.answers[question.correctAnswerId] // Replace with actual correct answer
       })
 
       // Update chat with the AI response
