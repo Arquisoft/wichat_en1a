@@ -60,7 +60,7 @@ const Leaderboard = () => {
     };
 
     fetchLeaderboard();
-  }, [gatewayUrl]);
+  }, [gatewayUrl,gameModes]);
 
   // Auxiliary function to render each game mode section
   const renderLeaderboardSection = (modeKey, modeDisplayName) => {
