@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Score = require('../models/score-model');
+const validator = require('validator');
+
 
 const saveScore = async (userId, score, gameMode, questionsPassed,questionsFailed, accuracy) => {
     if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
@@ -25,7 +27,7 @@ const saveScore = async (userId, score, gameMode, questionsPassed,questionsFaile
 
 
 const updateScore = async (userId, score, gameMode, questionsPassed, questionsFailed, accuracy) => {
-    const allowedGameModes = ['basicQuiz','expertDomain','timeAttack','endlessMarathon'];
+    const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
 
     if (
         !userId ||
@@ -38,11 +40,10 @@ const updateScore = async (userId, score, gameMode, questionsPassed, questionsFa
         return { error: 'Invalid data' };
     }
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return { error: 'Invalid userId format' };
-    }
+    const escapedUserId = validator.escape(userId.toString()); // userId como string
+    const escapedGameMode = validator.escape(gameMode.toString()); // gameMode también escapado
 
-    if (!allowedGameModes.includes(gameMode)) {
+    if (!allowedGameModes.includes(escapedGameMode)) {
         return { error: 'Invalid game mode' };
     }
 
@@ -57,8 +58,8 @@ const updateScore = async (userId, score, gameMode, questionsPassed, questionsFa
 
     try {
         const query = {
-            userId: mongoose.Types.ObjectId(userId),
-            gameMode
+            userId: escapedUserId,
+            gameMode: escapedGameMode
         };
 
         const existingScore = await Score.findOne(query);
@@ -83,21 +84,23 @@ const updateScore = async (userId, score, gameMode, questionsPassed, questionsFa
     }
 };
 
+
 const getScoresByUser = async (userId, gameMode) => {
     try {
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return { error: 'Invalid userId format' };
-        }
+        const escapedUserId = validator.escape(userId.toString());
 
         const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
-        const isValidGameMode = gameMode && allowedGameModes.includes(gameMode);
+        const escapedGameMode = gameMode ? validator.escape(gameMode.toString()) : null;
+
+        const isValidGameMode = escapedGameMode && allowedGameModes.includes(escapedGameMode);
+
 
         const query = {
-            userId: mongoose.Types.ObjectId(userId)
+            userId: escapedUserId
         };
 
         if (isValidGameMode) {
-            query.gameMode = gameMode;
+            query.gameMode = escapedGameMode;
         }
 
         const scores = await Score.find(query);
@@ -120,7 +123,7 @@ const getLeaderboard = async (gameMode) => {
             .sort({ score: -1 })  
             .limit(10);
 
-        return { leaderboard };
+        return { leaderboard : leaderboard || []};
     } catch (error) {
         return { error: `Error retrieving leaderboard: ${error.message}` };
     }

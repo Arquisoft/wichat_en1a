@@ -1,8 +1,6 @@
 const request = require('supertest');
 const express = require('express');
 const gameRoutes = require('../src/routes/game-routes');
-const gameService = require('../src/services/game-service');
-const gameModel = require('../src/models/score-model');
 
 // Configuración de la app con Express y rutas
 const app = express();
@@ -178,7 +176,7 @@ describe('Game Routes Tests', () => {
         const res = await request(app)
             .post('/saveScore')
             .send({ userId: 'user123', score: 100, gameMode: 'invalidMode', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
-    
+
         expect(res.status).toBe(400);
         expect(res.body.error).toBe('Invalid game mode');
     });
@@ -187,15 +185,15 @@ describe('Game Routes Tests', () => {
         saveScore.mockImplementationOnce(() => {
             throw new Error('Database error');
         });
-    
+
         const res = await request(app)
             .post('/saveScore')
             .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
-    
+
         expect(res.status).toBe(500);
         expect(res.body.error).toBe('Error saving score');
     });
-    
+
 
     it('PUT /updateScore should update an existing score', async () => {
         const res = await request(app)
@@ -231,7 +229,7 @@ describe('Game Routes Tests', () => {
 
     it('GET /scoresByUser/:userId should retrieve scores for a user', async () => {
         const res = await request(app).get('/scoresByUser/user123');
-    
+
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
