@@ -47,7 +47,7 @@ const NavBarSignedIn = () => {
           <MenuItem value="EN">EN</MenuItem>
           <MenuItem value="ES">ES</MenuItem>
         </Select>
-        <Button onClick={handleLogout} color="inherit" sx={{
+        <Button onClick={handleLogout} id="logoutButton" color="inherit" sx={{
             marginLeft: 5,
             marginRight: 2,
             "&:hover": {

@@ -13,7 +13,7 @@ const IndexPage = () => {
       <NavBar></NavBar>
       <Grid container flexGrow={1} alignItems='center'>
           <Grid item flexDirection='column' margin={2} md={6}>
-            <Typography variant="h5" gutterBottom>
+            <Typography id="index-title" component='h2' variant="h5" gutterBottom>
               {t('index.title')}
             </Typography>
             <Typography variant="body1" paragraph>
