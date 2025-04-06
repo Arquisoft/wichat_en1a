@@ -108,11 +108,11 @@ services:
       context: ./webapp
       args:
         LLM_API_KEY: ${LLM_API_KEY}
-        API_URI: ${GATEWAY_SERVICE_URL}
+        REACT_APP_API_ENDPOINT: ${GATEWAY_SERVICE_URL}
     depends_on:
       - gatewayservice
     ports:
-      - "80:3000"
+      - "3000:3000"
     environment:
       GATEWAY_SERVICE_URL: http://gatewayservice:8000
 

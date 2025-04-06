@@ -16,7 +16,7 @@ const HomePage = () => {
   const [disableSwitch, setDisableSwitch] = useState(false);
 
   const [numQuestions, setNumQuestions] = useState(10);
-  const [questionType, setQuestionType] = useState("any");
+  const [questionType, setQuestionType] = useState("all");
   const [timePerQuestion, setTimePerQuestion] = useState(60000);
 
   const { t } = useTranslation();
@@ -29,14 +29,12 @@ const HomePage = () => {
     { id: 4, name: t('gameModes.endlessMarathon.name'), description: t('gameModes.endlessMarathon.description'), icon: <DirectionsRun />, mode: 'endless-marathon' }
   ];
 
-  const [topicForExpertsDomain, setTopic] = useState('');
-
   const handleToggle = () => {
     setRandomized((prev) => !prev); // Toggle the randomization state
   };
 
   const handleChange = (event) => {
-    setTopic(event.target.value);
+    setQuestionType(event.target.value);
   };
 
   return (
@@ -99,19 +97,19 @@ const HomePage = () => {
                         <InputLabel id="select-label">Topic</InputLabel>
                           <Select
                             labelId="select-label"
-                            value={topicForExpertsDomain}
+                            value={questionType}
                             label="Topic"
                             onChange={handleChange}
                           >
-                            <MenuItem value={10}>{t('roulette.topics.flags')}</MenuItem>
-                            <MenuItem value={20}>{t('roulette.topics.science')}</MenuItem>
-                            <MenuItem value={30}>{t('roulette.topics.cities')}</MenuItem>
-                            <MenuItem value={40}>{t('roulette.topics.sports')}</MenuItem>
-                            <MenuItem value={50}>{t('roulette.topics.celebrities')}</MenuItem>
+                            <MenuItem value={"flag"}>{t('roulette.topics.flags')}</MenuItem>
+                            <MenuItem value={"science"}>{t('roulette.topics.science')}</MenuItem>
+                            <MenuItem value={"city"}>{t('roulette.topics.cities')}</MenuItem>
+                            <MenuItem value={"sport"}>{t('roulette.topics.sports')}</MenuItem>
+                            <MenuItem value={"celebrity"}>{t('roulette.topics.celebrities')}</MenuItem>
                           </Select>
                         </FormControl>
                       ) : (
-                        <Roulette onSelectTopic={setTopic} onClickSpin={() => setDisableSwitch(true)} />
+                        <Roulette onSelectTopic={setQuestionType} onClickSpin={() => setDisableSwitch(true)} />
                       )}
                     </>
                   )}
