@@ -32,7 +32,7 @@ describe('AddUser component', () => {
     const signupButton = screen.getByTestId('signupButton');
 
     // Mock the axios.post request to simulate a successful response
-    mockAxios.onPost('http://localhost:8000/adduser').reply(200,{});
+    mockAxios.onPost('http://localhost:8000/api/user/signup').reply(200,{});
 
     // Simulate user input
     fireEvent.change(usernameInput, { target: { value: 'testUser' } });
@@ -62,7 +62,7 @@ describe('AddUser component', () => {
     const signupButton = screen.getByTestId('signupButton');
 
     // Mock the axios.post request to simulate an error response
-    mockAxios.onPost('http://localhost:8000/adduser').reply(500, { error: 'Internal Server Error' });
+    mockAxios.onPost('http://localhost:8000/api/user/signup').reply(500, { error: 'Internal Server Error' });
 
     // Simulate user input
     fireEvent.change(usernameInput, { target: { value: 'testUser' } });
