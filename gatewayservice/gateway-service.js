@@ -194,7 +194,7 @@ app.get('/api/scoresByUser/:userId', async (req, res) => {
       res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
-app.get('/leaderboard/:gameMode?', async (req, res) => {
+app.get('/api/leaderboard/:gameMode?', async (req, res) => {
   try {
     const { gameMode } = req.params;
 
