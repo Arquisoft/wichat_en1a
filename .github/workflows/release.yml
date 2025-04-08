@@ -61,7 +61,7 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       env:
-        API_URI: http://${{ secrets.DEPLOY_HOST }}:8000
+        API_URI: ${{secrets.GATEWAY_SERVICE_URL}}
       with:
           name: arquisoft/wichat_en1a/webapp
           username: ${{ github.actor }}
