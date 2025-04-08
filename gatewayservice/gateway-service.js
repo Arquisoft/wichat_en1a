@@ -16,10 +16,18 @@ const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+const webappUrl = process.env.WEBAPP_URL || 'http://localhost:3000';
+const appDomain = process.env.DEPLOY_DOMAIN || 'http://localhost:3000';
 const apiKey = process.env.LLM_API_KEY;
 
-
-app.use(cors());
+const corsOptions ={
+  origin: [webappUrl,appDomain,'http://localhost:3000'], // Allow only requests from the React web app
+  methods: ['GET', 'POST','OPTIONS'], 
+  allowedHeaders: ['content-type'], 
+  credentials: true  
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 //Prometheus configuration
