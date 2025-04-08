@@ -26,7 +26,7 @@ describe('Login component', () => {
     const loginButton = screen.getByTestId('loginButton');
 
     // Mock the axios.post request to simulate a successful response
-    mockAxios.onPost('http://localhost:8000/login').reply(200, { token: 'token' });
+    mockAxios.onPost('http://localhost:8000/api/user/login').reply(200, { token: 'token' });
 
     // Simulate user input
     fireEvent.change(usernameInput, { target: { value: 'testUser' } });
@@ -52,7 +52,7 @@ describe('Login component', () => {
     const loginButton = screen.getByTestId('loginButton');
 
     // Mock the axios.post request to simulate an error response
-    mockAxios.onPost('http://localhost:8000/login').reply(401, { error: 'Unauthorized' });
+    mockAxios.onPost('http://localhost:8000/api/user/login').reply(401, { error: 'Unauthorized' });
 
     // Simulate user input
     fireEvent.change(usernameInput, { target: { value: 'testUser' } });

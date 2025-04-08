@@ -55,9 +55,9 @@ const checkPutSuccessResponse = async (url, requestData, mockData, expectedData)
 
 describe('Gateway Service', () => {
   axios.post.mockImplementation((url, data) => {
-    if (url.endsWith('/login')) {
+    if (url.endsWith('/user/login')) {
       return Promise.resolve({ data: { token: 'mockedToken' } });
-    } else if (url.endsWith('/adduser')) {
+    } else if (url.endsWith('/user/signup')) {
       return Promise.resolve({ data: { userId: 'mockedUserId' } });
     } else if (url.endsWith('/ask')) {
       return Promise.resolve({ data: { answer: 'llmanswer' } });
@@ -65,24 +65,24 @@ describe('Gateway Service', () => {
   });
 
   it('should forward login request to auth service', async () => {
-    await checkPostSuccessResponse('/login', { username: '', password: '' }, { token: 'mockedToken' }, { token: 'mockedToken' });
+    await checkPostSuccessResponse('/api/user/login', { username: '', password: '' }, { token: 'mockedToken' }, { token: 'mockedToken' });
   });
 
   it('should forward add user request to user service', async () => {
-    await checkPostSuccessResponse('/adduser', { username: '', password: '' }, { userId: 'mockedUserId' }, { userId: 'mockedUserId' });
+    await checkPostSuccessResponse('/api/user/signup', { username: '', password: '' }, { userId: 'mockedUserId' }, { userId: 'mockedUserId' });
   });
 
   it('should forward askllm request to the llm service', async () => {
-    await checkPostSuccessResponse('/askllm', { question: 'question', gameQuestion: 'gameQuestion', correctAnswer: 'llmanswer', model: 'empathy' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
+    await checkPostSuccessResponse('/api/askllm', { question: 'question', gameQuestion: 'gameQuestion', correctAnswer: 'llmanswer', model: 'empathy' }, { answer: 'llmanswer' }, { answer: 'llmanswer' });
   });
 
   it('should forward generate-questions request to the question service', async () => {
     const mockQuestions = [{ question: 'What is the flag of France?', answers: ['Blue', 'Red', 'White'], correctAnswer: 'Blue' }];
-    await checkSuccessResponse('/generate-questions?type=flag&numQuestions=5', mockQuestions, mockQuestions);
+    await checkSuccessResponse('/api/generate-questions?type=flag&numQuestions=5', mockQuestions, mockQuestions);
   });
 
   it('should return error if type or numQuestions is missing or invalid', async () => {
-    await checkErrorResponse('/generate-questions?type=&numQuestions=', 'Debe proporcionar un tipo de pregunta y un número válido de preguntas.', 400);
+    await checkErrorResponse('/api/generate-questions?type=&numQuestions=', 'Debe proporcionar un tipo de pregunta y un número válido de preguntas.', 400);
   });
 
   it('should return questions when the request is successful', async () => {
@@ -90,42 +90,32 @@ describe('Gateway Service', () => {
       { questionText: 'Pregunta 1', options: ['a', 'b', 'c', 'd'], correctAnswer: 'a' },
       { questionText: 'Pregunta 2', options: ['a', 'b', 'c', 'd'], correctAnswer: 'b' }
     ];
-    await checkSuccessResponse('/questions/type/5', mockQuestions, mockQuestions);
+    await checkSuccessResponse('/api/questions/type/5', mockQuestions, mockQuestions);
   });
 
   it('should return 500 if the question service fails', async () => {
     axios.get.mockRejectedValue(new Error('Error al obtener preguntas'));
-    await checkErrorResponse('/questions/type/5', 'Error al obtener preguntas', 500);
+    await checkErrorResponse('/api/questions/type/5', 'Error al obtener preguntas', 500);
   });
 
   it('should return a random question when the request is successful', async () => {
     const randomQuestion = { questionText: 'Pregunta aleatoria', options: ['a', 'b', 'c', 'd'], correctAnswer: 'c' };
-    await checkSuccessResponse('/question', randomQuestion, randomQuestion);
+    await checkSuccessResponse('/api/question', randomQuestion, randomQuestion);
   });
 
   it('should return 404 if no random question is found', async () => {
     axios.get.mockResolvedValue({ data: null });
-    await checkErrorResponse('/question', 'No se encontró una pregunta', 404);
+    await checkErrorResponse('/api/question', 'No se encontró una pregunta', 404);
   });
 
-  it('should return 500 if the question service fails', async () => {
+  it('should return 500 if the question service fails fetching a random question', async () => {
     axios.get.mockRejectedValue(new Error('Error al obtener pregunta aleatoria'));
-    await checkErrorResponse('/question', 'Error al obtener pregunta aleatoria', 500);
-  });
-
-  it('should return a random question when the request is successful', async () => {
-    const randomQuestion = { questionText: 'Pregunta aleatoria', options: ['a', 'b', 'c', 'd'], correctAnswer: 'c' };
-    await checkSuccessResponse('/question', randomQuestion, randomQuestion);
-  });
-
-  it('should return 404 if no random question is found', async () => {
-    axios.get.mockResolvedValue({ data: null });
-    await checkErrorResponse('/question', 'No se encontró una pregunta', 404);
+    await checkErrorResponse('/api/question', 'Error al obtener pregunta aleatoria', 500);
   });
 
   it('should return 500 if the question service fails', async () => {
     axios.get.mockRejectedValue(new Error('Service Error'));
-    await checkErrorResponse('/question', 'Service Error', 500);
+    await checkErrorResponse('/api/question', 'Service Error', 500);
   });
 });
 
@@ -151,7 +141,7 @@ describe('Gateway Service - LLM Service', () => {
     };
 
     const response = await request(app)
-        .post('/askllm')
+        .post('/api/askllm')
         .send(requestData)
         .expect('Content-Type', /json/)
         .expect(200);
@@ -164,7 +154,7 @@ describe('Gateway Service - LLM Service', () => {
     axios.post.mockRejectedValue(new Error('LLM Service Error'));
 
     const response = await request(app)
-        .post('/askllm')
+        .post('/api/askllm')
         .send({
           question: 'Some question',
           gameQuestion: 'Some question text',
@@ -179,13 +169,13 @@ describe('Gateway Service - LLM Service', () => {
   });
 
   it('Debe devolver 400 si faltan todos los parámetros', async () => {
-    const response = await request(app).post('/askllm').send({});
+    const response = await request(app).post('/api/askllm').send({});
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('Missing required fields: question, gameQuestion, correctAnswer');
   });
 
   it('Debe devolver 400 si falta "question"', async () => {
-    const response = await request(app).post('/askllm').send({
+    const response = await request(app).post('/api/askllm').send({
       gameQuestion: 'Pregunta del juego',
       correctAnswer: 'Respuesta correcta',
     });
@@ -195,7 +185,7 @@ describe('Gateway Service - LLM Service', () => {
   });
 
   it('Debe devolver 400 si falta "gameQuestion"', async () => {
-    const response = await request(app).post('/askllm').send({
+    const response = await request(app).post('/api/askllm').send({
       question: 'Pregunta de prueba',
       correctAnswer: 'Respuesta correcta',
     });
@@ -205,7 +195,7 @@ describe('Gateway Service - LLM Service', () => {
   });
 
   it('Debe devolver 400 si falta "correctAnswer"', async () => {
-    const response = await request(app).post('/askllm').send({
+    const response = await request(app).post('/api/askllm').send({
       question: 'Pregunta de prueba',
       gameQuestion: 'Pregunta del juego',
     });
@@ -223,7 +213,7 @@ describe('Gateway Service - Game Service', () => {
 
   it('should forward saveScore request to GameService', async () => {
     await checkPostSuccessResponse(
-      '/saveScore',
+      '/api/saveScore',
       { userId: 'user1', score: 100, gameMode: 'expertDomain', questionsPassed : 13,questionsFailed : 7, accuracy :65 },
       { success: true },
       { success: true }
@@ -232,7 +222,7 @@ describe('Gateway Service - Game Service', () => {
 
   it('should return 400 if saveScore is missing fields', async () => {
     const response = await request(app)
-      .post('/saveScore')
+      .post('/api/saveScore')
       .send({})
       .expect(400);
 
@@ -241,17 +231,17 @@ describe('Gateway Service - Game Service', () => {
 
   it('should forward scoresByUser request to GameService', async () => {
     const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain', questionsPassed : 11, questionsFailed: 9, accuracy :55 }];
-    await checkSuccessResponse('/scoresByUser/user1', mockScores, mockScores);
+    await checkSuccessResponse('/api/scoresByUser/user1', mockScores, mockScores);
   });
 
   it('should forward leaderboard request to GameService', async () => {
     const mockLeaderboard = [{ userId: 'user1', score: 500 }];
-    await checkSuccessResponse('/leaderboard', mockLeaderboard, mockLeaderboard);
+    await checkSuccessResponse('/api/leaderboard', mockLeaderboard, mockLeaderboard);
   });
 
   it('should return 500 if leaderboard request fails', async () => {
     axios.get.mockRejectedValue(new Error('Internal Server Error'));
-    await checkErrorResponse('/leaderboard', 'Internal Server Error', 500);
+    await checkErrorResponse('/api/leaderboard', 'Internal Server Error', 500);
   });
 
 });
@@ -270,33 +260,33 @@ describe('Health Check Endpoints', () => {
 
 
   test('should return OK for /health', async () => {
-    await checkSuccessResponse('/health', { status: 'OK' }, { status: 'OK' });
+    await checkSuccessResponse('/api/health', { status: 'OK' }, { status: 'OK' });
   });
 
 
   test('should return health status for userservice', async () => {
-    await checkSuccessResponse('/userservice/health', { status: 'UP', service: 'User Service' }, { status: 'UP', service: 'User Service' });
+    await checkSuccessResponse('/api/userservice/health', { status: 'UP', service: 'User Service' }, { status: 'UP', service: 'User Service' });
   });
 
 
   test('should return health status for authservice', async () => {
-    await checkSuccessResponse('/authservice/health', { status: 'UP', service: 'Auth Service' }, { status: 'UP', service: 'Auth Service' });
+    await checkSuccessResponse('/api/authservice/health', { status: 'UP', service: 'Auth Service' }, { status: 'UP', service: 'Auth Service' });
   });
 
 
   test('should return 500 for llmservice when down', async () => {
     axios.get.mockRejectedValue(new Error('LLM Service not available'));
-    await checkHealthErrorResponse('/llmservice/health', 'LLM Service not available', 500);
+    await checkHealthErrorResponse('/api/llmservice/health', 'LLM Service not available', 500);
   });
 
 
   test('should return health status for questionservice', async () => {
-    await checkSuccessResponse('/questionservice/health', { status: 'UP', service: 'Question Service' }, { status: 'UP', service: 'Question Service' });
+    await checkSuccessResponse('/api/questionservice/health', { status: 'UP', service: 'Question Service' }, { status: 'UP', service: 'Question Service' });
   });
 
 
   test('should return 500 for gameservice when down', async () => {
     axios.get.mockRejectedValue(new Error('Game Service not available'));
-    await checkHealthErrorResponse('/gameservice/health', 'Game Service not available', 500);
+    await checkHealthErrorResponse('/api/gameservice/health', 'Game Service not available', 500);
   });
 });

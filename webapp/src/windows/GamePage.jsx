@@ -27,7 +27,7 @@ const GamePage = ({timePerQuestionTesting}) => {
 
   const fetchData = async () =>{ 
     try{
-      const response = await axios.get(`${gatewayUrl}/questions/${questionType}/${numQuestions}`);
+      const response = await axios.get(`${gatewayUrl}/api/questions/${questionType}/${numQuestions}`);
       setQuestions(response.data);
       setLoadedQuestions(true);
     }catch(err){
@@ -38,7 +38,7 @@ const GamePage = ({timePerQuestionTesting}) => {
     let done=false;
     do{
       try{
-        await axios.post(`${gatewayUrl}/saveScore`, {
+        await axios.post(`${gatewayUrl}/api/saveScore`, {
           "userId":sessionStorage.getItem("loggedInUser"),
           "score":score,
           "gameMode":gamemode,

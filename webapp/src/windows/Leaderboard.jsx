@@ -36,7 +36,7 @@ const Leaderboard = () => {
       try {
         // Array of fetch promises for each game mode
         const requests = gameModes.map(mode =>
-          fetch(`${gatewayUrl}/leaderboard/${mode}`)
+          fetch(`${gatewayUrl}/api/leaderboard/${mode}`)
             .then(response => {
               if (!response.ok) {
                 throw new Error(`Error fetching ${mode} leaderboard`);

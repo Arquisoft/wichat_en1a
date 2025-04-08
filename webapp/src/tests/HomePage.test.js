@@ -36,7 +36,7 @@ const mockTheme = createTheme({
 });
 
 describe('HomePage Component', () => {
-  beforeEach(() => {
+  const renderHome=()=>{
     render(
       <I18nextProvider i18n={i18n}>
         <MemoryRouter>
@@ -46,9 +46,10 @@ describe('HomePage Component', () => {
         </MemoryRouter>
       </I18nextProvider>
     );
-  });
+  }
 
   test('Renders the HomePage with all game modes', () => {
+    renderHome();
     expect(screen.getByTestId('navbar')).toBeInTheDocument();
     expect(screen.getByText(i18n.t('homePage.welcome'))).toBeInTheDocument();
     
@@ -65,6 +66,7 @@ describe('HomePage Component', () => {
   });
 
   test('Toggles the switch for Expert Domain mode and updates UI', () => {
+    renderHome();    
     const toggle = screen.getByRole('checkbox');
     expect(toggle).toBeInTheDocument();
     expect(toggle).not.toBeChecked();
@@ -81,6 +83,7 @@ describe('HomePage Component', () => {
   });
 
   test('Shows the topic dropdown when Expert Domain is not randomized', () => {
+    renderHome();
     const topicDropdown = screen.getByLabelText('Topic');
     expect(topicDropdown).toBeInTheDocument();
     
@@ -93,6 +96,7 @@ describe('HomePage Component', () => {
   });
 
   test('Disables switch after clicking roulette spin button', async () => {
+    renderHome();
     const toggle = screen.getByRole('checkbox');
     fireEvent.click(toggle);
   
@@ -104,6 +108,7 @@ describe('HomePage Component', () => {
   });
 
   test('Play button links to the correct game URL', () => {
+    renderHome();
     const playButtons = screen.getAllByRole('link', { name: i18n.t('homePage.play') });
     
     playButtons.forEach((button) => {
