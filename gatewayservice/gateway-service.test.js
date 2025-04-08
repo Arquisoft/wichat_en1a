@@ -108,19 +108,9 @@ describe('Gateway Service', () => {
     await checkErrorResponse('/api/question', 'No se encontró una pregunta', 404);
   });
 
-  it('should return 500 if the question service fails', async () => {
+  it('should return 500 if the question service fails fetching a random question', async () => {
     axios.get.mockRejectedValue(new Error('Error al obtener pregunta aleatoria'));
     await checkErrorResponse('/api/question', 'Error al obtener pregunta aleatoria', 500);
-  });
-
-  it('should return a random question when the request is successful', async () => {
-    const randomQuestion = { questionText: 'Pregunta aleatoria', options: ['a', 'b', 'c', 'd'], correctAnswer: 'c' };
-    await checkSuccessResponse('/api/question', randomQuestion, randomQuestion);
-  });
-
-  it('should return 404 if no random question is found', async () => {
-    axios.get.mockResolvedValue({ data: null });
-    await checkErrorResponse('/api/question', 'No se encontró una pregunta', 404);
   });
 
   it('should return 500 if the question service fails', async () => {
