@@ -25,8 +25,17 @@ const questionConfigs = {
         questionTemplate: '¿Qué ciudad es esta?',
         correctAnswerField: 'entityLabel',
         imageField: 'image'
+    },
+    celebrity: {
+        entity: '?entity wdt:P106 wd:Q33999',
+        fields: '?entity ?entityLabel ?image',
+        conditions: '?entity rdfs:label ?entityLabel.\n' +
+            '?entity wdt:P18 ?image.\n' +
+            'FILTER(LANG(?entityLabel) = "es").',
+        questionTemplate: '¿Quién es esta celebridad?',
+        correctAnswerField: 'entityLabel',
+        imageField: 'image'
     }
-
 
 };
 
