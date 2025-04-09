@@ -58,6 +58,8 @@ jobs:
     needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
+    - name: Log API_URI value
+      run: echo "API_URI is set to ${{ secrets.GATEWAY_SERVICE_URL }}"
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       env:
