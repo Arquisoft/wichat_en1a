@@ -21,7 +21,7 @@ const appDomain = process.env.DEPLOY_DOMAIN || 'http://localhost:3000';
 const apiKey = process.env.LLM_API_KEY;
 
 const corsOptions ={
-  origin: [webappUrl,appDomain,'http://localhost:3000'], // Allow only requests from the React web app
+  origin: [webappUrl,appDomain,'https://wichat-en1a.duckdns.org','http://localhost:3000'], // Allow only requests from the React web app
   methods: ['GET', 'POST','OPTIONS'], 
   allowedHeaders: ['content-type'], 
   credentials: true  
