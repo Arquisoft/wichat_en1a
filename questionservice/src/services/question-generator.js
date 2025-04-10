@@ -50,6 +50,22 @@ const questionConfigs = {
         correctAnswerField: 'entityLabel',
         imageField: 'image',
         orderBy: ''
+    },
+
+    sport: {
+        entity: '?entity wdt:P106 wd:Q937857', // Ocupación: deportista
+        fields: '?entity ?entityLabel ?image',
+        conditions: `
+        ?entity rdfs:label ?entityLabel.
+        ?entity wdt:P18 ?image.
+        ?entity schema:description ?description.
+        FILTER(LANG(?entityLabel) = "es").
+        FILTER(LANG(?description) = "es").
+    `,
+        questionTemplate: '¿Qué deportista famoso es este?',
+        correctAnswerField: 'entityLabel',
+        imageField: 'image',
+        orderBy: ''
     }
 
 

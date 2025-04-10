@@ -17,6 +17,8 @@ mongoose.connect(mongoUri, {
         await generateQuestions("city", 10);
         await generateQuestions("celebrity", 10);
         await generateQuestions("science", 10);
+        await generateQuestions("sport", 10);
+
 
         console.log("Initial questions generated successfully.");
     } catch (error) {
@@ -34,6 +36,8 @@ cron.schedule("*/10 * * * *", async () => {
         await generateQuestions("city",10);
         await generateQuestions("celebrity", 10);
         await generateQuestions("science", 10);
+        await generateQuestions("sport", 10);
+
 
         console.log("Questions generated successfully.");
     } catch (error) {
