@@ -132,7 +132,10 @@ const getQuestionsByType = async (type, limit) => {
         if (type === 'all') {
             return await Question.aggregate([{ $sample: { size: limit } }]);
         } else {
-            return await Question.find({ type }).limit(limit);
+            return await Question.aggregate([
+                { $match: { type } },
+                { $sample: { size: limit } }
+            ]);
         }
     } catch (error) {
         console.error('Error al obtener preguntas:', error);

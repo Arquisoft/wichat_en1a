@@ -15,6 +15,11 @@ mongoose.connect(mongoUri, {
     try {
         await generateQuestions("flag", 10);
         await generateQuestions("city", 10);
+        await generateQuestions("celebrity", 10);
+        await generateQuestions("science", 10);
+        await generateQuestions("sport", 10);
+
+
         console.log("Initial questions generated successfully.");
     } catch (error) {
         console.error("Error at generating the initial questions:", error);
@@ -29,6 +34,11 @@ cron.schedule("*/10 * * * *", async () => {
     try {
         await generateQuestions("flag",10);
         await generateQuestions("city",10);
+        await generateQuestions("celebrity", 10);
+        await generateQuestions("science", 10);
+        await generateQuestions("sport", 10);
+
+
         console.log("Questions generated successfully.");
     } catch (error) {
         console.error("Error at generating questions:", error);

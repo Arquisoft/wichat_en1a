@@ -11,7 +11,8 @@ const questionConfigs = {
             '            FILTER(LANG(?entityLabel) = "es").', // Flag image
         questionTemplate: '¿De qué país es esta bandera?',
         correctAnswerField: 'entityLabel',
-        imageField: 'image'
+        imageField: 'image',
+        orderBy: ''
     },
 
     city: {
@@ -24,8 +25,54 @@ const questionConfigs = {
     `,
         questionTemplate: '¿Qué ciudad es esta?',
         correctAnswerField: 'entityLabel',
-        imageField: 'image'
+        imageField: 'image',
+        orderBy: ''
+    },
+    celebrity: {
+        entity: '?entity wdt:P106 wd:Q33999',
+        fields: '?entity ?entityLabel ?image',
+        conditions: '?entity rdfs:label ?entityLabel.\n' +
+            '?entity wdt:P18 ?image.\n' +
+            'FILTER(LANG(?entityLabel) = "es").',
+        questionTemplate: '¿Quién es esta celebridad?',
+        correctAnswerField: 'entityLabel',
+        imageField: 'image',
+        orderBy: ''
+    },
+
+    science: {
+        entity: '?entity wdt:P106 wd:Q901',
+        fields: '?entity ?entityLabel ?image',
+        conditions: '?entity rdfs:label ?entityLabel.\n' +
+            '?entity wdt:P18 ?image.\n' +
+            'FILTER(LANG(?entityLabel) = "es").',
+        questionTemplate: '¿Qué científico/a es este/a?',
+        correctAnswerField: 'entityLabel',
+        imageField: 'image',
+        orderBy: ''
+    },
+
+    sport: {
+        entity: '?entity wdt:P106 wd:Q937857', // Ocupación: deportista
+        fields: '?entity ?entityLabel ?image',
+        conditions: `
+        ?entity rdfs:label ?entityLabel.
+        ?entity wdt:P18 ?image.
+        ?entity schema:description ?description.
+        FILTER(LANG(?entityLabel) = "es").
+        FILTER(LANG(?description) = "es").
+    `,
+        questionTemplate: '¿Qué deportista famoso es este?',
+        correctAnswerField: 'entityLabel',
+        imageField: 'image',
+        orderBy: ''
     }
+
+
+
+
+
+
 
 
 };
@@ -40,6 +87,7 @@ const generateSparqlQuery = (type, limit) => {
             ${config.entity}.
             ${config.conditions}
         }
+        ${config.orderBy}
         LIMIT ${limit}
     `;
 };
