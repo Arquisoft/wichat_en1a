@@ -42,7 +42,7 @@ describe('Question Worker', () => {
             await generateQuestions("city", 10);
         });
 
-        expect(generateQuestions).toHaveBeenCalledTimes(4);
+        expect(generateQuestions).toHaveBeenCalledTimes(7);
         expect(generateQuestions).toHaveBeenCalledWith('flag', 10);
         expect(generateQuestions).toHaveBeenCalledWith('city', 10);
     });
