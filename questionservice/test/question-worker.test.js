@@ -40,11 +40,17 @@ describe('Question Worker', () => {
             await generateQuestions("city", 10);
             await generateQuestions("flag", 10);
             await generateQuestions("city", 10);
+            await generateQuestions("celebrity", 10);
+            await generateQuestions("science", 10);
+            await generateQuestions("sport", 10);
         });
 
         expect(generateQuestions).toHaveBeenCalledTimes(7);
         expect(generateQuestions).toHaveBeenCalledWith('flag', 10);
         expect(generateQuestions).toHaveBeenCalledWith('city', 10);
+        expect(generateQuestions).toHaveBeenCalledWith('celebrity', 10);
+        expect(generateQuestions).toHaveBeenCalledWith('science', 10);
+        expect(generateQuestions).toHaveBeenCalledWith('sport', 10);
     });
 
     it('should handle errors when generating questions', async () => {
