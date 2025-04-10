@@ -16,6 +16,8 @@ mongoose.connect(mongoUri, {
         await generateQuestions("flag", 10);
         await generateQuestions("city", 10);
         await generateQuestions("celebrity", 10);
+        await generateQuestions("science", 10);
+
         console.log("Initial questions generated successfully.");
     } catch (error) {
         console.error("Error at generating the initial questions:", error);
@@ -25,12 +27,14 @@ mongoose.connect(mongoUri, {
 });
 
 // Generate question every 10 minutes
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("*/10 * * * *", async () => {
     console.log("Generating new questions...");
     try {
         await generateQuestions("flag",10);
         await generateQuestions("city",10);
         await generateQuestions("celebrity", 10);
+        await generateQuestions("science", 10);
+
         console.log("Questions generated successfully.");
     } catch (error) {
         console.error("Error at generating questions:", error);
