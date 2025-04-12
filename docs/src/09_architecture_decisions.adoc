@@ -47,21 +47,26 @@ Date Recorded: 17/02/2025
 
 Scope: backend, question generator
 
-Description: The question generator is a key component of the system but does not need to run continuously.
-It will be executed when new questions need to be loaded or updated. To maintain a clean architecture, it
-should be implemented as a separate module rather than part of the API.
+Description: The question generator is a key component of the system that runs continuously.
+It is executed at background periodically to generate new questions. The life of the question generation is the same as the application one, as it is running concurrently.
+The question service is divided in question-storage to retrieve
+the queries from the database, question-generator who has the logic to generate questions and the question-worker which is the application running concurrently that actually
+generates questions.
 
-Decision taken: The team has decided to implement the question generator as a separate module of the application.
+Decision taken: The team has decided to implement the question generator as a separate concurrent application.
 
 === Connection to the database with the question generator
 
-Date Recorded:
+Date Recorded: 17/02/2025
 
 Scope: backend, question generator, database
 
-Description: [TO_BE_DISCUSSED]
+Description: When the questions are generated at background by the question-worker they are stored in the database "questiondb".
+Then when someone is playing one of ours games, the questions are retrieved from the database. Furthermore,
+the questions have a specific life duration, this means, that when the time specified from its creation passes, the question are eliminated
+from the database, the purpose of this is to avoid players to get repeated questions continuously
 
-Decision taken: [TO_BE_TAKEN]
+Decision taken: The team has decided to specify a life duration for the questions
 
 
 === Integration of an LLM for hints
