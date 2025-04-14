@@ -1,63 +1,59 @@
 @startuml
 !includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
-!include <c4/C4_Container.puml>
-!include <c4/C4_Component.puml>
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
 
-title Container Diagram for the Wichat System (C4 Level 3)
+title Component Diagram for Wichat Backend (C4 Level 3)
 
 AddElementTag("Person", $bgColor="#darkgreen", $fontColor="#white")
 AddElementTag("Internal system", $bgColor="#darkseagreen", $fontColor="#003300")
-AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
 AddElementTag("Database", $bgColor="#darkgreen", $fontColor="#white")
 AddElementTag("Component", $bgColor="#darkolivegreen", $fontColor="#white")
+AddElementTag("Background Task", $bgColor="#556B2F", $fontColor="#ffffff")
+AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
 
-' Containers
-Person(player, "Player's Browser", "Preferred browser (Firefox, Chrome, Opera...)")
+Person(player, "Player", "Uses the system via a web browser")
 
-System_Boundary(wichat, "Wichat Application") {
-Container(web_app, "Wichat Web Client", "React, JavaScript", "Runs in user's browser", $tags="Internal system")
-Container(api_gateway, "Wichat API", "Node.js", "Single entry point for client requests", $tags="Internal system")
+System_Boundary(wichat, "Wichat System") {
 
-Container(backend, "Wichat Backend", "Node.js", "Handles business logic and API requests", $tags="Internal system") {
-    Component(user_service, "User Service", "Node.js", "Handles sign-up, user registration, and profile management", $tags="Component")
-    Component(auth_service, "Authentication Service", "Node.js", "Handles login, user identification, and session management", $tags="Component")
-    Component(game_module, "Game Module", "Node.js", "Handles game-related requests and updates", $tags="Component")
-    Component(statistics_module, "Statistics Module", "Node.js", "Manages player statistics", $tags="Component")
-    Component(question_module, "Question Module", "Node.js", "Manages question generation and retrieval", $tags="Component")
+  Container(webapp, "Wichat WebApp", "React", "Frontend SPA for gameplay", $tags="Internal system")
+  Container(gateway, "API Gateway", "Node.js", "Single entry point for the frontend", $tags="Internal system")
+
+  Component(gameservice, "GameService", "Node.js", "Handles gameplay, answers and progress", $tags="Component")
+
+  Container_Boundary(questionservice, "QuestionService") {
+    Component(questionstorage, "QuestionStorage", "Node.js", "Exposes API endpoints to retrieve questions", $tags="Component")
+    Component(questiongenerator, "QuestionGenerator", "Node.js", "Background job that periodically fetches and updates questions from WikiData", $tags="Background Task")
+  }
+
+  Component(llmservice, "LLMService", "Node.js", "Fetches hints from LLM API", $tags="Component")
+  Component(authservice, "AuthService", "Node.js", "Authenticates users, manages sessions", $tags="Component")
+  Component(userservice, "UserService", "Node.js", "Manages user registration and profiles", $tags="Component")
+
+  ContainerDb(gamedb, "Game Collection", "MongoDB", "Stores game sessions and progress", $tags="Database")
+  ContainerDb(questiondb, "Question Collection", "MongoDB", "Stores questions from Wikidata", $tags="Database")
+  ContainerDb(userdb, "User Collection", "MongoDB", "Stores user profiles, auth info and leaderboard", $tags="Database")
 }
 
-Container(question_generator, "Question Generator", "Node.js", "Generates questions from WikiData", $tags="Internal system")
-Container(llm_ai_chat, "LLM AI Chat Service", "Node.js", "Handles AI chat for hints", $tags="Internal system")
-ContainerDb(game_data_db, "Wichat Game Database", "MongoDB", "Stores all game and user data", $tags="Database")
-ContainerDb(user_data_db, "User Data & Leaderboard Database", "MongoDB", "Stores user profile data and leaderboard information", $tags="Database")
-}
+System_Ext(wikidata, "WikiData API", "External service with structured knowledge", $tags="External system")
+System_Ext(llm_api, "LLM API (Empathy)", "External service for natural language hints", $tags="External system")
 
-System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
-System_Ext(llm_api, "LLM API (Empathy)", "REST API", $tags="External system")
+' Interactions
+Rel(player, webapp, "Uses", "HTTPS")
+Rel(webapp, gateway, "Sends REST requests", "HTTPS")
 
-' Relations
-Rel(player, web_app, "Uses", "HTTPS")
-Rel(web_app, api_gateway, "Sends requests", "JSON, HTTPS")
-Rel(api_gateway, user_service, "Handles sign-up requests", "JSON, HTTPS")
-Rel(api_gateway, auth_service, "Handles authentication requests", "JSON, HTTPS")
-Rel(api_gateway, game_module, "Handles game interactions", "JSON, HTTPS")
-Rel(api_gateway, statistics_module, "Retrieves statistics", "JSON, HTTPS")
-Rel(api_gateway, llm_ai_chat, "Requests hints", "JSON, HTTPS")
-Rel(api_gateway, question_module, "Fetches questions", "JSON, HTTPS")
+Rel(gateway, userservice, "Manages user registration", "JSON")
+Rel(gateway, authservice, "Authenticates users", "JSON")
+Rel(gateway, gameservice, "Handles gameplay logic", "JSON")
+Rel(gateway, questionstorage, "Requests questions", "JSON")
+Rel(gateway, llmservice, "Requests hints", "JSON")
 
-Rel(question_generator, wikidata, "Fetches question data", "MQL, HTTPS")
-Rel(llm_ai_chat, llm_api, "Sends prompts & receives responses", "JSON, HTTPS")
-Rel(question_generator, game_data_db, "Stores questions", "JSON, MongoDB")
+Rel(gameservice, gamedb, "Reads/Writes game data", "MongoDB")
+Rel(questionstorage, questiondb, "Reads/Writes questions", "MongoDB")
+Rel(userservice, userdb, "Stores user data", "MongoDB")
+Rel(authservice, userdb, "Stores login/session data", "MongoDB")
+Rel(llmservice, llm_api, "Sends prompt / receives hint", "HTTPS")
+Rel(questiongenerator, wikidata, "Periodically fetches data", "HTTPS")
+Rel(questiongenerator, questiondb, "Writes new questions", "MongoDB")
 
-' Relations for backend modules
-Rel(game_module, question_module, "Retrieves questions")
-Rel(question_module, game_data_db, "Stores game data", "JSON, MongoDB")
-Rel(statistics_module, game_data_db, "Stores player statistics", "JSON, MongoDB")
-Rel(auth_service, game_data_db, "Stores user sessions", "JSON, MongoDB")
-Rel(user_service, user_data_db, "Stores user profiles", "JSON, MongoDB")
-
-' User Data & Leaderboard Database Relations
-Rel(statistics_module, user_data_db, "Stores leaderboard info", "JSON, MongoDB")
-Rel(auth_service, user_data_db, "Stores authentication data", "JSON, MongoDB")
-Rel(game_module, user_data_db, "Updates user data", "JSON, MongoDB")
 @enduml
+
