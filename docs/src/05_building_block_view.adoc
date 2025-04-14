@@ -107,7 +107,6 @@ The purpose of this section is to provide a high-level view of the system and it
 - Interaction with the WIChat Application through a user interface (UI) that displays questions and accepts answers.
 - Interaction with the LLM AI Chat for hints when requested.
 * (Optional) Quality-/Performance Characteristics: Smooth, responsive UI with minimal delays.
-* (Optional) Directory/File Location: src/client
 * (Optional) Fulfilled Requirements: Real-time gameplay experience with clear and engaging UI.
 * (Optional) Open Issues/Problems/Risks: The player should not have access to some internal parts of the application, neither should know how the application is coded.
 
@@ -120,7 +119,6 @@ The purpose of this section is to provide a high-level view of the system and it
 - Communication with the LLM AI Chat to provide hints to the player.
 * (Optional) Quality-/Performance Characteristics:
 - Scalable, with efficient routing of requests to the relevant components.
-* (Optional) Directory/File Location: src/application
 * (Optional) Fulfilled Requirements: Real-time interaction and data handling.
 * (Optional) Open Issues/Problems/Risks: Performance under high traffic (large number of players simultaneously).
 
@@ -190,7 +188,6 @@ The system decomposition has been done to efficiently divide responsibilities, e
 - Routing of requests to the backend services (e.g., Question Generator, LLM AI Chat).
 * (Optional) Quality-/Performance Characteristics:
 - High availability and low latency in request routing.
-* (Optional) Directory/File Location: src/proxy/WIChatProxy
 * (Optional) Fulfilled Requirements: The architecture supports application scalability.
 * (Optional) Open Issues/Problems/Risks: No identified risks so far.
 
@@ -202,7 +199,6 @@ The system decomposition has been done to efficiently divide responsibilities, e
 - Interaction with the LLM to get hints for the game.
 * (Optional) Quality-/Performance Characteristics:
 - Smooth and fast user interface with real-time updates.
-* (Optional) Directory/File Location: src/client
 * (Optional) Fulfilled Requirements: Accessible and responsive design for various devices.
 * (Optional) Open Issues/Problems/Risks: No critical risks identified.
 
@@ -214,7 +210,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 - Routes AI-related requests to the LLM AI Chat Service.
 * (Optional) Quality-/Performance Characteristics:
 - Efficient request handling and routing, ensuring that each request reaches the correct backend service.
-* (Optional) Directory/File Location: src/gatewayservice
+* (Optional) Directory/File Location: gatewayservice
 * (Optional) Fulfilled Requirements:  Efficient request routing.
 * (Optional) Open Issues/Problems/Risks: Potential bottlenecks if request routing becomes too complex.
 
@@ -241,7 +237,6 @@ The system decomposition has been done to efficiently divide responsibilities, e
 - High availability, query performance, and backup/recovery systems.
 - Backup and recovery systems to prevent data loss.
 - ACID compliance for consistency and durability.
-* (Optional) Directory/File Location: src/database
 * (Optional) Fulfilled Requirements: Secure data storage, backup, and recovery.
 * (Optional) Open Issues/Problems/Risks: Ensuring data security, scalability, and ACID compliance is crucial to maintain consistency and performance. The system must also protect user data and comply with privacy regulations.
 
@@ -252,7 +247,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 - Connection with the WikiData API to retrieve information and generate questions.
 * (Optional) Quality-/Performance Characteristics:
 - Accuracy and relevance of the generated questions based on the WikiData knowledge base.
-* (Optional) Directory/File Location: src/question_generator
+* (Optional) Directory/File Location: questionservice/src/services/question_generator
 * (Optional) Fulfilled Requirements: Efficient and accurate question generation.
 * (Optional) Open Issues/Problems/Risks: No identified risks.
 
@@ -265,63 +260,123 @@ include::./diagrams/C4_component_diagram.puml[]
 ----
 
 **Motivation:**
-The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal components within the WIChat Application, focusing specifically on the division of the REST API into four modules for better organization and management of the system's functionalities.
+The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal components within the WIChat Application, focusing specifically on the division of the REST API into five modules for better organization and management of the system's functionalities.
 
 **Contained Components:**
 
 [cols="1,2" options="header"]
 |===
-| **Component** | **Responsibility**
-| Authenticated Module | Manages authenticated requests, ensuring secure access to the system for registered users.
-| Game Module | Manages game-related requests, such as starting a game, updating progress, and storing player responses.
-| Statistics Module | Handles the tracking and reporting of player statistics, such as scores and performance over time.
-| Question Module | Manages requests for generating and retrieving questions, interacting with the WikiData API.
-
+| Component | Responsibility
+| AuthService | Manages user authentication and session management, ensuring secure access to the system.
+| GameService | Handles gameplay, including starting a game, submitting answers, and tracking player progress.
+| QuestionService | Manages the generation and retrieval of questions from the WikiData API.
+| LLMService | Interacts with the LLM API to fetch hints for players.
+| UserService | Manages user registration, profiles, and stores relevant data for the leaderboard.
 |===
 
 **Modules Overview:**
 
-==== Authenticated Module
+==== AuthService
 
-* Purpose/Responsibility: Handles authentication and authorization processes for users to securely access the system.
-* Interface(s):
+* **Purpose/Responsibility**: AuthService handles the authentication and session management for users. It ensures that only authenticated users can access the system.
+* **Interface(s)**:
 - API endpoints for login, registration, and session management.
-- Interacts with the Database to store and verify user credentials.
-* (Optional) Quality-/Performance Characteristics:
-- Ensures secure handling of sensitive user data with encryption.
-* (Optional) Directory/File Location: src/rest_api/authenticated
-* (Optional) Fulfilled Requirements: Secure login, registration, and session management.
+- Interacts with the **User Database** to store and verify user credentials.
+* **Quality-/Performance Characteristics**:
+- Secures user credentials with encryption and token management.
+- Ensures protection against unauthorized access by enforcing strict authentication mechanisms.
+* **Directory/File Location**: users/authservice
+* **Fulfilled Requirements**: Secure user login, registration, and session management.
 
-==== Game Module
+==== GameService
 
-* Purpose/Responsibility: Handles interactions related to gameplay, such as starting the game, submitting answers, and tracking game progress.
-* Interface(s):
-- API endpoints for starting the game, submitting responses, and tracking progress.
-- Interacts with the Database to store player progress.
-* (Optional) Quality-/Performance Characteristics:
-- Efficient state management with low-latency updates.
-* (Optional) Directory/File Location: src/rest_api/game
-* (Optional) Fulfilled Requirements: Manage game flow and player data efficiently.
+* **Purpose/Responsibility**: GameService handles all game-related activities such as starting a new game, submitting answers, and tracking progress.
+* **Interface(s)**:
+- API endpoints for starting the game, submitting answers, and tracking player progress.
+- Interacts with the **Game Database** to store player data and responses.
+* **Quality-/Performance Characteristics**:
+- Low-latency, high-performance state management to ensure smooth game progress.
+- Efficient handling of player responses and game state updates.
+* **Directory/File Location**: gameservice
+* **Fulfilled Requirements**: Game flow management, including game initiation, answer submission, and progress tracking.
 
-==== Statistics Module
+==== QuestionService
 
-* Purpose/Responsibility: Tracks player performance and generates reports on their gameplay statistics.
-* Interface(s):
-- API endpoints for retrieving statistics and generating reports.
-- Interacts with the Database to store and retrieve player statistics.
-* (Optional) Quality-/Performance Characteristics:
-- High-performance data retrieval for real-time reports.
-* (Optional) Directory/File Location: src/rest_api/statistics
-* (Optional) Fulfilled Requirements: Accurate and timely reporting of player statistics.
+**Motivation:**
+The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal components within the WIChat Application, focusing specifically on the division of the REST API into five modules for better organization and management of the system's functionalities. Additionally, it includes background services such as question generation to support game content dynamically.
 
-==== Question Module
+**Contained Components:**
 
-* Purpose/Responsibility: Manages the generation and retrieval of image-based questions based on data from the WikiData API.
-* Interface(s):
-- API endpoints for retrieving questions for the game.
-- Communication with the Question Management component to generate and serve questions.
-* (Optional) Quality-/Performance Characteristics:
-- Relevant and contextually accurate questions.
-* (Optional) Directory/File Location: src/rest_api/questions
-* (Optional) Fulfilled Requirements: Relevant question retrieval and accurate question generation.
+[cols="1,2" options="header"]
+|===
+| Component | Responsibility
+| AuthService | Manages user authentication and session management, ensuring secure access to the system.
+| GameService | Handles gameplay, including starting a game, submitting answers, and tracking player progress.
+| QuestionService | Composed of two subcomponents: QuestionStorage (for exposing question-related APIs) and QuestionGenerator (for fetching and updating question data from WikiData).
+| LLMService | Interacts with the LLM API to fetch hints for players.
+| UserService | Manages user registration, profiles, and stores relevant data for the leaderboard.
+|===
+
+**Modules Overview:**
+
+==== AuthService
+
+* **Purpose/Responsibility**: AuthService handles the authentication and session management for users. It ensures that only authenticated users can access the system.
+* **Interface(s)**:
+- API endpoints for login, registration, and session management.
+- Interacts with the **User Database** to store and verify user credentials.
+* **Quality-/Performance Characteristics**:
+- Secures user credentials with encryption and token management.
+- Ensures protection against unauthorized access by enforcing strict authentication mechanisms.
+* **Directory/File Location**: users/authservice
+* **Fulfilled Requirements**: Secure user login, registration, and session management.
+
+==== GameService
+
+* **Purpose/Responsibility**: GameService handles all game-related activities such as starting a new game, submitting answers, and tracking progress.
+* **Interface(s)**:
+- API endpoints for starting the game, submitting answers, and tracking player progress.
+- Interacts with the **Game Database** to store player data and responses.
+* **Quality-/Performance Characteristics**:
+- Low-latency, high-performance state management to ensure smooth game progress.
+- Efficient handling of player responses and game state updates.
+* **Directory/File Location**: gameservice
+* **Fulfilled Requirements**: Game flow management, including game initiation, answer submission, and progress tracking.
+
+==== QuestionService
+
+* **Purpose/Responsibility**: QuestionService is divided into two logical components:
+**QuestionStorage** exposes APIs for retrieving questions, and **QuestionGenerator** (or questionworker) runs in the background to fetch and update question data from WikiData.
+* **Interface(s)**:
+- QuestionStorage: API endpoints for delivering questions to the frontend.
+- QuestionGenerator: Periodic interaction with the **WikiData API** and writes updates to the **Question Database**.
+* **Quality-/Performance Characteristics**:
+- Ensures players receive contextually relevant and up-to-date questions.
+- Maintains a fresh and diverse question set via automated periodic updates.
+* **Directory/File Location**: questionservice/
+* **Fulfilled Requirements**: Reliable question retrieval and automated content updating from WikiData.
+
+==== LLMService
+
+* **Purpose/Responsibility**: LLMService is responsible for communicating with the LLM API to retrieve hints for players during gameplay.
+* **Interface(s)**:
+- API endpoint for sending a prompt to the LLM API and receiving hints.
+- Interacts with the **LLM API** for natural language processing and context-based hints.
+* **Quality-/Performance Characteristics**:
+- Efficient interaction with external LLM services to fetch hints in real-time.
+- Ensures hints are contextually accurate and aid the player appropriately.
+* **Directory/File Location**: llmservice
+* **Fulfilled Requirements**: Provides relevant hints to players based on their game progress and context.
+
+==== UserService
+
+* **Purpose/Responsibility**: UserService manages user registration, profile management, and stores data necessary for the leaderboard.
+* **Interface(s)**:
+- API endpoints for user registration, updating profiles, and interacting with the leaderboard.
+- Communicates with the **User Database** to store and retrieve user data, including authentication details and game scores.
+* **Quality-/Performance Characteristics**:
+- Efficient user data management with scalable storage and retrieval mechanisms.
+- Ensures user data privacy and integrity.
+* **Directory/File Location**: users/userservice
+* **Fulfilled Requirements**: User registration, profile management, and leaderboard functionality.
 

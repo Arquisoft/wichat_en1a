@@ -2,7 +2,7 @@
 !includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
 !include <c4/C4_Context.puml>
 
-title Container Diagram of the technical context for the System (C4 Diagram - Level 2)
+title Container Diagram of the technical context for the Wichat system (C4 Diagram - Level 2)
 AddElementTag("Person", $bgColor="#darkgreen", $fontColor="#white")
 AddElementTag("Internal system", $bgColor="#darkseagreen", $fontColor="#003300")
 AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
@@ -11,38 +11,36 @@ AddElementTag("Database", $bgColor="#darkgreen", $fontColor="#white")
 'Containers
 Person(player, "Player's Browser", "Preferred browser (Firefox, Chrome, Opera...)")
 
-System_Boundary(wichat, "Wichat application server") {
-    Container(proxy, "Proxy", "TO BE DEFINED", "Handles requests and forwards them to the correct services", $tags="Internal system")
-    Container(web_app, "Wichat application client", "React, JavaScript", "Frontend interface for players", $tags="Internal system")
+System_Boundary(wichat, "WIChat Application Server") {
+    Container(proxy, "Proxy", "Node.js", "Handles requests and forwards them to the correct backend services", $tags="Internal system")
+    Container(web_app, "Wichat Web Application", "React, JavaScript", "Frontend interface for players to interact with the game", $tags="Internal system")
 
-    Container(api_gateway, "WiChat API", "Node.js", "Manages requests between frontend and backend services", $tags="Internal system")
-    Container(rest_api, "REST API", "Node.js", "Handles backend API requests", $tags="Internal system")
+    Container(api_gateway, "WiChat API Gateway", "Node.js", "Single entry point for requests, manages communication between frontend and backend", $tags="Internal system")
+    Container(rest_api, "REST API", "Node.js", "Handles all backend API requests and services", $tags="Internal system")
 
-    Container(llm_service, "LLM AI Chat Service", "Node.js", "Handles AI-based hints for the game", $tags="Internal system")
-    Container(question_generator, "Question Generator", "Node.js", ".jar file", "Periodically updates questions in the database", $tags="Internal system")
+    Container(llm_service, "LLM AI Chat Service", "Node.js", "Handles AI-based hints and responses for the game", $tags="Internal system")
+    Container(question_generator, "Question Generator", "Node.js", ".jar file", "Periodically generates and updates questions in the database from WikiData", $tags="Internal system")
 
-    ContainerDb(main_database, "Wichat application database", "MongoDB", "Stores game data, questions, and game statistics", $tags="Database")
-    ContainerDb(user_database, "User Data & Leaderboard Database", "MongoDB", "Stores user profile data, scores, and leaderboard information", $tags="Database")
+    ContainerDb(main_database, "Wichat Database", "MongoDB", "Stores game sessions, questions, user profiles, leaderboard data, and statistics", $tags="Database")
 }
 
 System_Ext(wikidata, "WikiData API", "REST API", $tags="External system")
-System_Ext(llm_api, "LLM API", "REST API", $tags="External system")
+System_Ext(llm_api, "LLM API (Empathy)", "REST API", $tags="External system")
 
 'RELATIONS
-Rel(player, proxy, "Uses", "HTTPS")  ' New relation to connect Proxy and Player
-Rel(proxy, web_app, "Serves", "HTTPS")  ' Proxy forwards requests to Web App
-Rel(web_app, api_gateway, "Sends user and game requests", "JSON, HTTPS")
-Rel(api_gateway, rest_api, "Forwards requests to backend services", "JSON, HTTPS")
+Rel(player, proxy, "Uses", "HTTPS")  ' Player interacts with the Proxy through HTTPS
+Rel(proxy, web_app, "Serves", "HTTPS")  ' Proxy forwards requests to the Web Application
+Rel(web_app, api_gateway, "Sends user and game-related requests", "JSON, HTTPS")
+Rel(api_gateway, rest_api, "Forwards requests to appropriate backend services", "JSON, HTTPS")
 
 Rel(rest_api, llm_service, "Routes AI-related requests", "JSON, HTTPS")
-Rel(rest_api, main_database, "Stores and retrieves game data", "JSON, HTTPS")
-Rel(rest_api, question_generator, "Requests new questions", "JSON, HTTPS")
+Rel(rest_api, main_database, "Stores and retrieves game session data", "JSON, HTTPS")
+Rel(rest_api, question_generator, "Requests new questions for gameplay", "JSON, HTTPS")
 
-Rel(question_generator, main_database, "Updates questions", "MQL, HTTPS")  ' Updated relation to connect Question Generator with the main database
-Rel(question_generator, wikidata, "Fetches knowledge-based data", "MQL, HTTPS")
-Rel(llm_service, llm_api, "Sends user queries", "JSON, HTTPS")
+Rel(question_generator, main_database, "Updates questions and game data", "MQL, HTTPS")  ' Question Generator updates the main database
+Rel(question_generator, wikidata, "Fetches knowledge-based questions", "MQL, HTTPS")
+Rel(llm_service, llm_api, "Sends prompts for hints and receives responses", "JSON, HTTPS")
 
-' User database connections
-Rel(rest_api, user_database, "Stores user data and leaderboard info", "JSON, HTTPS")
-Rel(main_database, user_database, "Synchronizes with user database for certain data", "JSON, HTTPS")
+' User data connections
+Rel(rest_api, main_database, "Stores and retrieves user profiles, leaderboard data, and statistics", "JSON, HTTPS")
 @enduml
