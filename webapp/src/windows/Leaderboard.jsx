@@ -4,7 +4,6 @@ import { useTheme } from '@mui/material/styles';
 import NavBar from '../components/NavBarSignedIn';
 import { jwtDecode } from 'jwt-decode';
 import { useTranslation } from 'react-i18next';
-
 import '../css/Leaderboard.css';
 
 const Leaderboard = () => {
@@ -15,16 +14,17 @@ const Leaderboard = () => {
   const { t } = useTranslation();
   
   const getLoggedInUserId = () => {
-    const token = localStorage.getItem('sessionToken');
-    if (!token) return null;
-    try {
-      const decoded = jwtDecode(token);
-      return decoded.userId;
-    } catch (error) {
-      console.error('Invalid token', error);
-      return null;
-    }
-  };
+      const token = sessionStorage.getItem("sessionToken");
+      if (!token) return null;
+      try {
+        const decoded = jwtDecode(token);
+        const userId = sessionStorage.getItem("loggedInUser") || decoded.userId;
+        return userId;
+      } catch (error) {
+        console.error('Invalid token', error);
+        return null;
+      }
+    };
 
   const loggedInPlayerId = getLoggedInUserId();
   const [leaderboardData, setLeaderboardData] = useState(null);
@@ -79,10 +79,10 @@ const Leaderboard = () => {
               {results.map((result, index) => (
                 <React.Fragment key={result.id}>
                   <ListItem
-                    className={result.id === loggedInPlayerId ? 'list-item highlighted' : 'list-item'}
+                    className={result.userId?.toString() === loggedInPlayerId?.toString() ? 'list-item highlighted' : 'list-item'}
                   >
                     <ListItemText 
-                      primary={`${index + 1}. ${result.userId}`}
+                      primary={`${index + 1}. ${result.userId} ${result.userId?.toString() === loggedInPlayerId?.toString() ? '(You)' : ''}`}
                       secondary={`${t('score')}: ${result.score}`} 
                     />
                   </ListItem>
