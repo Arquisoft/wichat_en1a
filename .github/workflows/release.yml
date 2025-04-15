@@ -58,10 +58,12 @@ jobs:
     needs: [e2e-tests]
     steps:
     - uses: actions/checkout@v4
+    - name: Log API_URI value
+      run: echo "API_URI is set to ${{ secrets.GATEWAY_SERVICE_URL }}"
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       env:
-        API_URI: http://${{ secrets.DEPLOY_HOST }}:8000
+        API_URI: ${{secrets.GATEWAY_SERVICE_URL}}
       with:
           name: arquisoft/wichat_en1a/webapp
           username: ${{ github.actor }}
@@ -198,4 +200,6 @@ jobs:
           wget https://raw.githubusercontent.com/arquisoft/wichat_en1a/master/docker-compose.yml -O docker-compose.yml
           docker compose --profile prod down
           echo "LLM_API_KEY=${{ secrets.LLM_API_KEY }}" > .env
+          echo "GATEWAY_SERVICE_URL=${{ secrets.GATEWAY_SERVICE_URL }}" >> .env
+          echo "DEPLOY_DOMAIN=${{ secrets.DEPLOY_DOMAIN }}" >> .env
           docker compose --profile prod up -d --pull always

@@ -16,7 +16,7 @@ const AddUser = ({callback}) => {
 
   const addUser = async () => {
     try {
-      await axios.post(`${apiEndpoint}/adduser`, formData);
+      await axios.post(`${apiEndpoint}/api/user/signup`, formData);
       setSignupSuccess(true);
     } catch (error) {
       setErrormsg(error.response.data.error);

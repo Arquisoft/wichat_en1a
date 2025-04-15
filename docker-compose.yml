@@ -76,11 +76,28 @@ services:
     networks:
       - mynetwork
 
+  webapp:
+    container_name: webapp-wichat_en1a
+    image: ghcr.io/arquisoft/wichat_en1a/webapp:latest
+    profiles: ["dev", "prod"]
+    env_file:
+      - .env
+    build: 
+      context: ./webapp
+      args:
+        API_URI: ${GATEWAY_SERVICE_URL}
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_ENDPOINT: ${GATEWAY_SERVICE_URL}
+
   gatewayservice:
     container_name: gatewayservice-wichat_en1a
     image: ghcr.io/arquisoft/wichat_en1a/gatewayservice:latest
     profiles: ["dev", "prod"]
-    build: ./gatewayservice
+    env_file:
+      - .env
+    build:  ./gatewayservice
     depends_on:
       - mongodb
       - gameservice
@@ -88,6 +105,7 @@ services:
       - userservice
       - authservice
       - llmservice
+      - webapp
     ports:
       - "8000:8000"
     networks:
@@ -98,23 +116,7 @@ services:
       AUTH_SERVICE_URL: http://authservice:8002
       USER_SERVICE_URL: http://userservice:8001
       LLM_SERVICE_URL: http://llmservice:8003
-
-
-  webapp:
-    container_name: webapp-wichat_en1a
-    image: ghcr.io/arquisoft/wichat_en1a/webapp:latest
-    profiles: ["dev", "prod"]
-    build: 
-      context: ./webapp
-      args:
-        LLM_API_KEY: ${LLM_API_KEY}
-        REACT_APP_API_ENDPOINT: ${GATEWAY_SERVICE_URL}
-    depends_on:
-      - gatewayservice
-    ports:
-      - "3000:3000"
-    environment:
-      GATEWAY_SERVICE_URL: http://gatewayservice:8000
+      WEBAPP_URL: http://webapp:3000
 
 
   prometheus:

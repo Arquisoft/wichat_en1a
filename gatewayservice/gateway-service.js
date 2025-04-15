@@ -16,10 +16,18 @@ const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+const webappUrl = process.env.WEBAPP_URL || 'http://localhost:3000';
+const appDomain = process.env.DEPLOY_DOMAIN || 'http://localhost:3000';
 const apiKey = process.env.LLM_API_KEY;
 
-
-app.use(cors());
+const corsOptions ={
+  origin: [webappUrl,appDomain,'https://wichat-en1a.duckdns.org','http://localhost:3000'], // Allow only requests from the React web app
+  methods: ['GET', 'POST','OPTIONS'], 
+  allowedHeaders: ['content-type'], 
+  credentials: true  
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 //Prometheus configuration
@@ -27,11 +35,11 @@ const metricsMiddleware = promBundle({includeMethod: true});
 app.use(metricsMiddleware);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-app.get('/userservice/health', async (req, res) => {
+app.get('/api/userservice/health', async (req, res) => {
   try {
     const response = await axios.get(userServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -40,7 +48,7 @@ app.get('/userservice/health', async (req, res) => {
   }
 });
 
-app.get('/authservice/health', async (req, res) => {
+app.get('/api/authservice/health', async (req, res) => {
   try {
     const response = await axios.get(authServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -49,7 +57,7 @@ app.get('/authservice/health', async (req, res) => {
   }
 });
 
-app.get('/llmservice/health', async (req, res) => {
+app.get('/api/llmservice/health', async (req, res) => {
   try {
     const response = await axios.get(llmServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -58,7 +66,7 @@ app.get('/llmservice/health', async (req, res) => {
   }
 });
 
-app.get('/questionservice/health', async (req, res) => {
+app.get('/api/questionservice/health', async (req, res) => {
   try {
     const response = await axios.get(questionServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -67,7 +75,7 @@ app.get('/questionservice/health', async (req, res) => {
   }
 });
 
-app.get('/gameservice/health', async (req, res) => {
+app.get('/api/gameservice/health', async (req, res) => {
   try {
     const response = await axios.get(gameServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -76,7 +84,7 @@ app.get('/gameservice/health', async (req, res) => {
   }
 });
 
-app.post('/login', async (req, res) => {
+app.post('/api/user/login', async (req, res) => {
   try {
     // Forward the login request to the authentication service
     const authResponse = await axios.post(authServiceUrl+'/login', req.body);
@@ -86,7 +94,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/adduser', async (req, res) => {
+app.post('/api/user/signup', async (req, res) => {
   try {
     // Forward the add user request to the user service
     const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
@@ -97,7 +105,7 @@ app.post('/adduser', async (req, res) => {
 });
 
 
-app.post('/askllm', async (req, res) => {
+app.post('/api/askllm', async (req, res) => {
   try {
     const { question, gameQuestion, correctAnswer, model } = req.body;
     if (!question || !gameQuestion || !correctAnswer) {
@@ -116,7 +124,7 @@ app.post('/askllm', async (req, res) => {
     res.status(500).json({ error: 'Failed to process request to LLM Service' });  }
 });
 
-app.get('/generate-questions', async (req, res) => {
+app.get('/api/generate-questions', async (req, res) => {
   try {
     const { type, numQuestions } = req.query;
     if (!type || !numQuestions || isNaN(numQuestions) || numQuestions <= 0) {
@@ -134,7 +142,7 @@ app.get('/generate-questions', async (req, res) => {
 });
 
 // Ruta GET: Obtain questions by type and limit
-app.get('/questions/:type/:limit', async (req, res) => {
+app.get('/api/questions/:type/:limit', async (req, res) => {
   const { type, limit } = req.params;
 
   try {
@@ -146,7 +154,7 @@ app.get('/questions/:type/:limit', async (req, res) => {
 });
 
 // Ruta GET: Obtain random question
-app.get('/question', async (req, res) => {
+app.get('/api/question', async (req, res) => {
   try {
     const randomQuestion = await axios.get(`${questionServiceUrl}/question`);
     if (!randomQuestion.data) {
@@ -158,7 +166,7 @@ app.get('/question', async (req, res) => {
   }
 });
 
-app.post('/saveScore', async (req, res) => {
+app.post('/api/saveScore', async (req, res) => {
   try {
     const { userId, score, gameMode, questionsPassed,questionsFailed, accuracy } = req.body;
     if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
@@ -172,7 +180,7 @@ app.post('/saveScore', async (req, res) => {
   }
 });
 
-app.get('/scoresByUser/:userId', async (req, res) => {
+app.get('/api/scoresByUser/:userId', async (req, res) => {
   try {
       const userId = req.params.userId;
       const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
@@ -186,7 +194,7 @@ app.get('/scoresByUser/:userId', async (req, res) => {
       res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
-app.get('/leaderboard/:gameMode?', async (req, res) => {
+app.get('/api/leaderboard/:gameMode?', async (req, res) => {
   try {
     const { gameMode } = req.params;
 

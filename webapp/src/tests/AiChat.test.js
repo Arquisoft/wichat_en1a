@@ -16,7 +16,7 @@ describe('AiChat component', () => {
   it('should display a question made and its response',async ()=>{
     render(<AiChat/>);
     
-    mockAxios.onPost('http://localhost:8000/askllm').reply(200,{answer:aiChatAnswer})
+    mockAxios.onPost('http://localhost:8000/api/askllm').reply(200,{answer:aiChatAnswer})
 
     //open drawer
     fireEvent.click(screen.getByTestId("aiChatFloatingButton"));

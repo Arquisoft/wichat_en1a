@@ -14,8 +14,8 @@ describe('Game Page', () => {
     let session = {};
     beforeEach(() => {
       mockAxios.reset();
-      mockAxios.onGet('http://localhost:8000/questions/all/10').reply(200, questions);
-      mockAxios.onPost('http://localhost:8000/saveScore').reply(200, { newScore: {}});
+      mockAxios.onGet('http://localhost:8000/api/questions/all/10').reply(200, questions);
+      mockAxios.onPost('http://localhost:8000/api/saveScore').reply(200, { newScore: {}});
       window.sessionStorage = {
         setItem: (key, value) => {
           console.log(key + ": " + value);

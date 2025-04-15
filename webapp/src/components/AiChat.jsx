@@ -23,10 +23,10 @@ const AiChat = ({question={
     if (!userInput.trim()) return; // Avoid empty requests
 
     try {
-      const response = await axios.post(`${gatewayUrl}/askllm`, {
+      const response = await axios.post(`${gatewayUrl}/api/askllm`, {
         question: userInput,
         gameQuestion: question.question, // Replace with actual game question
-        correctAnswer: question.correctAnswer // Replace with actual correct answer
+        correctAnswer: question.answers[question.correctAnswerId] // Replace with actual correct answer
       })
 
       // Update chat with the AI response

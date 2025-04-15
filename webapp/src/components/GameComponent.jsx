@@ -36,7 +36,14 @@ const GameComponent = ({ question={
       <Grid item xs={12}><Typography id="gameQuestion" variant='h2' textAlign="center">{question.question}</Typography></Grid>
       
       <Grid item xs={8} component="img" flexGrow={1} src={question.image} alt="question hint image"
-        sx={{maxHeight:"60vh",width:"100%",borderRadius:2,boxShadow:3, objectFit:"contain",backgroundColor:theme.palette.primary.main}}></Grid>
+        sx={{maxHeight:"50vh",
+          height: "50vh",
+          width:"100%",
+          borderRadius:2,
+          boxShadow:3, 
+          objectFit:"contain",
+          backgroundColor:theme.palette.primary.main,
+          transition: 'height 0.5s ease'}}></Grid>
 
       <Grid item xs={12}>
         <Typography variant="body2">Time left:</Typography>
