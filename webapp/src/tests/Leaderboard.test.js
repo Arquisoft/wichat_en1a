@@ -12,7 +12,7 @@ jest.mock('jwt-decode', () => ({
   jwtDecode: jest.fn(),
 }));
 
-const localStorageMock = (() => {
+const sessionStorageMock = (() => {
   let store = {};
   return {
     getItem: jest.fn((key) => store[key] || null),
@@ -28,7 +28,7 @@ const localStorageMock = (() => {
   };
 })();
 
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock });
 
 jest.mock('../components/NavBarSignedIn', () => () => <div data-testid="navbar" />);
 
@@ -77,7 +77,7 @@ describe('Leaderboard Component', () => {
 
   test('renders leaderboard data correctly and highlights the logged-in player', async () => {
     const token = 'dummyValidToken';
-    window.localStorage.getItem.mockReturnValue(token);
+    window.sessionStorage.getItem.mockReturnValue(token);
     const { jwtDecode } = require('jwt-decode');
     jwtDecode.mockReturnValue({ userId: 'user1' });
 

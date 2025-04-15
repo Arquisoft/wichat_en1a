@@ -18,7 +18,7 @@ jest.mock("jwt-decode", () => ({
   jwtDecode: jest.fn(),
 }));
 
-const localStorageMock = (() => {
+const sessionStorageMock = (() => {
   let store = {};
   return {
     getItem: jest.fn((key) => store[key] || null),
@@ -33,7 +33,7 @@ const localStorageMock = (() => {
     }),
   };
 })();
-Object.defineProperty(window, "localStorage", { value: localStorageMock });
+Object.defineProperty(window, "sessionStorage", { value: sessionStorageMock });
 
 const theme = createTheme({
   palette: {
@@ -85,7 +85,7 @@ const mockData = {
 describe("Statistics view", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    localStorageMock.getItem.mockReturnValue("fakeToken");
+    sessionStorageMock.getItem.mockReturnValue("fakeToken");
     const { jwtDecode } = require("jwt-decode");
     jwtDecode.mockReturnValue({ userId: "testUser" });
   });
@@ -180,7 +180,7 @@ describe("Statistics view", () => {
     });
   });
 
-  test("renders fallback values when no scores are returned", async () => {
+  test("renders a message when no scores are returned", async () => {
     // Return an empty scores array
     jest.spyOn(global, "fetch").mockResolvedValueOnce({
       ok: true,
@@ -197,8 +197,6 @@ describe("Statistics view", () => {
       expect(screen.getByText(i18n.t("statistics.title"))).toBeInTheDocument();
     });
 
-    expect(screen.getByText(i18n.t("statistics.totalGames"))).toBeInTheDocument();
-    const zeroFields = screen.getAllByText("0");
-    expect(zeroFields.length).toBe(2); // Two fields should show ONLY the string "0" by default
+    expect(screen.getByText(i18n.t("statistics.noData"))).toBeInTheDocument();
   });
 });

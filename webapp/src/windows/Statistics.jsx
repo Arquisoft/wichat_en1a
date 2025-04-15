@@ -4,8 +4,8 @@ import { useTheme } from "@mui/material/styles";
 import NavBar from "../components/NavBarSignedIn";
 import { useTranslation } from "react-i18next";
 import { jwtDecode } from 'jwt-decode';
-import "../css/Statistics.css";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
+import "../css/Statistics.css";
 
 // Computes statistics based on an array of score records
 /*
@@ -51,12 +51,12 @@ const computeUserStats = (scores) => {
 
     // Save a copy for the game history
     gameHistory.push({
-      date: game.date,
       score: game.score,
       questionsAnswered: questions,
       correctAnswers: correct,
       wrongAnswers: wrong,
       accuracy: game.accuracy,
+      date: game.createdAt
       // timePerQuestion: timePerQ
     });
 
@@ -103,11 +103,12 @@ const Statistics = () => {
   const [userStats, setUserStats] = useState(null);
 
   const getLoggedInUserId = () => {
-    const token = localStorage.getItem("sessionToken");
+    const token = sessionStorage.getItem("sessionToken");
     if (!token) return null;
     try {
       const decoded = jwtDecode(token);
-      return decoded.userId;
+      const userId = sessionStorage.getItem("loggedInUser") || decoded.userId;
+      return userId;
     } catch (error) {
       console.error('Invalid token', error);
       return null;
@@ -138,9 +139,7 @@ const Statistics = () => {
         if (!loggedInPlayerId) {
           throw new Error("User not logged in.");
         }
-        const response = await fetch(
-          `${gatewayUrl}/scoresByUser/${loggedInPlayerId}`
-        );
+        const response = await fetch(`${gatewayUrl}/api/scoresByUser/${loggedInPlayerId}`);
         const data = await response.json();
         if (!response.ok || !data) {
           setUserStats(computeUserStats([]));
@@ -171,6 +170,37 @@ const Statistics = () => {
         <Typography variant="h5" align="center" sx={{ mt: 5 }}>
           {t("statistics.loading")}
         </Typography>
+      </div>
+    );
+  }
+
+  if (safeStats.totalGames === 0) {
+    return (
+      <div
+        className="window-container"
+        style={{
+          backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
+          height: '100vh'
+        }}
+      >
+        <NavBar />
+        <Box sx={{ width: "100%", maxWidth: 800, margin: "0 auto", padding: 5, textAlign: "center" }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            style={{ color: theme.palette.secondary.light }}
+          >
+            {t("statistics.title")}
+          </Typography>
+          <Typography
+            variant="h6"
+            component="p"
+            style={{ color: theme.palette.secondary.light }}
+          >
+            {t("statistics.noData")}
+          </Typography>
+        </Box>
       </div>
     );
   }
@@ -369,7 +399,7 @@ const Statistics = () => {
                               primary={new Date(game.date).toLocaleDateString(
                                 i18n.language === "es" ? "es-ES" : "en-US"
                               )}
-                              secondary={`${t("statistics.score")} (%) ${game.score}% | ${t("statistics.questions")} ${game.questionsAnswered} | ${t("statistics.avgTime")} ${game.timePerQuestion}s`}
+                              secondary={`${t("statistics.score")} (%) ${game.score}% | ${t("statistics.questions")} ${game.questionsAnswered} | ${t("statistics.avgTime")} ${game.timePerQuestion} s`}
                             />
                           </ListItem>
                           {index < safeStats.gameHistory.length - 1 && <Divider />}
@@ -436,11 +466,7 @@ const Statistics = () => {
                           <ListItem>
                             <ListItemText
                               primary={t(`gameModes.${mode.mode}.name`)}
-                              secondary={`${t("statistics.gamesPlayed")} ${
-                                mode.gamesPlayed
-                              } | ${t("statistics.avgScore")} ${mode.avgScore}% | ${t(
-                                "statistics.avgTime"
-                              )} ${mode.avgTime}s`}
+                              secondary={`${t("statistics.gamesPlayed")} ${mode.gamesPlayed} | ${t("statistics.avgScore")} ${mode.avgScore}% | ${t("statistics.avgTime")} ${mode.avgTime} s`}
                             />
                           </ListItem>
                           {index < safeStats.gameModeStats.length - 1 && <Divider />}

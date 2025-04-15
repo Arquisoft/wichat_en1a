@@ -65,6 +65,7 @@
     "statistics.gamesPlayed":"Games played:",
     "statistics.incorrect":"Incorrect",
     "statistics.loading":"Loading statistics...",
+    "statistics.noData":"No games played yet! Start your first quiz to see your statistics here.",
     "statistics.overview":"Overview",
     "statistics.performance":"Performance",
     "statistics.performanceOverTime":"Performance over time:",

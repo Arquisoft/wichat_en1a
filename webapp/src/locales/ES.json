@@ -65,6 +65,7 @@
     "statistics.gamesPlayed":"Partidas jugadas:",
     "statistics.incorrect":"Incorrecto",
     "statistics.loading":"Cargando estadísticas...",
+    "statistics.noData":"¡Aún no has jugado ninguna partida! Juega tu primera partida para ver tus estadísticas aquí.",
     "statistics.overview":"Resumen",
     "statistics.performance":"Rendimiento",
     "statistics.performanceOverTime":"Rendimiento (por tiempo):",
