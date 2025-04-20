@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import Leaderboard from '../windows/Leaderboard';
+import i18n from '../i18n';
 import '@testing-library/jest-dom/extend-expect';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
@@ -11,7 +12,7 @@ jest.mock('jwt-decode', () => ({
   jwtDecode: jest.fn(),
 }));
 
-const localStorageMock = (() => {
+const sessionStorageMock = (() => {
   let store = {};
   return {
     getItem: jest.fn((key) => store[key] || null),
@@ -27,13 +28,7 @@ const localStorageMock = (() => {
   };
 })();
 
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key) => key,
-  }),
-}));
+Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock });
 
 jest.mock('../components/NavBarSignedIn', () => () => <div data-testid="navbar" />);
 
@@ -82,17 +77,17 @@ describe('Leaderboard Component', () => {
 
   test('renders leaderboard data correctly and highlights the logged-in player', async () => {
     const token = 'dummyValidToken';
-    window.localStorage.getItem.mockReturnValue(token);
+    window.sessionStorage.getItem.mockReturnValue(token);
     const { jwtDecode } = require('jwt-decode');
     jwtDecode.mockReturnValue({ userId: 'user1' });
 
     // Prepare dummy responses for each game mode
     const gameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
     const gameTitles = [
-        'gameModes.basicQuiz.name',
-        'gameModes.expertDomain.name',
-        'gameModes.timeAttack.name',
-        'gameModes.endlessMarathon.name'
+        i18n.t('gameModes.basicQuiz.name'),
+        i18n.t('gameModes.expertDomain.name'),
+        i18n.t('gameModes.timeAttack.name'),
+        i18n.t('gameModes.endlessMarathon.name')
     ];
     
     const responses = gameModes.map(mode => ({
