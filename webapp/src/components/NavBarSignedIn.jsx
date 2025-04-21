@@ -18,7 +18,7 @@ const NavBarSignedIn = () => {
   };
 
   return (
-    <AppBar position="static" color="default">
+    <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           Wichat
@@ -26,24 +26,30 @@ const NavBarSignedIn = () => {
             <Button href="/home" color="inherit" sx={{
               marginLeft: 10,
               "&:hover": {
-                backgroundColor: 'secondary.light'
+                backgroundColor: 'secondary.light',
+                color: 'primary.main'
               }
             }}>{t('menu')}</Button>
             <Button href="/leaderboard" color="inherit" sx={{
               marginLeft: 10,
               "&:hover": {
-                backgroundColor: 'secondary.light'
+                backgroundColor: 'secondary.light',
+                color: 'primary.main'
               }
             }}>{t('leaderboard')}</Button>
             <Button href="/stats" color="inherit" sx={{
               marginLeft: 10,
               "&:hover": {
-                backgroundColor: 'secondary.light'
+                backgroundColor: 'secondary.light',
+                color: 'primary.main'
               }
             }}>{t('statistics')}</Button>
           </ButtonGroup>
         </Typography>
-        <Select onChange={handleLanguageChange} defaultValue="EN" variant="outlined" size="small" style={{ marginRight: 10 }}>
+        <Select onChange={handleLanguageChange} defaultValue="EN" variant="outlined" size="small" sx={{ 
+            marginRight: 10,
+            color: "inherit" 
+          }}>
           <MenuItem value="EN">EN</MenuItem>
           <MenuItem value="ES">ES</MenuItem>
         </Select>

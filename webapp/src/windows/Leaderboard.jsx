@@ -73,7 +73,13 @@ const Leaderboard = () => {
         <Typography variant="h5" className="section-title">
           {modeDisplayName}
         </Typography>
-        <Card variant="outlined" className="leaderboard-card">
+        <Card 
+          variant="outlined" 
+          className="leaderboard-card"
+          style={{
+            background: `${theme.palette.secondary.light}`
+          }}
+        >
           <CardContent>
             <List>
               {results.map((result, index) => (
@@ -97,13 +103,7 @@ const Leaderboard = () => {
   };
 
   return (
-    <div 
-      className="window-container"
-      style = {{
-        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
-        height: '100vh',
-      }}
-    >
+    <div className="window-container">
       <NavBar />
       <div className="leaderboard-container">
         <Typography variant="h3" align="center" gutterBottom>

@@ -38,20 +38,12 @@ const HomePage = () => {
   };
 
   return (
-    <div 
-      className = "window-container"
-      style = {{
-        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`
-      }}
-    >
+    <div className = "window-container">
       <NavBar/>
       <div className = "menu-container">
         <h1 
           className = "menu-title"
           id='home-title'
-          style={{
-            color: `${theme.palette.secondary.light}`
-          }}
         >
           {t('homePage.welcome')}
         </h1>
@@ -62,7 +54,7 @@ const HomePage = () => {
                 className = "menu-card"
                 style={{
                   background: `${theme.palette.secondary.light}`
-                }}  
+                }}
               >
                 <CardContent>
                   <h2 

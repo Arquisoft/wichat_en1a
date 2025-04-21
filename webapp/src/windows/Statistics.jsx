@@ -160,12 +160,7 @@ const Statistics = () => {
 
   if (!userStats) {
     return (
-      <div
-        className="window-container"
-        style={{
-          backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
-        }}
-      >
+      <div className="window-container">
         <NavBar />
         <Typography variant="h5" align="center" sx={{ mt: 5 }}>
           {t("statistics.loading")}
@@ -176,28 +171,13 @@ const Statistics = () => {
 
   if (safeStats.totalGames === 0) {
     return (
-      <div
-        className="window-container"
-        style={{
-          backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
-          height: '100vh'
-        }}
-      >
+      <div className="window-container">
         <NavBar />
         <Box sx={{ width: "100%", maxWidth: 800, margin: "0 auto", padding: 5, textAlign: "center" }}>
-          <Typography
-            variant="h4"
-            component="h1"
-            gutterBottom
-            style={{ color: theme.palette.secondary.light }}
-          >
+          <Typography variant="h4" component="h1" gutterBottom>
             {t("statistics.title")}
           </Typography>
-          <Typography
-            variant="h6"
-            component="p"
-            style={{ color: theme.palette.secondary.light }}
-          >
+          <Typography variant="h6" component="p">
             {t("statistics.noData")}
           </Typography>
         </Box>
@@ -225,48 +205,18 @@ const Statistics = () => {
   }));
 
   return (
-    <div 
-      className="window-container"
-      style = {{
-        backgroundImage: `linear-gradient(to right, ${theme.palette.secondary.dark}, ${theme.palette.secondary.main})`,
-        height: '100vh'
-      }}
-    >
+    <div className="window-container">
       <NavBar />
       <div className="statistics-container">
         <Box sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", padding: 3 }}>
-          <Typography
-            variant="h4"
-            component="h1"
-            gutterBottom
-            align="center"
-            className="statistics-title"
-            style={{
-              color: `${theme.palette.secondary.light}`
-            }}
-          >
+          <Typography variant="h4" component="h1" gutterBottom align="center" className="statistics-title">
             {t("statistics.title")}
           </Typography>
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
             <Tabs value={tabValue} onChange={handleTabChange} centered>
-              <Tab 
-                label={t("statistics.overview")}
-                style={{
-                  color: `${theme.palette.secondary.light}`
-                }}
-              />
-              <Tab 
-                label={t("statistics.performance")}
-                style={{
-                  color: `${theme.palette.secondary.light}`
-                }}
-              />
-              <Tab 
-                label={t("statistics.gameModes")}
-                style={{
-                  color: `${theme.palette.secondary.light}`
-                }}
-              />
+              <Tab label={t("statistics.overview")}/>
+              <Tab label={t("statistics.performance")}/>
+              <Tab label={t("statistics.gameModes")}/>
             </Tabs>
           </Box>
 
@@ -274,7 +224,12 @@ const Statistics = () => {
           {tabValue === 0 && (
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
-                <Card className="statistics-card">
+                <Card 
+                  className="statistics-card"
+                  style={{
+                    background: `${theme.palette.secondary.light}`
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" component="h2" gutterBottom>
                       {t("statistics.summary")}
@@ -316,7 +271,12 @@ const Statistics = () => {
                 </Card>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Card className="statistics-card">
+                <Card 
+                  className="statistics-card"
+                  style={{
+                    background: `${theme.palette.secondary.light}`
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" component="h2" gutterBottom>
                       {t("statistics.answerDistribution")}
@@ -353,7 +313,12 @@ const Statistics = () => {
           {tabValue === 1 && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Card className="statistics-card">
+                <Card 
+                  className="statistics-card"
+                  style={{
+                    background: `${theme.palette.secondary.light}`
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" component="h2" gutterBottom>
                       {t("statistics.performanceOverTime")}
@@ -386,7 +351,12 @@ const Statistics = () => {
                 </Card>
               </Grid>
               <Grid item xs={12}>
-                <Card className="statistics-card">
+                <Card 
+                  className="statistics-card"
+                  style={{
+                    background: `${theme.palette.secondary.light}`
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" component="h2" gutterBottom>
                       {t("statistics.recentGames")}
@@ -416,7 +386,12 @@ const Statistics = () => {
           {tabValue === 2 && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Card className="statistics-card">
+                <Card 
+                  className="statistics-card"
+                  style={{
+                    background: `${theme.palette.secondary.light}`
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" component="h2" gutterBottom>
                       {t("statistics.gameModeComparison")}
@@ -455,7 +430,12 @@ const Statistics = () => {
                 </Card>
               </Grid>
               <Grid item xs={12}>
-                <Card className="statistics-card">
+                <Card 
+                  className="statistics-card"
+                  style={{
+                    background: `${theme.palette.secondary.light}`
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" component="h2" gutterBottom>
                       {t("statistics.gameModeDetails")}
