@@ -58,9 +58,20 @@ function filterAnswer(answer,correctAnswer) {
 
   // Block common answer-revealing patterns
   const blockedPatterns = [
-      /\bthe answer is\b/i,
-      /\bcorrect answer is\b/i,
-      /\bit is\b\s+\w+/i,
+    /\bthe answer is\b/i,
+    /\bcorrect answer is\b/i,
+    /\bit is\b\s+\w+/i,
+    /\bis\b\s+["']?.{1,3}["']?/i,
+    /\bstarts with\b\s+\w/i,
+    /\bbegins with\b\s+\w/i,
+    /\bends with\b\s+\w/i,
+    /\bhas\b\s+\d+\s+letters\b/i,
+    /\bit's\b\s+\w+/i,
+    /\bcorrect\b/i,
+    /\bthat'?s (right|correct)\b/i,
+    /\bexactly\b/i,
+    /\byou got it\b/i,
+    /\byou are right\b/i
   ];
 
   for (const pattern of blockedPatterns) {
@@ -83,10 +94,29 @@ async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiK
     const url = config.url(apiKey);
 
     // Modify the request to include game context
-    const prompt = `You are an assistant for a trivia game. 
-    The current question in the game is: "${gameQuestion}" 
-    The user is asking: "${userQuestion}". 
-    Provide a useful hint but DO NOT reveal the answer.`;
+    const prompt = `
+    You are an assistant in a visual trivia game. The user is shown an image (of a flag, a city, a famous person, or a scientist) and must choose the correct answer from four options.
+    
+    STRICT RULES (MUST FOLLOW):
+    - DO NOT reveal or confirm the correct answer.
+    - DO NOT say things like "the answer is", "it starts with", "you're right", or "I think it’s".
+    - DO NOT give letter or name-based hints.
+    - DO NOT mention the name or nationality shown in the image.
+    - DO NOT eliminate or validate any of the multiple-choice options.
+    - DO NOT provide Googleable hints that directly point to the answer.
+    - DO NOT describe clothing, flags, or features that directly identify the answer.
+    
+    INSTEAD:
+    - Provide an educational or logical clue related to the subject's field, context, or history.
+    - Use indirect hints: general facts, background information, or related cultural elements.
+    - Keep it short (1–2 sentences) and helpful.
+    - Stay neutral and subtle: help the user think, not guess.
+    
+    Trivia Image Context: "${gameQuestion}"
+    User's Request: "${userQuestion}"
+    
+    Now generate a short, educational, and indirect hint only:
+    `;
 
     const requestData = config.transformRequest(prompt);
 
