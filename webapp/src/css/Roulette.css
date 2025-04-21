@@ -1,0 +1,61 @@
+/* Roulette.css */
+
+.roulette-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    padding: 1rem;
+}
+
+.roulette-wheel {
+    position: relative;
+    width: 28rem;
+    height: 28rem;
+    border: 3px solid;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: conic-gradient(
+        #fedd57 0deg 72deg,
+        #fe7575 72deg 144deg,
+        #746aff 144deg 216deg,
+        #76ff74 216deg 288deg,
+        #c36eff 288deg 360deg
+    );
+}
+
+.pointer {
+    position: absolute;
+    top: 28rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid;
+}
+
+.roulette-topic {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.selected-topic {
+    font-size: 1.2rem;
+    font-weight: bold;
+}

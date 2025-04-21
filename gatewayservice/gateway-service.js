@@ -11,14 +11,24 @@ const YAML = require('yaml')
 const app = express();
 const port = 8000;
 
-const questionServiceURL = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
+const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8005';
+const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
-const apiKey = process.env.API_KEY;
 
+const webappUrl = process.env.WEBAPP_URL || 'http://localhost:3000';
+const appDomain = process.env.DEPLOY_DOMAIN || 'http://localhost:3000';
+const apiKey = process.env.LLM_API_KEY;
 
-app.use(cors());
+const corsOptions ={
+  origin: [webappUrl,appDomain,'https://wichat-en1a.duckdns.org','http://localhost:3000'], // Allow only requests from the React web app
+  methods: ['GET', 'POST','OPTIONS'], 
+  allowedHeaders: ['content-type'], 
+  credentials: true  
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 //Prometheus configuration
@@ -26,11 +36,56 @@ const metricsMiddleware = promBundle({includeMethod: true});
 app.use(metricsMiddleware);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-app.post('/login', async (req, res) => {
+app.get('/api/userservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(userServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'Authorization Service not available' });
+  }
+});
+
+app.get('/api/authservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(authServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'Authorization Service not available' });
+  }
+});
+
+app.get('/api/llmservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(llmServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'LLM Service not available' });
+  }
+});
+
+app.get('/api/questionservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(questionServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'Question Service not available' });
+  }
+});
+
+app.get('/api/gameservice/health', async (req, res) => {
+  try {
+    const response = await axios.get(gameServiceUrl +'/health');
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(500).json({ status: 'DOWN', message: 'Game Service not available' });
+  }
+});
+
+app.post('/api/user/login', async (req, res) => {
   try {
     // Forward the login request to the authentication service
     const authResponse = await axios.post(authServiceUrl+'/login', req.body);
@@ -40,7 +95,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/adduser', async (req, res) => {
+app.post('/api/user/signup', async (req, res) => {
   try {
     // Forward the add user request to the user service
     const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
@@ -51,7 +106,8 @@ app.post('/adduser', async (req, res) => {
 });
 
 
-app.post('/askllm', async (req, res) => {
+
+app.post('/api/askllm', async (req, res) => {
   try {
     const { question, gameQuestion, correctAnswer, model } = req.body;
     if (!question || !gameQuestion || !correctAnswer) {
@@ -70,7 +126,7 @@ app.post('/askllm', async (req, res) => {
     res.status(500).json({ error: 'Failed to process request to LLM Service' });  }
 });
 
-app.get('/generate-questions', async (req, res) => {
+app.get('/api/generate-questions', async (req, res) => {
   try {
     const { type, numQuestions } = req.query;
     if (!type || !numQuestions || isNaN(numQuestions) || numQuestions <= 0) {
@@ -78,7 +134,7 @@ app.get('/generate-questions', async (req, res) => {
         error: 'Debe proporcionar un tipo de pregunta y un número válido de preguntas.',
       });
     }
-    const url = questionServiceURL + '/generate-questions' + '?type=' + type + '&numQuestions=' + numQuestions;
+    const url = questionServiceUrl + '/generate-questions' + '?type=' + type + '&numQuestions=' + numQuestions;
     const questionsResponse = await axios.get(url);
     res.json(questionsResponse.data);
   } catch (error) {
@@ -88,11 +144,11 @@ app.get('/generate-questions', async (req, res) => {
 });
 
 // Ruta GET: Obtain questions by type and limit
-app.get('/questions/:type/:limit', async (req, res) => {
+app.get('/api/questions/:type/:limit', async (req, res) => {
   const { type, limit } = req.params;
 
   try {
-    const questions = await axios.get(`${questionServiceURL}/questions/${type}/${limit}`);
+    const questions = await axios.get(`${questionServiceUrl}/questions/${type}/${limit}`);
     res.status(200).json(questions.data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -100,9 +156,9 @@ app.get('/questions/:type/:limit', async (req, res) => {
 });
 
 // Ruta GET: Obtain random question
-app.get('/question', async (req, res) => {
+app.get('/api/question', async (req, res) => {
   try {
-    const randomQuestion = await axios.get(`${questionServiceURL}/question`);
+    const randomQuestion = await axios.get(`${questionServiceUrl}/question`);
     if (!randomQuestion.data) {
       return res.status(404).json({ error: 'No se encontró una pregunta' });
     }
@@ -112,9 +168,48 @@ app.get('/question', async (req, res) => {
   }
 });
 
+app.post('/api/saveScore', async (req, res) => {
+  try {
+    const { userId, score, gameMode, questionsPassed,questionsFailed, accuracy } = req.body;
+    if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const response = await axios.post(`${gameServiceUrl}/saveScore`, req.body);
+    res.json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json({ error: error.message });
+  }
+});
+
+app.get('/api/scoresByUser/:userId', async (req, res) => {
+  try {
+      const userId = req.params.userId;
+      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
+
+      if (!response.data) {
+          return res.status(404).json({ error: 'No scores found for this user' });
+      }
+
+      res.json(response.data);
+  } catch (error) {
+      res.status(500).json({ error: 'Error retrieving scores' });
+  }
+});
+app.get('/api/leaderboard/:gameMode?', async (req, res) => {
+  try {
+    const { gameMode } = req.params;
+
+    const response = await axios.get(`${gameServiceUrl}/leaderboard/${gameMode || ''}`);
+    res.json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json({ error: error.message });
+  }
+});
+
 
 // Read the OpenAPI YAML file synchronously
-openapiPath='./openapi.yaml'
+const openapiPath='./openapi.yaml'
 if (fs.existsSync(openapiPath)) {
   const file = fs.readFileSync(openapiPath, 'utf8');
 

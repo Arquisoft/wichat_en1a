@@ -23,10 +23,14 @@ function validateRequiredFields(req, requiredFields) {
     }
 }
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
+});
+
 // Route for user login
 app.post('/login',  [
   check('username').isLength({ min: 3 }).trim().escape(),
-  check('password').isLength({ min: 3 }).trim().escape()
+  check('password').isLength({ min: 3 }).trim()
 ],async (req, res) => {
   try {
     // Check if required fields are present in the request body

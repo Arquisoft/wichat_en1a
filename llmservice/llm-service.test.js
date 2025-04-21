@@ -115,7 +115,6 @@ describe('filterAnswer function', () => {
     it('should return the original answer when it does not contain the correct answer or blocked patterns', () => {
         const result = filterAnswer('The Eiffel Tower is in Paris', 'London');
         expect(result).toBe('The Eiffel Tower is in Paris');
-
         const result2 = filterAnswer('The capital of France is beautiful', 'London');
         expect(result2).toBe('The capital of France is beautiful');
     });
@@ -124,4 +123,13 @@ describe('filterAnswer function', () => {
 
 afterAll(() => {
     server.close();
+});
+
+describe('Health Check Endpoints', () => {
+    test('should return OK for /health', async () => {
+        const response = await request(server).get('/health');
+
+        expect(response.status).toBe(200);
+        expect(response.body.status).toBe('OK');
+    });
 });

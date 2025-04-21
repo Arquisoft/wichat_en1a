@@ -200,7 +200,7 @@ describe('Question Routes', () => {
 
         getQuestionsByType.mockResolvedValue(mockQuestions);
 
-        const response = await request(app).get('/questions/type/historia');
+        const response = await request(app).get('/questions/historia/2');
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveLength(2);
@@ -211,7 +211,7 @@ describe('Question Routes', () => {
     it('should return an empty array if no questions are found', async () => {
         getQuestionsByType.mockResolvedValue([]);
 
-        const response = await request(app).get('/questions/type/ciencia');
+        const response = await request(app).get('/questions/ciencia/10');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual([]);
@@ -220,9 +220,40 @@ describe('Question Routes', () => {
     it('should return 500 if there is a database error', async () => {
         getQuestionsByType.mockRejectedValue(new Error('Error en la base de datos'));
 
-        const response = await request(app).get('/questions/type/historia');
+        const response = await request(app).get('/questions/historia/1');
 
         expect(response.status).toBe(500);
         expect(response.body).toHaveProperty('error', 'Error en la base de datos');
+    });
+
+    it('should return random questions when type is "all"', async () => {
+        const mockQuestions = [
+            { _id: '1', text: '¿Cuál es la capital de Francia?', type: 'geografía', answers: [] },
+            { _id: '2', text: '¿Quién escribió "Cien años de soledad"?', type: 'literatura', answers: [] },
+            { _id: '3', text: '¿Cuánto es 7 x 8?', type: 'matemáticas', answers: [] }
+        ];
+
+        getQuestionsByType.mockResolvedValue(mockQuestions);
+
+        const response = await request(app).get('/questions/all/3');
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(3);
+
+        // Comprobar que las preguntas recibidas están dentro del mock
+        const texts = mockQuestions.map(q => q.text);
+        response.body.forEach(q => {
+            expect(texts).toContain(q.text);
+        });
+    });
+
+});
+
+describe('Health Check Endpoints', () => {
+    test('should return OK for /health', async () => {
+        const response = await request(app).get('/health');
+
+        expect(response.status).toBe(200);
+        expect(response.body.status).toBe('OK');
     });
 });

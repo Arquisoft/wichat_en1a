@@ -42,7 +42,7 @@ See https://docs.arc42.org/section-7/[Deployment View] in the arc42 documentatio
 ****
 endif::arc42help[]
 
-[plantuml,"C4 Diagram (Level 2) - Deployment view diagram", png, align="center", title="Overview of the deployment infraestructure"]
+[plantuml,"C4 Diagram (Level 1) - Deployment view diagram", png, align="center", title="Overview of the deployment infraestructure"]
 ----
 include::./diagrams/C4_deployment_diagram.puml[]
 ----
@@ -65,25 +65,24 @@ endif::arc42help[]
 
 Motivation::
 
-The above diagram shows the high-level deployment architecture of the WIChat application. The system is divided into three main components: the **frontend**, the **backend**, and the **external services** (LLM API and Wikidata). Each deployment block will be containerized in Docker packages to grant several quality features.
+The above diagram illustrates the high-level deployment architecture of the WIChat application. All components, including the web client (UI) and backend services, are containerized using Docker and deployed on a cloud-based Ubuntu VM (Azure). Although the web client executes in the user's web browser, it is served as a container from the application server. When a user connects, the browser downloads and runs the web application, eliminating the need for a distinct "Client Node."
 
 Quality and/or Performance Features::
 
 The main advantages of this architecture are:
-- **Modularity**: The separation of concerns between the frontend, backend, and external services allows for independent development and deployment.
+- **Modularity**: All components are deployed as independent containers that can be updated and scaled separately.
 - **Interchangeability**: By the same reason as why it is modular, as long as the common API is mantained, the separation of the architecture will allow the replacement and upgrade of implementations without affecting the rest of the system.
 - **Portability**: Since Docker containers are platform-agnostic, the application can be easily deployed across different environments (e.g., local development, cloud production) without modification.
 - **Scalability**: Having a Gateway Service ensures the system can handle increased traffic by distributing requests across multiple backend instances, enabling horizontal scaling, and integrating with cloud auto-scaling tools.
-
 
 Mapping of Building Blocks to Infrastructure::
 [cols="1,2", options="header"]
 |===
 | Building Block | Infrastructure Component
-| **Client/Frontend** | Contained in the `webapp` subfolder.Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.
-| **API/Backend** | Docker container hosted on Azure. Handles game logic, user management, and question generation. Communicates with the MongoDB database and external LLM API.
+| **Client / Frontend** | Contained in the `webapp` subfolder. Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.
+| **APIs / Backend** | Docker container hosted on Azure. Handles game logic, user management and question generation. Communicates with the MongoDB database.
 | **Gateway Service** | Contained in the `gatewayservice` subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.
-| **LLM API** | Contained in the `llmservice` subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed via HTTPS from the backend to generate conversational hints.
+| **LLM Service** | Contained in the `llmservice` subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed via HTTPS from the backend to generate conversational hints.
 | **Question Generator** | A separate component that runs at the beginning of the application. Queries Wikidata using MQL to generate questions and answers, which are then stored in the MongoDB database.
 | **MongoDB Database** | Containerized instance.
 |===
@@ -99,12 +98,12 @@ Please copy the structure from level 1 for each selected element.
 ****
 endif::arc42help[]
 
-==== Client/Frontend
-The **frontend** is a single-page application (SPA) that runs in the user's web browser. It is built using React and communicates with the backend via the API. The frontend is containerized using Docker and deployed on a cloud platform. Static assets (e.g., images, CSS, JavaScript) are served via a CDN to reduce latency and improve load times.
+==== Client / Frontend
+The **frontend** is a single-page application (SPA) that runs in the user's web browser. It is built using React and communicates with the backend via the API. The frontend is containerized using Docker and deployed on a cloud platform together with the rest of the components of the application. Static assets (e.g., images, CSS, JavaScript) are served via a CDN to reduce latency and improve load times.
 
-==== API/Backend
-
+==== APIs / Backend
+The **backend** is a set of RESTful APIs that provide game logic, user management, and question generation services. It is built using Node.js and Express, and communicates with the MongoDB database. The backend is containerized using Docker and deployed on a cloud platform. The backend is stateless and horizontally scalable, allowing it to handle increased traffic by spinning up additional instances.
 
 === Conclusion
 
-The Deployment View provides a detailed overview of how the WIChat application will be deployed across different environments and infrastructure components. It ensures that the system meets the quality goal of scalability while supporting efficient development and deployment processes.
+The Deployment View provides a detailed overview of how the WiChat application will be deployed across different environments and infrastructure components. It ensures that the system meets the quality goal of scalability while supporting efficient development and deployment processes.
