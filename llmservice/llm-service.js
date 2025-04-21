@@ -61,17 +61,6 @@ function filterAnswer(answer,correctAnswer) {
     /\bthe answer is\b/i,
     /\bcorrect answer is\b/i,
     /\bit is\b\s+\w+/i,
-    /\bis\b\s+["']?.{1,3}["']?/i,
-    /\bstarts with\b\s+\w/i,
-    /\bbegins with\b\s+\w/i,
-    /\bends with\b\s+\w/i,
-    /\bhas\b\s+\d+\s+letters\b/i,
-    /\bit's\b\s+\w+/i,
-    /\bcorrect\b/i,
-    /\bthat'?s (right|correct)\b/i,
-    /\bexactly\b/i,
-    /\byou got it\b/i,
-    /\byou are right\b/i
   ];
 
   for (const pattern of blockedPatterns) {
