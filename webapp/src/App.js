@@ -25,7 +25,7 @@ function App() {
       accent: {
         light: 'rgb(255, 255, 255)',
         main: 'rgb(0, 0, 0)',
-        logout: 'rgb(105, 14, 11)',
+        logout: 'rgb(220, 40, 40)',
       }
     }
   });
