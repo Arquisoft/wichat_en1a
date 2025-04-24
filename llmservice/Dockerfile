@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8003
 
 # Define the command to run your app
-CMD ["node", "llm-service.js"]
+CMD ["npm", "start"]
