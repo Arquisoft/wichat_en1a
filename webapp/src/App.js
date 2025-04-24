@@ -6,6 +6,7 @@ import LoggedInRoutes from './LoggedInRoutes';
 import GamePage from './windows/GamePage';
 import ResultsPage from './windows/ResultsPage';
 import Leaderboard from './windows/Leaderboard';
+import Statistics from './windows/Statistics';
 import {CssBaseline, ThemeProvider, createTheme} from '@mui/material/';
 import {BrowserRouter as Router,Route,Routes} from 'react-router-dom';
 
@@ -24,7 +25,7 @@ function App() {
       accent: {
         light: 'rgb(255, 255, 255)',
         main: 'rgb(0, 0, 0)',
-        logout: 'rgb(105, 14, 11)',
+        logout: 'rgb(220, 40, 40)',
       }
     }
   });
@@ -41,6 +42,7 @@ function App() {
           <Route path="/game" element={<LoggedInRoutes><GamePage/></LoggedInRoutes>}/>
           <Route path="/results" element={<LoggedInRoutes><ResultsPage/></LoggedInRoutes>}/>
           <Route path="/leaderboard" element={<LoggedInRoutes><Leaderboard/></LoggedInRoutes>}/>
+          <Route path="/stats" element={<LoggedInRoutes><Statistics/></LoggedInRoutes>}/>
         </Routes>
       </Router>
     </ThemeProvider>

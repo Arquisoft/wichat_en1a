@@ -7,9 +7,8 @@ WORKDIR /app
 RUN npm install --omit=dev
 
 ARG API_URI="http://localhost:8000"
-ARG LLM_API_KEY
 ENV REACT_APP_API_ENDPOINT=$API_URI
-ENV REACT_APP_LLM_API_KEY=$LLM_API_KEY
+RUN echo "Building with REACT_APP_API_ENDPOINT=$REACT_APP_API_ENDPOINT" > /build.log
 
 #Create an optimized version of the webapp
 RUN npm run build
