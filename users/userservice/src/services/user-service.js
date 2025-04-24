@@ -35,7 +35,6 @@ async function createUser(data) {
     const existingUsers = await User.find({ username }).lean();
     if (existingUsers.length > 0) {
         throw new Error('Username already taken');
-        throw new Error('Username already taken');
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
