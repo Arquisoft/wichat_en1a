@@ -11,7 +11,7 @@ const AddUser = ({callback}) => {
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [submitButton,setSubmitButton]=useState(false);
-  const [errormsg, setErrormsg] = useState('');
+  const [errorCode, setErrorCode] = useState('');
   const{t} = useTranslation();
 
   const addUser = async () => {
@@ -19,7 +19,7 @@ const AddUser = ({callback}) => {
       await axios.post(`${apiEndpoint}/api/user/signup`, formData);
       setSignupSuccess(true);
     } catch (error) {
-      setErrormsg(error.response.data.error);
+      setErrorCode(error.response.data.errorCode);
       setOpenSnackbar(true);
     }
   };
@@ -60,8 +60,8 @@ const AddUser = ({callback}) => {
     value={formData.repeatPassword}
     onChange={(e)=>{checkFields();handleFormChange(e);}}
   ></TextField>
-  <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}}>
-    <Alert data-testid='errorNotification' severity='error'>{t("signup.error")+" "+errormsg}</Alert>
+  <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+    <Alert data-testid='errorNotification' severity='error'>{t("signup.error")+" "+t(errorCode)}</Alert>
   </Snackbar>
   <Button sx={{margin:1}} variant="contained" disabled={submitButton} data-testid='signupButton' name='addUserButton' onClick={addUser}>
     {t("signup.message")}
