@@ -112,3 +112,10 @@ endif::arc42help[]
 - Continuity -> A user may play 20 games straight without pause. 
 - Intuitiveness -> The ui must be clean to enable non tech-savvy users to  enjoy the game within 15 minutes from picking up the game.
 - Freshness -> New questions must be inserted into the db to avoid any repetition of questions in a single game. Questions are to be updated every 30 minutes
+
+=== Load testing results
+Load test results were made on the deployed appllication, making use of the gatling tool.
+
+As you can check, on last version at the time, v1.2.0, the tool showed we passed the concurrency requirement by quite a lot: 485 users concurrently will make only a few users experience some latency, a total of 14% of the total requests, but no fairlures. >500 users does arise some errors, as we tested on 536 users and 5 errors were recorded.
+
+The top latency responses where concentrated on saving the game, but more interestingly, the second behind it often won at the mean latency and were either requests to the leaderboard (api/leaderboard) or to the user's statistics (api/scoresByUser). 
