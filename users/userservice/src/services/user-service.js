@@ -31,8 +31,10 @@ function validateRequiredFields(body) {
 async function createUser(data) {
     validateRequiredFields(data);
 
-    const existingUsers = await User.find({ username: data.username }).lean();
+    const username = data.username.toString();
+    const existingUsers = await User.find({ username }).lean();
     if (existingUsers.length > 0) {
+        throw new Error('Username already taken');
         throw new Error('Username already taken');
     }
 
