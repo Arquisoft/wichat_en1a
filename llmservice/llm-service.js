@@ -58,9 +58,9 @@ function filterAnswer(answer,correctAnswer) {
 
   // Block common answer-revealing patterns
   const blockedPatterns = [
-    /\bthe answer is\b/i,
-    /\bcorrect answer is\b/i,
-    /\bit is\b\s+\w+/i,
+      /\bthe answer is\b/i,
+      /\bcorrect answer is\b/i,
+      /\bit is\b\s+\w+/i,
   ];
 
   for (const pattern of blockedPatterns) {
@@ -130,6 +130,10 @@ async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiK
     throw error;
   }
 }
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
+});
 
 app.post('/ask', async (req, res) => {
   try {
