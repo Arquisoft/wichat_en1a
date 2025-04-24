@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/auth-model');
 
 async function loginUser(username, password) {
-  const user = await User.findOne({ username });
+  const sanitizedUsername = username.toString().trim();
+  const user = await User.findOne({ username: sanitizedUsername });
 
   if (user && await bcrypt.compare(password, user.password)) {
     const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' });
