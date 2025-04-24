@@ -44,6 +44,61 @@ describe('Auth Service', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('username', 'testuser');
   });
+  it('should return 401 for incorrect password', async () => {
+    const response = await request(app).post('/login').send({
+      username: 'testuser',
+      password: 'wrongpassword',
+    });
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe('Invalid credentials');
+  });
+
+  it('should return 401 for non-existent user', async () => {
+    const response = await request(app).post('/login').send({
+      username: 'nonexistent',
+      password: 'somepassword',
+    });
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe('Invalid credentials');
+  });
+
+  it('should return 400 for missing username', async () => {
+    const response = await request(app).post('/login').send({
+      password: 'somepassword',
+    });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should return 400 for missing password', async () => {
+    const response = await request(app).post('/login').send({
+      username: 'testuser',
+    });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should return 400 for username too short', async () => {
+    const response = await request(app).post('/login').send({
+      username: 'ab',
+      password: 'somepassword',
+    });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should return 400 for password too short', async () => {
+    const response = await request(app).post('/login').send({
+      username: 'testuser',
+      password: '12',
+    });
+
+    expect(response.status).toBe(400);
+  });
+
+
 });
 
 describe('Health Check Endpoints', () => {
