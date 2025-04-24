@@ -11,7 +11,7 @@ const authenticateJWT = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verificar el token
+        const decoded = jwt.verify(token, 'your-secret-key'); // Verificar el token
         req.userId = decoded.userId;  // Guardar el userId decodificado en la solicitud
         next();  // Llamar al siguiente middleware o ruta
     } catch (err) {

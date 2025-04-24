@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import GameComponent from '../components/GameComponent';
 import { Navigate, useLocation } from "react-router-dom";
 import { Grid } from '@mui/material';
@@ -27,43 +27,40 @@ const GamePage = ({timePerQuestionTesting}) => {
 
   const fetchData = async () =>{ 
     try{
-      const response = await axios.get(`${gatewayUrl}/questions/${questionType}/${numQuestions}`);
+      const response = await axios.get(`${gatewayUrl}/api/questions/${questionType}/${numQuestions}`);
       setQuestions(response.data);
       setLoadedQuestions(true);
     }catch(err){
       throw new Error('Network error:'+err)
     }
   }
-  const saveResult = async (questionsFailed, accuracy) => {
-    let done = false;
+  const saveResult = useCallback(async(questionsFailed,accuracy)=>{
+    let done=false;
     const token = sessionStorage.getItem("sessionToken");
     if (!token) {
       console.error("No token found in sessionStorage.");
     }
-  
-    do {
-      try {
-        await axios.post(`${gatewayUrl}/saveScore`, {
-          userId: sessionStorage.getItem("loggedInUser"),
-          score: score,
-          gameMode: gamemode,
-          questionsPassed: answersCorrect,
-          questionsFailed: questionsFailed,
-          accuracy: accuracy,
+    do{
+      try{
+        await axios.post(`${gatewayUrl}/api/saveScore`, {
+          "userId":sessionStorage.getItem("loggedInUser"),
+          "score":score,
+          "gameMode":gamemode,
+          "questionsPassed":answersCorrect,
+          "questionsFailed":questionsFailed,
+          "accuracy":accuracy,
         }, {
           headers: {
             "Authorization": `Bearer ${token}`,
           }
         });
-  
-        done = true;
-      } catch (err) {
-        console.error("An error occurred while saving your result. Trying again...", err);
+
+        done=true;
+      }catch(err){
+        console.error("An error ocurred while saving your result. Trying again...");
       }
-    } while (!done);
-  }
-  
-  
+    }while(!done);
+  },[score, gamemode, answersCorrect,gatewayUrl]);
   useEffect(()=>{
     if (!loadedQuestions) {
       fetchData();
@@ -95,7 +92,7 @@ const GamePage = ({timePerQuestionTesting}) => {
       saveResult(failed,accuracy);
       setNavigate(true);
     }
-  }, [endGame]);
+  }, [endGame,answersCorrect, gamemode, numQuestions, questionNum, questionType, saveResult, score, timePerQuestion]);
   return (
     <React.Fragment>
     {loadedQuestions && questions? (navigate?(<Navigate to="/results"/>):(
