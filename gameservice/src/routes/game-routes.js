@@ -6,7 +6,6 @@ const { saveScore, updateScore, getScoresByUser, getLeaderboard } = require('../
 // Middleware para verificar el JWT (incluso lo puedes poner aquí mismo)
 const authenticateJWT = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', ''); // Extrae el token del encabezado Authorization
-    console.log('Token recibido:', token);
     if (!token) {
         return res.status(401).json({ error: 'No token provided' });
     }
