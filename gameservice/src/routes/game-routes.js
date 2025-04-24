@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { saveScore, updateScore, getScoresByUser, getLeaderboard } = require('../services/game-service');
@@ -5,13 +6,13 @@ const { saveScore, updateScore, getScoresByUser, getLeaderboard } = require('../
 // Middleware para verificar el JWT (incluso lo puedes poner aquí mismo)
 const authenticateJWT = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', ''); // Extrae el token del encabezado Authorization
-
+    console.log('Token recibido:', token);
     if (!token) {
         return res.status(401).json({ error: 'No token provided' });
     }
 
     try {
-        const decoded = jwt.verify(token, 'your-secret-key'); // Verificar el token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verificar el token
         req.userId = decoded.userId;  // Guardar el userId decodificado en la solicitud
         next();  // Llamar al siguiente middleware o ruta
     } catch (err) {

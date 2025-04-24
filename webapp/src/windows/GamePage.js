@@ -34,24 +34,36 @@ const GamePage = ({timePerQuestionTesting}) => {
       throw new Error('Network error:'+err)
     }
   }
-  const saveResult = async(questionsFailed,accuracy)=>{
-    let done=false;
-    do{
-      try{
+  const saveResult = async (questionsFailed, accuracy) => {
+    let done = false;
+    const token = sessionStorage.getItem("sessionToken");
+    if (!token) {
+      console.error("No token found in sessionStorage.");
+    }
+  
+    do {
+      try {
         await axios.post(`${gatewayUrl}/saveScore`, {
-          "userId":sessionStorage.getItem("loggedInUser"),
-          "score":score,
-          "gameMode":gamemode,
-          "questionsPassed":answersCorrect,
-          "questionsFailed":questionsFailed,
-          "accuracy":accuracy,
+          userId: sessionStorage.getItem("loggedInUser"),
+          score: score,
+          gameMode: gamemode,
+          questionsPassed: answersCorrect,
+          questionsFailed: questionsFailed,
+          accuracy: accuracy,
+        }, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
         });
-        done=true;
-      }catch(err){
-        console.error("An error ocurred while saving your result. Trying again...");
+  
+        done = true;
+      } catch (err) {
+        console.error("An error occurred while saving your result. Trying again...", err);
       }
-    }while(!done);
+    } while (!done);
   }
+  
+  
   useEffect(()=>{
     if (!loadedQuestions) {
       fetchData();

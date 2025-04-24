@@ -160,17 +160,25 @@ app.get('/question', async (req, res) => {
 
 app.post('/saveScore', async (req, res) => {
   try {
-    const { userId, score, gameMode, questionsPassed,questionsFailed, accuracy } = req.body;
+    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
     if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const response = await axios.post(`${gameServiceUrl}/saveScore`, req.body);
+    const token = req.header('Authorization');
+
+    const response = await axios.post(`${gameServiceUrl}/saveScore`, req.body, {
+      headers: {
+        Authorization: token // Reenviamos el token al game-service
+      }
+    });
+
     res.json(response.data);
   } catch (error) {
     res.status(error.response?.status || 500).json({ error: error.message });
   }
 });
+
 
 app.get('/scoresByUser/:userId', async (req, res) => {
   try {
