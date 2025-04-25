@@ -21,16 +21,39 @@
   margin-bottom: 2rem;
 }
 
-.menu-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+/* Carousel container for future game modes (Configurable game mode) */
+.menu-carousel {
+  display: flex;
+  overflow-x: auto;
   gap: 2rem;
   width: 100%;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 10%;
 }
 
-@media (min-width: 769px) {
-  .menu-grid {
-    grid-template-columns: repeat(4, 1fr);
+.menu-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+.menu-carousel::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.menu-carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.carousel-item {
+  flex: 0 0 80%;
+  scroll-snap-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+/* Showing smaller items in PC */
+@media (min-width: 1440px) {
+  .carousel-item {
+    flex: 0 0 25%;
   }
 }
 
