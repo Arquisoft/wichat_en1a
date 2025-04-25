@@ -22,7 +22,7 @@ const appDomain = process.env.DEPLOY_DOMAIN || 'http://localhost:3000';
 const apiKey = process.env.LLM_API_KEY;
 
 const corsOptions ={
-  origin: [webappUrl,appDomain,'https://wichat-en1a.duckdns.org','http://localhost:3000'], // Allow only requests from the React web app
+  origin: ['http://localhost',appDomain,'https://wichat-en1a.duckdns.org','http://localhost:3000'], // Allow only requests from the React web app
   methods: ['GET', 'POST','OPTIONS'], 
   allowedHeaders: ['content-type'], 
   credentials: true  
@@ -101,7 +101,7 @@ app.post('/api/user/signup', async (req, res) => {
     const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
     res.json(userResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
+    res.status(error.response.status).json({ error: error.response.data.error,errorCode: error.response.data.errorCode});
   }
 });
 
