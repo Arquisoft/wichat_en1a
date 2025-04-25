@@ -82,7 +82,7 @@ const Leaderboard = () => {
         >
           <CardContent>
             <List>
-              {results.map((result, index) => (
+              {results.slice(0, 10).map((result, index) => (
                 <React.Fragment key={result.id}>
                   <ListItem
                     className={result.userId?.toString() === loggedInPlayerId?.toString() ? 'list-item highlighted' : 'list-item'}
