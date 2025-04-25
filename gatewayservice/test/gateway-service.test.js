@@ -1,6 +1,6 @@
 const request = require('supertest');
 const axios = require('axios');
-const app = require('./gateway-service'); 
+const app = require('../src/index');
 
 afterAll(async () => {
     app.close();
