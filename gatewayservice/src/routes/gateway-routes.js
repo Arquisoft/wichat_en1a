@@ -79,7 +79,7 @@ router.post('/user/signup', async (req, res) => {
     const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
     res.json(userResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
+    res.status(error.response.status).json({ error: error.response.data.error,errorCode: error.response.data.errorCode});
   }
 });
 

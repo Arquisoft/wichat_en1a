@@ -18,8 +18,8 @@ async function startServer() {
     questionservice = await require("../../questionservice/src/index");
     questionworker = await require("../../questionservice/src/services/question-worker");
     gameservice = await require("../../gameservice/src/index");
-    authservice = await require("../../users/authservice/auth-service");
-    llmservice = await require("../../llmservice/llm-service");
+    authservice = await require("../../users/authservice/src/index");
+    llmservice = await require("../../llmservice/src/index");
     gatewayservice = await require("../../gatewayservice/src/index");
 }
 
