@@ -21,3 +21,10 @@ Scenario: A user checks the leaderboard results after another user has played
   And User B clicks the leaderboard in the navigation bar
   Then User B sees the stored results, including user A's game
   And User B logs out successfully
+
+Scenario: A user checks an empty leaderboard
+  Given A registered user that exists in the database
+  When The user logs in correctly
+  And The user clicks the leaderboard in the navigation bar
+  Then The user sees an empty leaderboard
+  And The user logs out successfully
