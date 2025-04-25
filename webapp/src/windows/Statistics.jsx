@@ -174,7 +174,7 @@ const Statistics = () => {
       <div className="window-container">
         <NavBar />
         <Box sx={{ width: "100%", maxWidth: 800, margin: "0 auto", padding: 5, textAlign: "center" }}>
-          <Typography variant="h4" component="h1" gutterBottom>
+          <Typography variant="h4" component="h1" gutterBottom align="center" className="statistics-title">
             {t("statistics.title")}
           </Typography>
           <Typography variant="h6" component="p">
@@ -214,9 +214,9 @@ const Statistics = () => {
           </Typography>
           <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
             <Tabs value={tabValue} onChange={handleTabChange} centered>
-              <Tab label={t("statistics.overview")}/>
-              <Tab label={t("statistics.performance")}/>
-              <Tab label={t("statistics.gameModes")}/>
+              <Tab id="overview" label={t("statistics.overview")}/>
+              <Tab id="performance" label={t("statistics.performance")}/>
+              <Tab id="gameModes" label={t("statistics.gameModes")}/>
             </Tabs>
           </Box>
 
@@ -231,7 +231,7 @@ const Statistics = () => {
                   }}
                 >
                   <CardContent>
-                    <Typography variant="h6" component="h2" gutterBottom>
+                    <Typography variant="h6" component="h2" className="summary"  gutterBottom>
                       {t("statistics.summary")}
                     </Typography>
                     <List>
@@ -278,7 +278,7 @@ const Statistics = () => {
                   }}
                 >
                   <CardContent>
-                    <Typography variant="h6" component="h2" gutterBottom>
+                    <Typography variant="h6" component="h2" className="answer-distribution" gutterBottom>
                       {t("statistics.answerDistribution")}
                     </Typography>
                     <ResponsiveContainer width="100%" height={300}>
@@ -320,7 +320,7 @@ const Statistics = () => {
                   }}
                 >
                   <CardContent>
-                    <Typography variant="h6" component="h2" gutterBottom>
+                    <Typography variant="h6" component="h2" className="performance-over-time" gutterBottom>
                       {t("statistics.performanceOverTime")}
                     </Typography>
                     <ResponsiveContainer width="100%" height={400}>
@@ -393,7 +393,7 @@ const Statistics = () => {
                   }}
                 >
                   <CardContent>
-                    <Typography variant="h6" component="h2" gutterBottom>
+                    <Typography variant="h6" component="h2" className="game-mode-comparison" gutterBottom>
                       {t("statistics.gameModeComparison")}
                     </Typography>
                     <ResponsiveContainer width="100%" height={400}>

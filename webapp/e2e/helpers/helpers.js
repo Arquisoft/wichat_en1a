@@ -60,14 +60,6 @@ async function openLeaderboard(page) {
     });
 }
 
-async function openStatistics(page) {
-    await expect(page).toClick('a[href="/stats"]');
-    await page.waitForSelector('div.statistics-container', {
-        visible: true,
-        timeout: 5000
-    });
-}
-
 async function logout(page) {
     await expect(page).toClick('button[id="logoutButton"]');
     await page.waitForSelector('h2[id="index-title"]');
@@ -80,6 +72,5 @@ module.exports = {
     playBasicGame,
     seeGameStats,
     openLeaderboard,
-    openStatistics,
     logout
 };

@@ -1,11 +1,9 @@
-import { useTranslation } from "react-i18next";
-
 const puppeteer = require('puppeteer');
 const { defineFeature, loadFeature } = require('jest-cucumber');
 const setDefaultOptions = require('expect-puppeteer').setDefaultOptions
-const { register, login, selectGameMode, playBasicGame, seeGameStats, openStatistics, logout } = require('../helpers/helpers');
+const { register, login, selectGameMode, playBasicGame, seeGameStats, logout } = require('../helpers/helpers');
 const feature = loadFeature('./features/check-stats.feature');
-const { t } = useTranslation();
+const en = require('../../src/locales/EN.json');
 
 let browser, page;
 
@@ -18,7 +16,7 @@ defineFeature(feature, test => {
       ? await puppeteer.launch({headless: "new", args: ['--no-sandbox', '--disable-setuid-sandbox']})
       : await puppeteer.launch({ headless: false, slowMo: 1 });
     page = await browser.newPage();
-    a = { username: "UserA", password: 'PasswordA123!' };
+    a = { username: "testUserA", password: 'PasswordA123!' };
     setDefaultOptions({ timeout: 10000 })
     await register(page, a); // Register user A
 
@@ -45,11 +43,18 @@ defineFeature(feature, test => {
     });
 
     when('The user clicks the statistics in the navigation bar', async () => {
-      await openStatistics(page);
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'domcontentloaded' }), // or 'networkidle0' if needed
+        expect(page).toClick('a[href="/stats"]'),
+      ]);
+    
+      await page.waitForSelector('h1'); // wait for heading to be in the new page
+      const title = await page.evaluate(() => document.querySelector('h1').innerText);
+      expect(title).toBe(en["statistics.title"]);
     });
 
     then('The user is shown an informative message', async () => {
-      const expectedText = t("statistics.noData"); 
+      const expectedText = en["statistics.noData"]; 
       const found = await page.evaluate((expectedText) => {
         return document.body.innerText.includes(expectedText);
       }, expectedText);
@@ -85,15 +90,51 @@ defineFeature(feature, test => {
     });
 
     when('The user clicks the statistics in the navigation bar', async () => {
-      await openStatistics(page);
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+        expect(page).toClick('a[href="/stats"]'),
+      ]);
+    
+      await page.waitForSelector('h1');
+      const title = await page.evaluate(() => document.querySelector('h1').innerText);
+      expect(title).toBe(en["statistics.title"]);
     });
 
     then('The user can see the statistics', async () => {
-      
+      const title = await page.evaluate(() => document.querySelector('h1').innerText);
+      expect(title).toBe(en["statistics.title"]);
+
+      const expectedTextOnScreen = en["statistics.answerDistribution"]; 
+      const found = await page.evaluate((expectedTextOnScreen) => {
+        return document.body.innerText.includes(expectedTextOnScreen);
+      }, expectedTextOnScreen);
+      expect(found).toBe(true);
     });
 
     then('The user can navigate through the three tabs of the statistics view', async () => {
-      
+      // Overview Tab
+      // await page.click('button.overview'); // Click on the first tab (no need, as it's the default tab)
+      const expectedTextOnOverviewTab = en["statistics.summary"]; 
+      const found1 = await page.evaluate((expectedTextOnOverviewTab) => {
+        return document.body.innerText.includes(expectedTextOnOverviewTab);
+      }, expectedTextOnOverviewTab);
+      expect(found1).toBe(true);
+
+      // Performance Tab
+      await page.click('button.performance'); // Click on the second tab (Performance)
+      const expectedTextOnPerformanceTab = en["statistics.performanceOverTime"]; 
+      const found2 = await page.evaluate((expectedTextOnPerformanceTab) => {
+        return document.body.innerText.includes(expectedTextOnPerformanceTab);
+      }, expectedTextOnPerformanceTab);
+      expect(found2).toBe(true);
+
+      // Game Modes Tab
+      await page.click('button.gameModes'); // Click on the third tab (Game Modes)
+      const expectedTextOnGameModeTab = en["statistics.gameModeComparison"]; 
+      const found3 = await page.evaluate((expectedTextOnGameModeTab) => {
+        return document.body.innerText.includes(expectedTextOnGameModeTab);
+      }, expectedTextOnGameModeTab);
+      expect(found3).toBe(true);
     });
 
     then('The user logs out successfully', async () => {
