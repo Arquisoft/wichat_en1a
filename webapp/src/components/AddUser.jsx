@@ -1,5 +1,5 @@
 // src/components/AddUser.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {Alert, Typography, TextField, Button, Snackbar } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -25,12 +25,17 @@ const AddUser = ({callback}) => {
     }
   };
   
-  const handleFormChange = (e)=>{
-    setFormData((prevState)=>{
-      const updatedState={...prevState,[e.target.name]:e.target.value};
-      setSubmitButton(updatedState.username.length>0 && updatedState.password.length>0 && updatedState.repeatPassword.length>0);
-      return updatedState;
-    });
+  useEffect(() => {
+    const { username, password, repeatPassword } = formData;
+    setSubmitButton(username.length > 0 && password.length > 0 && repeatPassword.length > 0);
+  }, [formData]);
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
   const signup = (
@@ -65,7 +70,7 @@ const AddUser = ({callback}) => {
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
     <Alert data-testid='errorNotification' severity='error'>{t("signup.error")+" "+t(errorCode)}</Alert>
   </Snackbar>
-  <Button key={submitButton} sx={{margin:1}} variant="contained" disabled={!submitButton} data-testid='signupButton' name='addUserButton' onClick={addUser}>
+  <Button sx={{margin:1}} variant="contained" disabled={!submitButton} data-testid='signupButton' name='addUserButton' onClick={addUser}>
     {t("signup.message")}
   </Button>
 </React.Fragment>

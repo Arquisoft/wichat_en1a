@@ -39,6 +39,10 @@ describe('AddUser component', () => {
     fireEvent.change(passwordInput, { target: { value: 'testPassword' } });
     fireEvent.change(repeatPasswordInput, { target: { value: 'testPassword' } });
 
+    await waitFor(()=>{
+      expect(signupButton).not.toBeDisabled();
+    })
+    
     // Trigger the add user button click
     fireEvent.click(signupButton);
 
@@ -62,19 +66,23 @@ describe('AddUser component', () => {
     const signupButton = screen.getByTestId('signupButton');
 
     // Mock the axios.post request to simulate an error response
-    mockAxios.onPost('http://localhost:8000/api/user/signup').reply(500, { error: 'Internal Server Error' });
+    mockAxios.onPost('http://localhost:8000/api/user/signup').reply(500, { error: 'Internal Server Error', errorCode:'signup.error.unexpected'});
 
     // Simulate user input
     fireEvent.change(usernameInput, { target: { value: 'testUser' } });
     fireEvent.change(passwordInput, { target: { value: 'testPassword' } });
     fireEvent.change(repeatPasswordInput, { target: { value: 'test' } });
 
+    await waitFor(()=>{
+      expect(signupButton).not.toBeDisabled();
+    })
+
     // Trigger the add user button click
     fireEvent.click(signupButton);
 
     // Wait for the error Snackbar to be open
     await waitFor(() => {
-        expect(screen.getByText(/An error ocurred during singup:/i)).toBeInTheDocument();
+        expect(screen.getByTestId('errorNotification')).toBeInTheDocument();
     });
     
     expect(signedUp).toBeFalsy();
