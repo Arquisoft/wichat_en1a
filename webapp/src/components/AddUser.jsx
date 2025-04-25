@@ -19,17 +19,19 @@ const AddUser = ({callback}) => {
       await axios.post(`${apiEndpoint}/api/user/signup`, formData);
       setSignupSuccess(true);
     } catch (error) {
+      console.log(error);
       setErrorCode(error.response.data.errorCode);
       setOpenSnackbar(true);
     }
   };
   
   const handleFormChange = (e)=>{
-    setFormData((prevState)=>({...prevState,[e.target.name]:e.target.value}));
+    setFormData((prevState)=>{
+      const updatedState={...prevState,[e.target.name]:e.target.value};
+      setSubmitButton(updatedState.username.length>0 && updatedState.password.length>0 && updatedState.repeatPassword.length>0);
+      return updatedState;
+    });
   };
-  const checkFields = ()=>{
-    setSubmitButton(formData.username>0 && formData.password.length>0 && formData.repeatPassword>0);
-  }
 
   const signup = (
   <React.Fragment>
@@ -40,7 +42,7 @@ const AddUser = ({callback}) => {
     fullWidth
     label={t("forms.username")}
     value={formData.username}
-    onChange={(e)=>{checkFields();handleFormChange(e);}}
+    onChange={(e)=>{handleFormChange(e);}}
   ></TextField>
   <TextField
     name="password"
@@ -49,7 +51,7 @@ const AddUser = ({callback}) => {
     label={t("forms.password")}
     type="password"
     value={formData.password}
-    onChange={(e)=>{checkFields();handleFormChange(e);}}
+    onChange={(e)=>{handleFormChange(e);}}
   ></TextField>
   <TextField
     name="repeatPassword"
@@ -58,12 +60,12 @@ const AddUser = ({callback}) => {
     label={t("forms.repeatPassword")}
     type="password"
     value={formData.repeatPassword}
-    onChange={(e)=>{checkFields();handleFormChange(e);}}
+    onChange={(e)=>{handleFormChange(e)}}
   ></TextField>
   <Snackbar open={openSnackbar} onClose={()=>{setOpenSnackbar(false)}} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
     <Alert data-testid='errorNotification' severity='error'>{t("signup.error")+" "+t(errorCode)}</Alert>
   </Snackbar>
-  <Button sx={{margin:1}} variant="contained" disabled={submitButton} data-testid='signupButton' name='addUserButton' onClick={addUser}>
+  <Button key={submitButton} sx={{margin:1}} variant="contained" disabled={!submitButton} data-testid='signupButton' name='addUserButton' onClick={addUser}>
     {t("signup.message")}
   </Button>
 </React.Fragment>

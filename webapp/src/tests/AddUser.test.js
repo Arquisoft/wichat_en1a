@@ -74,7 +74,7 @@ describe('AddUser component', () => {
 
     // Wait for the error Snackbar to be open
     await waitFor(() => {
-        expect(screen.getByText(/An error ocurred during singup, please try again./i)).toBeInTheDocument();
+        expect(screen.getByText(/An error ocurred during singup:/i)).toBeInTheDocument();
     });
     
     expect(signedUp).toBeFalsy();
