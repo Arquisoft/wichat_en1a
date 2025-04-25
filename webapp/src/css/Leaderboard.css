@@ -4,42 +4,58 @@
     margin: 1rem auto;
     padding: 4rem;
 }
-
+  
 .leaderboard-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr;
     gap: 5rem;
 }
-
+  
+@media (min-width: 1440px) {
+    .leaderboard-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+}
+  
 .leaderboard-section {
     margin-bottom: 1rem;
 }
-
+  
 .section-title {
     margin: 1rem 0;
 }
-
+  
 .leaderboard-card {
     margin-bottom: 1rem;
     width: 100%;
-    height: 60vh;
+    max-height: 44rem;      /* 4 rem per list item (10 items max.) + 4rem (margins and dividers) */
+    height: auto;           /* Shrink to match fewer than 10 */
     overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s, box-shadow 0.2s;
 }
-
+  
 .leaderboard-card:hover {
     box-shadow: 0 10px 18px rgba(0, 0, 0, 0.25);
 }
-
+  
 .list-item {
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
     background-color: transparent;
     border-radius: 0.5rem;
-    padding: 0.5rem;
 }
-
+  
 .MuiListItem-root.list-item.highlighted {
     background-color: rgba(255, 215, 0, 0.2);
     font-weight: bold;
     border-left: 5px solid gold;
 }
+
+.MuiDivider-root {
+    margin: 0;
+    height: 1px;
+}
+  

@@ -16,6 +16,7 @@ const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost
 const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
+
 const webappUrl = process.env.WEBAPP_URL || 'http://localhost:3000';
 const appDomain = process.env.DEPLOY_DOMAIN || 'http://localhost:3000';
 const apiKey = process.env.LLM_API_KEY;
@@ -103,6 +104,7 @@ app.post('/api/user/signup', async (req, res) => {
     res.status(error.response.status).json({ error: error.response.data.error,errorCode: error.response.data.errorCode});
   }
 });
+
 
 
 app.post('/api/askllm', async (req, res) => {
