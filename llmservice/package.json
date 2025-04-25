@@ -2,7 +2,7 @@
   "name": "llmservice",
   "version": "1.0.0",
   "scripts": {
-    "start": "node llm-service.js",
+    "start": "node src/index",
     "test": "jest"
   },
   "author": "",

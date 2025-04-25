@@ -1,7 +1,8 @@
 const request = require('supertest');
 const axios = require('axios');
 //const app = require('./llm-service');
-const { filterAnswer, server } = require('./llm-service');
+const { filterAnswer} = require('../src/services/llm-service');
+const server = require('../src/index');
 
 jest.mock('axios');
 
