@@ -170,22 +170,30 @@ router.post('/saveScore', async (req, res) => {
 
 router.get('/scoresByUser/:userId', async (req, res) => {
   try {
-      const userId = req.params.userId;
-      const token = req.header('Authorization');
-      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`, {
-        headers: {
-          Authorization: token // Reenviamos el token al game-service
-        }
-      });
+    const userId = String(req.params.userId);
 
-      if (!response.data) {
-          return res.status(404).json({ error: 'No scores found for this user' });
+    if (!/^[\w-]+$/.test(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    const url = `${gameServiceUrl}/scoresByUser/${userId}`;
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: req.header('Authorization')
       }
-      res.json(response.data);
+    });
+
+    if (!response.data) {
+      return res.status(404).json({ error: 'No scores found for this user' });
+    }
+
+    res.json(response.data);
   } catch (error) {
-      res.status(500).json({ error: 'Error retrieving scores' });
+    res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
+
 router.get('/leaderboard/:gameMode?', async (req, res) => {
   try {
     const { gameMode } = req.params;
