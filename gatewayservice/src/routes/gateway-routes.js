@@ -172,7 +172,6 @@ router.get('/scoresByUser/:userId', async (req, res) => {
   try {
       const userId = req.params.userId;
       const token = req.header('Authorization');
-      console.log("Token: ",token);
       const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`, {
         headers: {
           Authorization: token // Reenviamos el token al game-service
@@ -182,12 +181,8 @@ router.get('/scoresByUser/:userId', async (req, res) => {
       if (!response.data) {
           return res.status(404).json({ error: 'No scores found for this user' });
       }
-
-      console.log("Response from game service:", response);
-
       res.json(response.data);
   } catch (error) {
-      console.log("The error is here: ", error);
       res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
