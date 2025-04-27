@@ -172,13 +172,19 @@ router.get('/scoresByUser/:userId', async (req, res) => {
   try {
     const userId = String(req.params.userId);
 
+    // Validamos que userId solo tenga caracteres seguros
     if (!/^[\w-]+$/.test(userId)) {
       return res.status(400).json({ error: 'Invalid user ID' });
     }
 
-    const url = `${gameServiceUrl}/scoresByUser/${userId}`;
+    let url;
+    try {
+      url = new URL(`/scoresByUser/${userId}`, gameServiceUrl);
+    } catch (error) {
+      return res.status(500).json({ error: 'Invalid service URL' });
+    }
 
-    const response = await axios.get(url, {
+    const response = await axios.get(url.toString(), {
       headers: {
         Authorization: req.header('Authorization')
       }
@@ -193,6 +199,7 @@ router.get('/scoresByUser/:userId', async (req, res) => {
     res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
+
 
 router.get('/leaderboard/:gameMode?', async (req, res) => {
   try {
