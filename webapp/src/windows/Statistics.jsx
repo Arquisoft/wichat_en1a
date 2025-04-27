@@ -139,7 +139,16 @@ const Statistics = () => {
         if (!loggedInPlayerId) {
           throw new Error("User not logged in.");
         }
-        const response = await fetch(`${gatewayUrl}/api/scoresByUser/${loggedInPlayerId}`);
+        const token = sessionStorage.getItem("sessionToken");
+        if (!token) {
+          console.error("No token found in sessionStorage.");
+        }
+    
+        const response = await fetch(`${gatewayUrl}/api/scoresByUser/${loggedInPlayerId}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
+        });
         const data = await response.json();
         if (!response.ok || !data) {
           setUserStats(computeUserStats([]));

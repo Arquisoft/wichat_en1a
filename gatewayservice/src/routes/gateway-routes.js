@@ -12,19 +12,6 @@ const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
 
 const apiKey = process.env.LLM_API_KEY;
 
-const corsOptions ={
-  origin: [webappUrl,appDomain,'https://wichat-en1a.duckdns.org','http://localhost:3000'], // Allow only requests from the React web app
-  methods: ['GET', 'POST','OPTIONS'], 
-  allowedHeaders: ['content-type', 'Authorization'], 
-  credentials: true  
-};
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-app.use(express.json());
-
-//Prometheus configuration
-const metricsMiddleware = promBundle({includeMethod: true});
-app.use(metricsMiddleware);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
@@ -180,17 +167,27 @@ router.post('/saveScore', async (req, res) => {
   }
 });
 
+
 router.get('/scoresByUser/:userId', async (req, res) => {
   try {
       const userId = req.params.userId;
-      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
+      const token = req.header('Authorization');
+      console.log("Token: ",token);
+      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`, {
+        headers: {
+          Authorization: token // Reenviamos el token al game-service
+        }
+      });
 
       if (!response.data) {
           return res.status(404).json({ error: 'No scores found for this user' });
       }
 
+      console.log("Response from game service:", response);
+
       res.json(response.data);
   } catch (error) {
+      console.log("The error is here: ", error);
       res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
