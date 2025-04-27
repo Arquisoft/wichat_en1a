@@ -17,16 +17,22 @@ const checkErrorResponse = async (url, expectedError, statusCode) => {
   expect(response.body.error).toBe(expectedError);
 };
 
-const checkSuccessResponse = async (url, mockData, expectedData) => {
+const checkSuccessResponse = async (url, mockData, expectedData, headers = {}) => {
   axios.get.mockResolvedValue({ data: mockData });
 
-  const response = await request(app)
-      .get(url)
+  const req = request(app).get(url);
+
+  for (const [key, value] of Object.entries(headers)) {
+    req.set(key, value);
+  }
+
+  const response = await req
       .expect('Content-Type', /json/)
       .expect(200);
 
   expect(response.body).toEqual(expectedData);
 };
+
 
 const checkPostSuccessResponse = async (url, requestData, mockData, expectedData) => {
   axios.post.mockResolvedValue({ data: mockData });
@@ -232,7 +238,13 @@ describe('Gateway Service - Game Service', () => {
 
   it('should forward scoresByUser request to GameService', async () => {
     const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain', questionsPassed : 11, questionsFailed: 9, accuracy :55 }];
-    await checkSuccessResponse('/api/scoresByUser/user1', mockScores, mockScores);
+    await checkSuccessResponse(
+      '/api/scoresByUser/user1', 
+      mockScores, 
+      mockScores,
+      { Authorization: 'Bearer mocktoken123' }  
+    );
+    
   });
 
   it('should forward leaderboard request to GameService', async () => {
