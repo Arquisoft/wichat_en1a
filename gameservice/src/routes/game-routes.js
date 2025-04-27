@@ -27,8 +27,8 @@ router.get('/health', (req, res) => {
 
 // Guardar puntaje (requiere autenticación)
 router.post('/saveScore', authenticateJWT, async (req, res) => {
-    const { score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
-    const userId = req.userId;  // Obtener userId desde el token
+    const { userId,score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
+    //const userId = req.userId;  // Obtener userId desde el token
 
     if (!score || gameMode == null || questionsPassed == null || questionsFailed == null || accuracy == null) {
         return res.status(400).json({ error: 'Missing required fields' });
@@ -49,8 +49,8 @@ router.post('/saveScore', authenticateJWT, async (req, res) => {
 
 // Actualizar puntaje (requiere autenticación)
 router.put('/updateScore', authenticateJWT, async (req, res) => {
-    const { score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
-    const userId = req.userId;  // Obtener userId desde el token
+    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
+    //const userId = req.userId;  // Obtener userId desde el token
 
     if (!score || gameMode == null || questionsPassed == null || questionsFailed == null || accuracy == null) {
         return res.status(400).json({ error: 'Missing required fields' });
