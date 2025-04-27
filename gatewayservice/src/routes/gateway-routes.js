@@ -171,14 +171,22 @@ router.post('/saveScore', async (req, res) => {
 router.get('/scoresByUser/:userId', async (req, res) => {
   try {
       const { userId } = req.params;
-      const urlObj = new URL(`${gameServiceUrl}/scoresByUser/${userId}`);
-      if(urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:'){
-        return res.status(400).json({error: 'Invalid protocol'});
+      const rawToken = req.header('Authorization');
+
+
+      // Validar que el token no sea vacío y que tenga formato "Bearer <token>"
+      if (!rawToken || !/^Bearer\s[\w.-]+$/i.test(rawToken)) {
+          return res.status(400).json({ error: 'Invalid Authorization token' });
       }
-      const token = req.header('Authorization');
+
+      const urlObj = new URL(`${gameServiceUrl}/scoresByUser/${userId}`);
+      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+          return res.status(400).json({ error: 'Invalid protocol' });
+      }
+
       const response = await axios.get(urlObj, {
         headers: {
-          Authorization: token // Reenviamos el token al game-service
+          Authorization: rawToken // Ya validado
         }
       });
 
@@ -190,6 +198,7 @@ router.get('/scoresByUser/:userId', async (req, res) => {
       res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
+
 router.get('/leaderboard/:gameMode?', async (req, res) => {
   try {
     const { gameMode } = req.params;
