@@ -171,8 +171,12 @@ router.post('/saveScore', async (req, res) => {
 router.get('/scoresByUser/:userId', async (req, res) => {
   try {
       const { userId } = req.params;
+      const urlObj = new URL(`${gameServiceUrl}/scoresByUser/${userId}`);
+      if(urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:'){
+        return res.status(400).json({error: 'Invalid protocol'});
+      }
       const token = req.header('Authorization');
-      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`, {
+      const response = await axios.get(urlObj, {
         headers: {
           Authorization: token // Reenviamos el token al game-service
         }
