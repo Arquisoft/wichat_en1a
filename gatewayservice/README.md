@@ -1,5 +1,5 @@
 ### Monitoring (Prometheus and Grafana)
-In this step we are going use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to monitor the restapi. First step is modifying the restapi launch to capture profiling data. In nodejs this is very easy. After installing the required packages (express-prom-bundle and prom-client), we need to modify the `gatewayservice/gateway-service.js` in order to capture the profiling data adding:
+In this step we are going use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to monitor the restapi. First step is modifying the restapi launch to capture profiling data. In nodejs this is very easy. After installing the required packages (express-prom-bundle and prom-client), we need to modify the `gatewayservice/app` in order to capture the profiling data adding:
 ```javascript
 const metricsMiddleware = promBundle({includeMethod: true});
 app.use(metricsMiddleware);

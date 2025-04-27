@@ -1,15 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
-const cors = require('cors');
-const promBundle = require('express-prom-bundle');
-//libraries required for OpenAPI-Swagger
-const swaggerUi = require('swagger-ui-express'); 
-const fs = require("fs")
-const YAML = require('yaml')
+const router = express.Router();
 
-const app = express();
-const port = 8000;
 
 const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8005';
 const questionServiceUrl = process.env.QUESTION_SERVICE_URL || 'http://localhost:8004';
@@ -17,8 +10,6 @@ const llmServiceUrl = process.env.LLM_SERVICE_URL || 'http://localhost:8003';
 const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
 
-const webappUrl = process.env.WEBAPP_URL || 'http://localhost:3000';
-const appDomain = process.env.DEPLOY_DOMAIN || 'http://localhost:3000';
 const apiKey = process.env.LLM_API_KEY;
 
 const corsOptions ={
@@ -36,11 +27,11 @@ const metricsMiddleware = promBundle({includeMethod: true});
 app.use(metricsMiddleware);
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+router.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-app.get('/api/userservice/health', async (req, res) => {
+router.get('/userservice/health', async (req, res) => {
   try {
     const response = await axios.get(userServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -49,7 +40,7 @@ app.get('/api/userservice/health', async (req, res) => {
   }
 });
 
-app.get('/api/authservice/health', async (req, res) => {
+router.get('/authservice/health', async (req, res) => {
   try {
     const response = await axios.get(authServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -58,7 +49,7 @@ app.get('/api/authservice/health', async (req, res) => {
   }
 });
 
-app.get('/api/llmservice/health', async (req, res) => {
+router.get('/llmservice/health', async (req, res) => {
   try {
     const response = await axios.get(llmServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -67,7 +58,7 @@ app.get('/api/llmservice/health', async (req, res) => {
   }
 });
 
-app.get('/api/questionservice/health', async (req, res) => {
+router.get('/questionservice/health', async (req, res) => {
   try {
     const response = await axios.get(questionServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -76,7 +67,7 @@ app.get('/api/questionservice/health', async (req, res) => {
   }
 });
 
-app.get('/api/gameservice/health', async (req, res) => {
+router.get('/gameservice/health', async (req, res) => {
   try {
     const response = await axios.get(gameServiceUrl +'/health');
     res.status(200).json(response.data);
@@ -85,7 +76,7 @@ app.get('/api/gameservice/health', async (req, res) => {
   }
 });
 
-app.post('/api/user/login', async (req, res) => {
+router.post('/user/login', async (req, res) => {
   try {
     // Forward the login request to the authentication service
     const authResponse = await axios.post(authServiceUrl+'/login', req.body);
@@ -95,19 +86,19 @@ app.post('/api/user/login', async (req, res) => {
   }
 });
 
-app.post('/api/user/signup', async (req, res) => {
+router.post('/user/signup', async (req, res) => {
   try {
     // Forward the add user request to the user service
     const userResponse = await axios.post(userServiceUrl+'/adduser', req.body);
     res.json(userResponse.data);
   } catch (error) {
-    res.status(error.response.status).json({ error: error.response.data.error });
+    res.status(error.response.status).json({ error: error.response.data.error,errorCode: error.response.data.errorCode});
   }
 });
 
 
 
-app.post('/api/askllm', async (req, res) => {
+router.post('/askllm', async (req, res) => {
   try {
     const { question, gameQuestion, correctAnswer, model } = req.body;
     if (!question || !gameQuestion || !correctAnswer) {
@@ -126,7 +117,7 @@ app.post('/api/askllm', async (req, res) => {
     res.status(500).json({ error: 'Failed to process request to LLM Service' });  }
 });
 
-app.get('/api/generate-questions', async (req, res) => {
+router.get('/generate-questions', async (req, res) => {
   try {
     const { type, numQuestions } = req.query;
     if (!type || !numQuestions || isNaN(numQuestions) || numQuestions <= 0) {
@@ -144,7 +135,7 @@ app.get('/api/generate-questions', async (req, res) => {
 });
 
 // Ruta GET: Obtain questions by type and limit
-app.get('/api/questions/:type/:limit', async (req, res) => {
+router.get('/questions/:type/:limit', async (req, res) => {
   const { type, limit } = req.params;
 
   try {
@@ -156,7 +147,7 @@ app.get('/api/questions/:type/:limit', async (req, res) => {
 });
 
 // Ruta GET: Obtain random question
-app.get('/api/question', async (req, res) => {
+router.get('/question', async (req, res) => {
   try {
     const randomQuestion = await axios.get(`${questionServiceUrl}/question`);
     if (!randomQuestion.data) {
@@ -168,7 +159,7 @@ app.get('/api/question', async (req, res) => {
   }
 });
 
-app.post('/api/saveScore', async (req, res) => {
+router.post('/saveScore', async (req, res) => {
   try {
     const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
     if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
@@ -189,7 +180,7 @@ app.post('/api/saveScore', async (req, res) => {
   }
 });
 
-app.get('/api/scoresByUser/:userId', async (req, res) => {
+router.get('/scoresByUser/:userId', async (req, res) => {
   try {
       const userId = req.params.userId;
       const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
@@ -203,7 +194,7 @@ app.get('/api/scoresByUser/:userId', async (req, res) => {
       res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
-app.get('/api/leaderboard/:gameMode?', async (req, res) => {
+router.get('/leaderboard/:gameMode?', async (req, res) => {
   try {
     const { gameMode } = req.params;
 
@@ -215,26 +206,5 @@ app.get('/api/leaderboard/:gameMode?', async (req, res) => {
 });
 
 
-// Read the OpenAPI YAML file synchronously
-const openapiPath='./openapi.yaml'
-if (fs.existsSync(openapiPath)) {
-  const file = fs.readFileSync(openapiPath, 'utf8');
 
-  // Parse the YAML content into a JavaScript object representing the Swagger document
-  const swaggerDocument = YAML.parse(file);
-
-  // Serve the Swagger UI documentation at the '/api-doc' endpoint
-  // This middleware serves the Swagger UI files and sets up the Swagger UI page
-  // It takes the parsed Swagger document as input
-  app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-} else {
-  console.log("Not configuring OpenAPI. Configuration file not present.")
-}
-
-
-// Start the gateway service
-const server = app.listen(port, () => {
-  console.log(`Gateway Service listening at http://localhost:${port}`);
-});
-
-module.exports = server
+module.exports = router

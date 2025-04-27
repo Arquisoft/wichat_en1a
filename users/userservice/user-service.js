@@ -18,27 +18,42 @@ mongoose.connect(mongoUri);
 
 
 // Function to validate required fields in the request body
-function validateRequiredFields(req, requiredFields) {
+function validateRequiredFields(res,req, requiredFields) {
     for (const field of requiredFields) {
     if (!(field in req.body)) {
-      throw new Error(`Missing required field: ${field}`);
+      return res.status(400).json({
+        error: `Missing required field: ${field}`,
+        errorCode: 'signup.error.field.missing'
+      });
     }
     }
     if(req.body.password!=req.body.repeatPassword){
-    throw new Error('Passwords must match');
+        return res.status(400).json({
+            error: 'Passwords must match',
+            errorCode: 'signup.error.passwords.mismatch'
+        });
     }
 
     if (!req.body.password || req.body.password.length < 8) {
-      throw new Error('Password must be at least 8 characters long');
+      return res.status(400).json({
+        error: 'Password must be at least 8 characters long',
+        errorCode: 'signup.error.passwords.length'
+      });
     }
     // Password strength validation (at least 8 characters, one uppercase, one lowercase, one digit, and one special character)
     const passwordStrengthRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_*])[A-Za-z\d@$!%*?_&]{8,}$/;
     if (!passwordStrengthRegex.test(req.body.password)) {
-        throw new Error('Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character');
+        return res.status(400).json({
+            error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character',
+            errorCode: 'signup.error.passwords.contents'
+        });
     }
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     if (!usernameRegex.test(req.body.username)) {
-        throw new Error('Username can only contain alphanumeric characters and underscores');
+        return res.status(400).json({
+            error: 'Username can only contain alphanumeric characters and underscores',
+            errorCode: 'signup.error.username.contents'
+        });
     }
 }
 
@@ -51,13 +66,14 @@ app.post('/adduser', [
 ], async (req, res) => {
     try {
         // Check if required fields are present in the request body
-        validateRequiredFields(req, ['username', 'password','repeatPassword']);
+        const validationError = validateRequiredFields(res,req, ['username', 'password','repeatPassword']);
+        if (validationError) return validationError;
 
         let username =req.body.username.toString();
 
         const existingUsers = await User.find({ username: username }).lean();
         if (existingUsers.length > 0) {
-            return res.status(400).json({ error: 'Username already taken' });
+            return res.status(400).json({ error: 'Username already taken', errorCode: "signup.error.username.taken" });
         }
 
         // Encrypt the password before saving it
@@ -69,9 +85,9 @@ app.post('/adduser', [
         });
 
         await newUser.save();
-        res.json(newUser);
+        return res.json(newUser);
     } catch (error) {
-        res.status(400).json({ error: error.message }); 
+        return res.status(400).json({ error: error.message, errorCode:"signup.error.unexpected" }); 
     }});
 
 const server = app.listen(port, () => {
