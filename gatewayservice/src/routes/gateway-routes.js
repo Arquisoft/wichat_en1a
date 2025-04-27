@@ -170,37 +170,22 @@ router.post('/saveScore', async (req, res) => {
 
 router.get('/scoresByUser/:userId', async (req, res) => {
   try {
-    const userId = String(req.params.userId);
+      const { userId } = req.params;
+      const token = req.header('Authorization');
+      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`, {
+        headers: {
+          Authorization: token // Reenviamos el token al game-service
+        }
+      });
 
-    // Validamos que userId solo tenga caracteres seguros
-    if (!/^[\w-]+$/.test(userId)) {
-      return res.status(400).json({ error: 'Invalid user ID' });
-    }
-
-    let url;
-    try {
-      url = new URL(`/scoresByUser/${userId}`, gameServiceUrl);
-    } catch (error) {
-      return res.status(500).json({ error: 'Invalid service URL' });
-    }
-
-    const response = await axios.get(url.toString(), {
-      headers: {
-        Authorization: req.header('Authorization')
+      if (!response.data) {
+          return res.status(404).json({ error: 'No scores found for this user' });
       }
-    });
-
-    if (!response.data) {
-      return res.status(404).json({ error: 'No scores found for this user' });
-    }
-
-    res.json(response.data);
+      res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: 'Error retrieving scores' });
+      res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
-
-
 router.get('/leaderboard/:gameMode?', async (req, res) => {
   try {
     const { gameMode } = req.params;
