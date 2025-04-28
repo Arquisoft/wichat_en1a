@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 
 const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8005';
@@ -11,6 +12,21 @@ const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
 
 const apiKey = process.env.LLM_API_KEY;
+
+const authenticateJWT = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', ''); // Extrae el token del encabezado Authorization
+    if (!token) {
+        return res.status(401).json({ error: 'No token provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'your-secret-key'); // Verificar el token
+        req.userId = decoded.userId;  // Guardar el userId decodificado en la solicitud
+        next();  // Llamar al siguiente middleware o ruta
+    } catch (err) {
+        return res.status(401).json({ error: 'Expired or invalid token' });
+    }
+};
 
 
 // Health check endpoint
@@ -168,16 +184,10 @@ router.post('/saveScore', async (req, res) => {
 });
 
 
-router.get('/scoresByUser/:userId', async (req, res) => {
+router.get('/scoresByUser/:userId',authenticateJWT, async (req, res) => {
   try {
       const { userId } = req.params;
-      const rawToken = req.header('Authorization');
-
-
-      // Validar que el token no sea vacío y que tenga formato "Bearer <token>"
-      if (!rawToken || !/^Bearer\s[\w.-]+$/i.test(rawToken)) {
-          return res.status(400).json({ error: 'Invalid Authorization token' });
-      }
+      const token = req.header('Authorization'); 
 
       const urlObj = new URL(`${gameServiceUrl}/scoresByUser/${userId}`);
       if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
@@ -186,7 +196,7 @@ router.get('/scoresByUser/:userId', async (req, res) => {
 
       const response = await axios.get(urlObj, {
         headers: {
-          Authorization: rawToken // Ya validado
+          Authorization: token 
         }
       });
 

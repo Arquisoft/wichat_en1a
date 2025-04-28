@@ -3,7 +3,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const { saveScore, updateScore, getScoresByUser, getLeaderboard } = require('../services/game-service');
 
-// Middleware para verificar el JWT (incluso lo puedes poner aquí mismo)
+// Middleware para verificar el JWT 
 const authenticateJWT = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', ''); // Extrae el token del encabezado Authorization
     if (!token) {

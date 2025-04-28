@@ -1,6 +1,7 @@
 const request = require('supertest');
 const axios = require('axios');
 const app = require('../src/index');
+const jwt = require('jsonwebtoken');
 
 afterAll(async () => {
     app.close();
@@ -236,13 +237,18 @@ describe('Gateway Service - Game Service', () => {
     expect(response.body.error).toBe('Missing required fields');
   });
 
+  const generateToken = (userId) => {
+      return jwt.sign({ userId }, 'your-secret-key', { expiresIn: '1h' });
+  };
+
   it('should forward scoresByUser request to GameService', async () => {
     const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain', questionsPassed : 11, questionsFailed: 9, accuracy :55 }];
+    const token = generateToken('user1');
     await checkSuccessResponse(
       '/api/scoresByUser/user1', 
       mockScores, 
       mockScores,
-      { Authorization: 'Bearer mocktoken123' }  
+      { Authorization: `Bearer ${token}` }  
     );
     
   });
