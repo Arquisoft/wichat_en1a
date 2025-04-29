@@ -30,14 +30,14 @@ router.post('/saveScore', async (req, res) => {
 
 // Actualizar puntaje
 router.put('/updateScore', async (req, res) => {
-    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy, meanTimeToAnswer } = req.body;
+    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
 
-    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null || meanTimeToAnswer == null) {
+    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null ) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
     try {
-        const result = await updateScore(userId, score, gameMode, questionsPassed, questionsFailed, accuracy, meanTimeToAnswer);
+        const result = await updateScore(userId, score, gameMode, questionsPassed, questionsFailed, accuracy);
         if (!result.updatedScore) {
             return res.status(404).json({ error: 'Score not found' });
         }
