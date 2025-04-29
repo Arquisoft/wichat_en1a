@@ -34,6 +34,7 @@
     "results.header.value": "Valor",
     "results.stat.accuracy": "Precisión:",
     "results.stat.gameMode": "Modo de juego",
+    "results.stat.meanTimeToAnswer":"Tiempo medio de respuesta:",
     "results.stat.questionsFailed": "Preguntas falladas:",
     "results.stat.questionsPassed": "Preguntas acertadas:",
     "results.stat.score": "Puntuación:",

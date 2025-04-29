@@ -34,6 +34,7 @@
     "results.header.value":"Value",
     "results.stat.accuracy":"Accuracy:",
     "results.stat.gameMode":"Game mode",
+    "results.stat.meanTimeToAnswer":"Mean time to answer:",
     "results.stat.questionsFailed":"Questions failed:",
     "results.stat.questionsPassed":"Questions passed:",
     "results.stat.score":"Score:",

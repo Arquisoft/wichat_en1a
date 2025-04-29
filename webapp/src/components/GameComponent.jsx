@@ -27,7 +27,7 @@ const GameComponent = ({ question={
     if(!responded){
       setResponded(true);
       setGuess(number);
-      onQuestionAnswered(number===question.correctAnswerId); // Signal to parent to change the question
+      onQuestionAnswered(number===question.correctAnswerId,timeLeft); // Signal to parent to change the question
     }
   };
 
