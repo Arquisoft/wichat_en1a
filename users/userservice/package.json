@@ -2,9 +2,9 @@
   "name": "userservice",
   "version": "1.0.0",
   "description": "User service, in charge of handling users in the application",
-  "main": "service.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node user-service.js",
+    "start": "node src/index.js",
     "test": "jest"
   },
   "repository": {
