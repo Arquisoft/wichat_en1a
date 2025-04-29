@@ -63,9 +63,10 @@ const GamePage = ({timePerQuestionTesting}) => {
   const handleQuestionAnswered = (correct,timeLeft) => {
       if(correct===true){
         setScore(score + (1000*timeLeft/timePerQuestion));
-        setQuestionTimeTakenSum(questionTimeTakenSum+(timePerQuestion-timeLeft));
         setAnswersCorrect(answersCorrect+1);
       }
+      setQuestionTimeTakenSum(questionTimeTakenSum+(timePerQuestion-timeLeft)/1000);//change to seconds
+      console.log('timeTakenSum: %d, time left of previous question: %d',questionTimeTakenSum,timeLeft)
       if (questionNum < questions.length - 1) { // Check if there are more questions
         setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
       } else {
@@ -77,7 +78,7 @@ const GamePage = ({timePerQuestionTesting}) => {
     if(endGame){
       let failed=(questionNum+1)-answersCorrect;
       let accuracy=(answersCorrect*100/(questionNum+1));
-      let meanTimeToAnswer=Math.floor(questionTimeTakenSum/numQuestions);
+      let meanTimeToAnswer=(questionTimeTakenSum/numQuestions).toFixed(2);
       let results = [{name:"gameMode",value:gamemode},{name:"score",value:score},{name:"questionsPassed",value:answersCorrect},{name:"questionsFailed",value:failed},{name:"accuracy",value:accuracy+"%"},{name:"meanTimeToAnswer",value:meanTimeToAnswer}];
       sessionStorage.setItem('gameResults',JSON.stringify(results));
       sessionStorage.setItem('lastGamemode',gamemode);
