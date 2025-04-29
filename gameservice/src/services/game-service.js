@@ -3,8 +3,8 @@ const Score = require('../models/score-model');
 const validator = require('validator');
 
 
-const saveScore = async (userId, score, gameMode, questionsPassed,questionsFailed, accuracy) => {
-    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
+const saveScore = async (userId, score, gameMode, questionsPassed,questionsFailed, accuracy, meanTimeToAnswer) => {
+    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null || meanTimeToAnswer == null) {
         return { error: 'Missing required fields' };
     }
 
@@ -15,7 +15,8 @@ const saveScore = async (userId, score, gameMode, questionsPassed,questionsFaile
             gameMode,
             questionsPassed,
             questionsFailed,
-            accuracy
+            accuracy,
+            meanTimeToAnswer
         });
 
         await newScore.save();
