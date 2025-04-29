@@ -9,17 +9,25 @@ const GameComponent = ({ question={
   answers:["No answer","No answer","No answer","No answer"]}, onQuestionAnswered=()=>{console.error("No parameters passed to component")}
   ,timePerQuestion=60000 }) => {
   const [responded,setResponded] = useState(false);
+  const [guess,setGuess] = useState(-1);
   const totalTime = timePerQuestion;
   const [timeLeft, setTimeLeft] = useState(totalTime);
   const theme=useTheme();
 
   const getColor=(number)=>{
-    return (number===question.correctAnswerId)?'success':'error';
+    if(responded && number===question.correctAnswerId){
+      return 'success';
+    }else if(responded && number===guess){
+      return 'error';
+    }else{
+      return "primary";
+    }
   }
   const handleAnswer = (number) => {
     if(!responded){
       setResponded(true);
-      onQuestionAnswered(number===question.correctAnswerId); // Signal to parent to change the question
+      setGuess(number);
+      onQuestionAnswered(number===question.correctAnswerId,timeLeft); // Signal to parent to change the question
     }
   };
 
@@ -42,6 +50,7 @@ const GameComponent = ({ question={
           borderRadius:2,
           boxShadow:3, 
           objectFit:"contain",
+          paddingBottom:"1rem",
           backgroundColor:theme.palette.primary.main,
           transition: 'height 0.5s ease'}}></Grid>
 
@@ -53,7 +62,7 @@ const GameComponent = ({ question={
       <Grid item container spacing={2} sx={{ width: "80%" }}>
       {question.answers.map((answer, index) => (
       <Grid item xs={6} key={index}>
-        <Button variant='contained' id={"gameAnswer"+index} fullWidth color={responded?(getColor(index)):'primary'} onClick={()=>handleAnswer(index)}>
+        <Button variant='contained' id={"gameAnswer"+index} fullWidth color={getColor(index)} onClick={()=>handleAnswer(index)}>
           <Typography variant="h5" data-testid={"answerButton"+index} component="h3">{answer}</Typography></Button>
       </Grid>
       ))}

@@ -9,6 +9,7 @@ const GamePage = ({timePerQuestionTesting}) => {
   const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const [questionNum,setQuestionNum] = useState(0);
   const [score,setScore] = useState(0);
+  const [questionTimeTakenSum,setQuestionTimeTakenSum] = useState(0);
 
   const [questions ,setQuestions] = useState(null);
   const [loadedQuestions, setLoadedQuestions] = useState(false);
@@ -34,7 +35,7 @@ const GamePage = ({timePerQuestionTesting}) => {
       throw new Error('Network error:'+err)
     }
   }
-  const saveResult = useCallback(async(questionsFailed,accuracy)=>{
+  const saveResult = useCallback(async(questionsFailed,accuracy,meanTimeToAnswer)=>{
     let done=false;
     do{
       try{
@@ -45,6 +46,7 @@ const GamePage = ({timePerQuestionTesting}) => {
           "questionsPassed":answersCorrect,
           "questionsFailed":questionsFailed,
           "accuracy":accuracy,
+          "meanTimeToAnswer":meanTimeToAnswer,
         });
         done=true;
       }catch(err){
@@ -58,11 +60,13 @@ const GamePage = ({timePerQuestionTesting}) => {
     }
   });
   
-  const handleQuestionAnswered = (correct) => {
+  const handleQuestionAnswered = (correct,timeLeft) => {
       if(correct===true){
-        setScore(score + 100);
+        setScore(score + Math.floor(1000*timeLeft/timePerQuestion));
         setAnswersCorrect(answersCorrect+1);
       }
+      setQuestionTimeTakenSum(questionTimeTakenSum+(timePerQuestion-timeLeft)/1000);//change to seconds
+      console.log('timeTakenSum: %d, time left of previous question: %d',questionTimeTakenSum,timeLeft)
       if (questionNum < questions.length - 1) { // Check if there are more questions
         setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
       } else {
@@ -74,16 +78,17 @@ const GamePage = ({timePerQuestionTesting}) => {
     if(endGame){
       let failed=(questionNum+1)-answersCorrect;
       let accuracy=(answersCorrect*100/(questionNum+1));
-      let results = [{name:"gameMode",value:gamemode},{name:"score",value:score},{name:"questionsPassed",value:answersCorrect},{name:"questionsFailed",value:failed},{name:"accuracy",value:accuracy+"%"}];
+      let meanTimeToAnswer=(questionTimeTakenSum/numQuestions).toFixed(2);
+      let results = [{name:"gameMode",value:gamemode},{name:"score",value:score},{name:"questionsPassed",value:answersCorrect},{name:"questionsFailed",value:failed},{name:"accuracy",value:accuracy+"%"},{name:"meanTimeToAnswer",value:meanTimeToAnswer}];
       sessionStorage.setItem('gameResults',JSON.stringify(results));
       sessionStorage.setItem('lastGamemode',gamemode);
       sessionStorage.setItem('lastTopic',questionType);
       sessionStorage.setItem('lastQuestionNum',numQuestions);
       sessionStorage.setItem('timePerQuestion',timePerQuestion);
-      saveResult(failed,accuracy);
+      saveResult(failed,accuracy,meanTimeToAnswer);
       setNavigate(true);
     }
-  }, [endGame,answersCorrect, gamemode, numQuestions, questionNum, questionType, saveResult, score, timePerQuestion]);
+  }, [endGame,answersCorrect, gamemode, numQuestions, questionNum, questionType, saveResult, score, timePerQuestion,questionTimeTakenSum]);
   return (
     <React.Fragment>
     {loadedQuestions && questions? (navigate?(<Navigate to="/results"/>):(

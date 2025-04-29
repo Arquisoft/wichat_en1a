@@ -16,12 +16,13 @@ const AiChat = ({question={
   const aiChatRef = useRef(null);
   
   const [AiChatOpen, setAiChatOpen] = useState(false);
+  const [chatDisabled, setChatDisabled]=useState(false);
   const [chatMessages, setChatMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
 
   const askLlm = async () => {
     if (!userInput.trim()) return; // Avoid empty requests
-
+    setChatDisabled(true);
     try {
       const response = await axios.post(`${gatewayUrl}/api/askllm`, {
         question: userInput,
@@ -36,6 +37,7 @@ const AiChat = ({question={
       console.error("Error communicating with AI:", error);
       setChatMessages([...chatMessages, { sender: "ai", text: "Failed to get response. Try again." }]);
     }
+    setChatDisabled(false);
   };
   const handleOpenChat=async ()=>{
     setAiChatOpen(true)
@@ -43,6 +45,12 @@ const AiChat = ({question={
       aiChatRef.current?.focus()
     },100)
   }
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      askLlm();
+    }
+  };
 
   return (
     <React.Fragment>
@@ -74,6 +82,8 @@ const AiChat = ({question={
       </Box>
       <Box display="flex" mt={2}>
         <TextField
+          key={chatDisabled}
+          disabled={chatDisabled}
           fullWidth
           placeholder="Type a message..."
           variant="outlined"
@@ -82,6 +92,7 @@ const AiChat = ({question={
           value={userInput}
           inputRef={aiChatRef}//to set the focus on the open handler
           onChange={(e) => setUserInput(e.target.value)}
+          onKeyDown={handleKeyDown} 
           data-testid="aiChatUserInput"
           InputProps={{//cannot directly apply color to input component, must do this
             style: {

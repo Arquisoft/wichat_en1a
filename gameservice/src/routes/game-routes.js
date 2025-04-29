@@ -9,19 +9,19 @@ router.get('/health', (req, res) => {
 
 // Guardar puntaje
 router.post('/saveScore', async (req, res) => {
-    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
+    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy, meanTimeToAnswer } = req.body;
 
-    if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
+    if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null|| meanTimeToAnswer == null) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const validGameModes = ['basicQuiz','expertDomain','timeAttack','endlessMarathon']; 
+    const validGameModes = ['basicQuiz','expertDomain','timeAttack','endlessMarathon','custom']; 
     if (!validGameModes.includes(gameMode)) {
         return res.status(400).json({ error: 'Invalid game mode' });
     }
 
     try {
-        const result = await saveScore(userId, score, gameMode, questionsPassed, questionsFailed, accuracy);
+        const result = await saveScore(userId, score, gameMode, questionsPassed, questionsFailed, accuracy, meanTimeToAnswer);
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: 'Error saving score' });
@@ -32,7 +32,7 @@ router.post('/saveScore', async (req, res) => {
 router.put('/updateScore', async (req, res) => {
     const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
 
-    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
+    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null ) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
