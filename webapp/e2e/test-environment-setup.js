@@ -14,7 +14,7 @@ async function startServer() {
     mongoserver = await MongoMemoryServer.create();
     const mongoUri = mongoserver.getUri();
     process.env.MONGODB_URI = mongoUri;
-    userservice = await require("../../users/userservice/user-service");
+    userservice = await require("../../users/userservice/src/index");
     questionservice = await require("../../questionservice/src/index");
     questionworker = await require("../../questionservice/src/services/question-worker");
     gameservice = await require("../../gameservice/src/index");

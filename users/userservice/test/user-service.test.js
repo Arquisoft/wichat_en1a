@@ -1,8 +1,9 @@
 const request = require('supertest');
 const bcrypt = require('bcrypt');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const mongoose = require('mongoose');
 
-const User = require('./user-model');
+const User = require('../src/models/user-model');
 
 let mongoServer;
 let app;
@@ -11,11 +12,15 @@ beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
   process.env.MONGODB_URI = mongoUri;
-  app = require('./user-service');
+
+  // Carga la app y conecta a MongoDB manualmente
+  app = require('../src/app');
+  await mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
 });
 
 afterAll(async () => {
-  app.close();
+  await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
   await mongoServer.stop();
 });
 
@@ -30,16 +35,16 @@ const expectError = (response, status, message) => {
 
 const baseUser = {
   username: 'testuser',
-  password: 'Testpassword1!', // NOSONAR: Mocked database, not a real user
-  repeatPassword: 'Testpassword1!', // NOSONAR: Mocked database, not a real user
+  password: 'Testpassword1!', // NOSONAR: Mocked data
+  repeatPassword: 'Testpassword1!', // NOSONAR: Mocked data
 };
 
 const invalidPasswordTests = [
-  { password: 'short', error: 'Password must be at least 8 characters long' }, // NOSONAR: Mocked database, not a real user
-  { password: 'weakpassword', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' }, // NOSONAR: Mocked database, not a real user
-  { password: 'TestPassword!', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' }, // NOSONAR: Mocked database, not a real user
-  { password: 'Testpassword1', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' }, // NOSONAR: Mocked database, not a real user
-  { password: '', error: 'Password must be at least 8 characters long' }, // NOSONAR: Mocked database, not a real user
+  { password: 'short', error: 'Password must be at least 8 characters long' },
+  { password: 'weakpassword', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' },
+  { password: 'TestPassword!', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' },
+  { password: 'Testpassword1', error: 'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character' },
+  { password: '', error: 'Password must be at least 8 characters long' },
 ];
 
 describe('User Service', () => {
@@ -89,23 +94,19 @@ describe('User Service', () => {
   it('should return an error if username is too short', async () => {
     const shortUsername = { ...baseUser, username: 'ab' };
     const response = await registerUser(shortUsername);
-    expectError(response, 400, 'User validation failed: username: Path `username` ' +
-        '(`ab`) is shorter than the minimum allowed length (3).');
+    expectError(response, 400, 'User validation failed: username: Path `username` (`ab`) is shorter than the minimum allowed length (3).');
   });
 
   it('should return an error if username is too long', async () => {
-    const longUsername = { ...baseUser, username: 'a'.repeat(51) }; // assuming max length is 50
+    const longUsername = { ...baseUser, username: 'a'.repeat(51) };
     const response = await registerUser(longUsername);
-    expectError(response, 400, 'User validation failed: username: Path `username` ' +
-        '(`aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`) ' +
-        'is longer than the maximum allowed length (30).');
+    expectError(response, 400, `User validation failed: username: Path \`username\` (\`${longUsername.username}\`) is longer than the maximum allowed length (30).`);
   });
 });
 
 describe('Health Check Endpoints', () => {
   test('should return OK for /health', async () => {
     const response = await request(app).get('/health');
-
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('OK');
   });
