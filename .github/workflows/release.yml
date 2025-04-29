@@ -190,42 +190,42 @@ jobs:
     runs-on: ubuntu-latest
     needs: [docker-push-userservice,docker-push-authservice,docker-push-llmservice,docker-push-questionservice,docker-push-gameservice,docker-push-gatewayservice,docker-push-webapp]
     steps:
-    - name: Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
         
-    - name: Upload Prometheus config to server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.DEPLOY_HOST }}
-        username: ${{ secrets.DEPLOY_USER }}
-        key: ${{ secrets.DEPLOY_KEY }}
-        source: "./gatewayservice/monitoring/prometheus/"
-        target: "~/"
-        strip_components: 0
-        overwrite: true
-
-    - name: Upload Grafana provisioning to server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.DEPLOY_HOST }}
-        username: ${{ secrets.DEPLOY_USER }}
-        key: ${{ secrets.DEPLOY_KEY }}
-        source: "./gatewayservice/monitoring/grafana/"
-        target: "~/"
-        strip_components: 0
-        overwrite: true
-
-    - name: Deploy over SSH
-      uses: fifsky/ssh-action@master
-      with:
-        host: ${{ secrets.DEPLOY_HOST }}
-        user: ${{ secrets.DEPLOY_USER }}
-        key: ${{ secrets.DEPLOY_KEY }}
-        command: |
-          wget https://raw.githubusercontent.com/arquisoft/wichat_en1a/master/docker-compose.yml -O docker-compose.yml
-          docker compose --profile prod down
-          echo "LLM_API_KEY=${{ secrets.LLM_API_KEY }}" > .env
-          echo "GATEWAY_SERVICE_URL=${{ secrets.GATEWAY_SERVICE_URL }}" >> .env
-          echo "DEPLOY_DOMAIN=${{ secrets.DEPLOY_DOMAIN }}" >> .env
-          echo "GRAFANA_PASS=${{ secrets.GRAFANA_PASS }}" >> .env
-          docker compose --profile prod up -d --pull always
+      - name: Upload Prometheus config to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: "./gatewayservice/monitoring/prometheus/"
+          target: "~/"
+          strip_components: 0
+          overwrite: true
+  
+      - name: Upload Grafana provisioning to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: "./gatewayservice/monitoring/grafana/"
+          target: "~/"
+          strip_components: 0
+          overwrite: true
+  
+      - name: Deploy over SSH
+        uses: fifsky/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          user: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          command: |
+            wget https://raw.githubusercontent.com/arquisoft/wichat_en1a/master/docker-compose.yml -O docker-compose.yml
+            docker compose --profile prod down
+            echo "LLM_API_KEY=${{ secrets.LLM_API_KEY }}" > .env
+            echo "GATEWAY_SERVICE_URL=${{ secrets.GATEWAY_SERVICE_URL }}" >> .env
+            echo "DEPLOY_DOMAIN=${{ secrets.DEPLOY_DOMAIN }}" >> .env
+            echo "GRAFANA_PASS=${{ secrets.GRAFANA_PASS }}" >> .env
+            docker compose --profile prod up -d --pull always
