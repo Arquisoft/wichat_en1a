@@ -63,7 +63,33 @@ async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiK
 
   return filterAnswer(llmAnswer, correctAnswer);
 }
+async function askAiBuddy(answerCommented, apiKey, model = 'empathy') {
+  const config = llmConfigs[model];
+  if (!config) throw new Error(`Model "${model}" is not supported.`);
+
+  const prompt = `
+    You are an AI acting as the user's friendly, intelligent buddy in a Q&A app. 
+    Always state the answer, but explain it as your best opinion — clearly say you might be wrong. 
+    Keep the tone warm and human-like. After your answer, add a short trivia or personal-style comment that connects the answer to you in a fun way 
+    (e.g., 'I think it’s India — I remember virtually visiting the Taj Mahal!'). Prioritize accuracy, but stay friendly and brief.
+
+    Do not include any references to support your claim. 
+    You must be brief, you are limited to 5 lines.
+
+    Answer you are going to think its true and defend: "${answerCommented}".
+    Remember, keep it light, especially brief, and conversational.
+  `;
+
+  const requestData = config.transformRequest(prompt);
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(config.headers ? config.headers(apiKey) : {})
+  };
+
+  const response = await axios.post(config.url(apiKey), requestData, { headers });
+  return config.transformResponse(response);//no need to filter the response, as the buddy is expected to maybe lie 
+}
 
 module.exports = {
-  sendQuestionToLLM, filterAnswer
+  sendQuestionToLLM, askAiBuddy, filterAnswer
 };

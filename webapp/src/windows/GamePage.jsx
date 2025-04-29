@@ -4,12 +4,14 @@ import { Navigate, useLocation } from "react-router-dom";
 import { Grid } from '@mui/material';
 import AiChat from '../components/AiChat';
 import axios from 'axios';
+import AiBuddy from '../components/AiBuddy';
 
 const GamePage = ({timePerQuestionTesting}) => {
   const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   const [questionNum,setQuestionNum] = useState(0);
   const [score,setScore] = useState(0);
   const [questionTimeTakenSum,setQuestionTimeTakenSum] = useState(0);
+  const [aiBuddyOptionCommented,setAiBuddyOptionCommented]= useState("");
 
   const [questions ,setQuestions] = useState(null);
   const [loadedQuestions, setLoadedQuestions] = useState(false);
@@ -26,15 +28,28 @@ const GamePage = ({timePerQuestionTesting}) => {
   //score
   const [answersCorrect,setAnswersCorrect]=useState(0);
 
-  const fetchData = async () =>{ 
+  const selectAiBuddyAnswer=(question)=>{
+    const isCorrect = Math.random() < 0.5;
+    if (isCorrect) return question.answers[question.correctAnswerId];
+  
+    let wrong;
+    do {
+      wrong = Math.floor(Math.random() * question.answers.length);
+    } while (wrong === question.correctAnswerId);
+
+    return question.answers[wrong];
+  }
+
+  const fetchData = useCallback(async () =>{ 
     try{
       const response = await axios.get(`${gatewayUrl}/api/questions/${questionType}/${numQuestions}`);
       setQuestions(response.data);
+      setAiBuddyOptionCommented(selectAiBuddyAnswer(response.data[0]));
       setLoadedQuestions(true);
     }catch(err){
       throw new Error('Network error:'+err)
     }
-  }
+  },[gatewayUrl,numQuestions,questionType]);
   const saveResult = useCallback(async(questionsFailed,accuracy,meanTimeToAnswer)=>{
     let done=false;
     do{
@@ -54,11 +69,12 @@ const GamePage = ({timePerQuestionTesting}) => {
       }
     }while(!done);
   },[score, gamemode, answersCorrect,gatewayUrl]);
+  
   useEffect(()=>{
     if (!loadedQuestions) {
       fetchData();
     }
-  });
+  },[loadedQuestions,fetchData]);
   
   const handleQuestionAnswered = (correct,timeLeft) => {
       if(correct===true){
@@ -66,7 +82,7 @@ const GamePage = ({timePerQuestionTesting}) => {
         setAnswersCorrect(answersCorrect+1);
       }
       setQuestionTimeTakenSum(questionTimeTakenSum+(timePerQuestion-timeLeft)/1000);//change to seconds
-      console.log('timeTakenSum: %d, time left of previous question: %d',questionTimeTakenSum,timeLeft)
+      setAiBuddyOptionCommented(selectAiBuddyAnswer(questions[questionNum]));
       if (questionNum < questions.length - 1) { // Check if there are more questions
         setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
       } else {
@@ -94,7 +110,10 @@ const GamePage = ({timePerQuestionTesting}) => {
     {loadedQuestions && questions? (navigate?(<Navigate to="/results"/>):(
     <Grid container spacing={2} justifyContent="center">
       <Grid item><AiChat key={questionNum} question={questions[questionNum]}/></Grid>
-      <Grid item md={10}>
+      <Grid item xs={12} md={2} alignContent='center' justifyContent='center'>
+        <AiBuddy key={questionNum} answerCommented={aiBuddyOptionCommented} />
+      </Grid>
+      <Grid item xs={12} md={9}>
         <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
         onQuestionAnswered={handleQuestionAnswered} // Pass callback
         timePerQuestion={timePerQuestionTesting?timePerQuestionTesting:timePerQuestion}

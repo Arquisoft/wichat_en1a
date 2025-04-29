@@ -104,6 +104,25 @@ router.post('/askllm', async (req, res) => {
     res.status(500).json({ error: 'Failed to process request to LLM Service' });  }
 });
 
+router.post('/aiBuddy', async (req, res) => {
+  try {
+    const { answerCommented, model } = req.body;
+    if (!answerCommented ) {
+      return res.status(400).json({ error: 'Missing required fields:  answerCommented' });
+    }
+    const requestData = {
+      ...req.body,
+      apiKey,
+      model: model || 'empathy'
+    };
+
+    // Forward the add user request to the user service
+    const llmResponse = await axios.post(llmServiceUrl+'/aiBuddy', requestData);
+    res.json(llmResponse.data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to process request to aiBuddy' });  }
+});
+
 router.get('/generate-questions', async (req, res) => {
   try {
     const { type, numQuestions } = req.query;
