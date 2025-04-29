@@ -62,7 +62,7 @@ const GamePage = ({timePerQuestionTesting}) => {
   
   const handleQuestionAnswered = (correct,timeLeft) => {
       if(correct===true){
-        setScore(score + (1000*timeLeft/timePerQuestion));
+        setScore(score + Math.floor(1000*timeLeft/timePerQuestion));
         setAnswersCorrect(answersCorrect+1);
       }
       setQuestionTimeTakenSum(questionTimeTakenSum+(timePerQuestion-timeLeft)/1000);//change to seconds

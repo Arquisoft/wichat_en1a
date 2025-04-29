@@ -72,7 +72,7 @@ const computeUserStats = (scores) => {
   });
 
   // Calculate the overall average time per question
-   const averageTimePerQuestion = totalQuestions > 0 ? totalTime / totalQuestions : 0;
+   const averageTimePerQuestion = totalQuestions > 0 ? (totalTime / totalQuestions).toFixed(2) : 0;
 
   // Create an array of stats per game mode
   const gameModeStats = Object.keys(gameModeMap).map((mode) => {
@@ -363,7 +363,7 @@ const Statistics = () => {
                       {t("statistics.recentGames")}
                     </Typography>
                     <List>
-                      {safeStats.gameHistory.slice(0, 10).map((game, index) => (
+                      {safeStats.gameHistory.slice(0, 5).map((game, index) => (
                         <React.Fragment key={index}>
                           <ListItem>
                             <ListItemText
