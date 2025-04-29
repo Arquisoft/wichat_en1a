@@ -137,8 +137,6 @@ services:
     image: grafana/grafana
     container_name: grafana-wichat_en1a
     profiles: ["dev", "prod"]
-    env_file:
-      - .env
     networks:
       - mynetwork
     volumes:
@@ -147,8 +145,7 @@ services:
     environment:
       - GF_SERVER_HTTP_PORT=9091
       - GF_AUTH_DISABLE_LOGIN_FORM=false
-      - GF_SECURITY_ADMIN_USER=admin            
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASS:-passwordAdmin} 
+      - GF_SECURITY_ADMIN_USER=admin
     ports:
       - "9091:9091"
     depends_on: 
