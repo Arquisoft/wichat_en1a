@@ -203,6 +203,7 @@ jobs:
           target: "~/"
           strip_components: 0
           overwrite: true
+          tar_args: "--no-same-owner --no-same-permissions"
   
       - name: Upload Grafana provisioning to server
         uses: appleboy/scp-action@master
@@ -214,6 +215,7 @@ jobs:
           target: "~/"
           strip_components: 0
           overwrite: true
+          tar_args: "--no-same-owner --no-same-permissions"
   
       - name: Deploy over SSH
         uses: fifsky/ssh-action@master
