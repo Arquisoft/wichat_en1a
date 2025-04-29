@@ -4,21 +4,37 @@
     margin: 1rem auto;
     padding: 4rem;
 }
-  
-.leaderboard-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+
+/* Carousel container for future game modes (Configurable game mode) */
+.leaderboard-carousel {
+    display: flex;
+    overflow-x: scroll;
     gap: 5rem;
-}
+    scroll-snap-type: x mandatory;
+    padding: 1rem 0; 
+  }
   
-@media (min-width: 1440px) {
-    .leaderboard-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
+.leaderboard-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+.leaderboard-carousel::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+.leaderboard-carousel::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
 }
   
 .leaderboard-section {
-    margin-bottom: 1rem;
+    width: 100%;
+    scroll-snap-align: start;
+}
+
+/* Showing smaller items in PC */
+@media (min-width: 1440px) {
+    .carousel-item {
+        flex: 0 0 25%;
+    }
 }
   
 .section-title {
