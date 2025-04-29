@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 const puppeteer = require('puppeteer');
 const { defineFeature, loadFeature } = require('jest-cucumber');
 const setDefaultOptions = require('expect-puppeteer').setDefaultOptions
@@ -12,11 +13,12 @@ let a; // Mock user object
 defineFeature(feature, test => {
 
   beforeAll(async () => {
+    await fetch('http://localhost:8000/__test__/reset', { method: 'POST' });
     browser = process.env.GITHUB_ACTIONS
-      ? await puppeteer.launch({headless: "new", args: ['--no-sandbox', '--disable-setuid-sandbox']})
+      ? await puppeteer.launch({ headless: "new", args: ['--no-sandbox', '--disable-setuid-sandbox'] })
       : await puppeteer.launch({ headless: false, slowMo: 1 });
     page = await browser.newPage();
-    a = { username: "testUserA", password: 'PasswordA123!' };
+    a = { username: "testE2E", password: 'Password123!' };
     setDefaultOptions({ timeout: 10000 })
     await register(page, a); // Register user A
 
@@ -113,7 +115,7 @@ defineFeature(feature, test => {
 
     then('The user can navigate through the three tabs of the statistics view', async () => {
       // Overview Tab
-      // await page.click('button.overview'); // Click on the first tab (no need, as it's the default tab)
+      await page.click("#overview"); // Click on the first tab (no need, as it's the default tab)
       const expectedTextOnOverviewTab = en["statistics.summary"]; 
       const found1 = await page.evaluate((expectedTextOnOverviewTab) => {
         return document.body.innerText.includes(expectedTextOnOverviewTab);
@@ -121,7 +123,7 @@ defineFeature(feature, test => {
       expect(found1).toBe(true);
 
       // Performance Tab
-      await page.click('button.performance'); // Click on the second tab (Performance)
+      await page.click("#performance"); // Click on the second tab (Performance)
       const expectedTextOnPerformanceTab = en["statistics.performanceOverTime"]; 
       const found2 = await page.evaluate((expectedTextOnPerformanceTab) => {
         return document.body.innerText.includes(expectedTextOnPerformanceTab);
@@ -129,7 +131,7 @@ defineFeature(feature, test => {
       expect(found2).toBe(true);
 
       // Game Modes Tab
-      await page.click('button.gameModes'); // Click on the third tab (Game Modes)
+      await page.click("#gameModes"); // Click on the third tab (Game Modes)
       const expectedTextOnGameModeTab = en["statistics.gameModeComparison"]; 
       const found3 = await page.evaluate((expectedTextOnGameModeTab) => {
         return document.body.innerText.includes(expectedTextOnGameModeTab);
