@@ -7,7 +7,7 @@
     "forms.repeatPassword":"Repetir contraseña",
     "gameModes.basicQuiz.description": "Juega una partida rápida normal. Se te presentará una imagen junto a una pregunta relacionada con la imagen y un conjunto de posibles respuestas. ¡Intenta elegir la respuesta correcta! También puedes pedir una pista al chat de IA incorporado.",
     "gameModes.basicQuiz.name": "Partida normal",
-    "gameModes.custom.description": "Juega una partida rápida con las configuraciones a tu gusto. Escoge la modalidad de juego, el tópico de las preguntas, el número de las preguntas, o incluso el tiempo disponible por pregunta, y enfréntate a un nuevo desafío con infinidad de posibles configuraciones distintas.",
+    "gameModes.custom.description": "Juega una partida rápida con las configuraciones a tu gusto. Escoge la modalidad de juego completamente a tu gusto, selecciona el tópico de las preguntas, el número de las preguntas, o incluso el tiempo disponible por pregunta, y enfréntate a un nuevo desafío con infinidad de posibles configuraciones distintas.",
     "gameModes.custom.name": "Partida personalizada",
     "gameModes.endlessMarathon.description": "Modo sin fin, sin límite de preguntas. ¡Sigue respondiendo preguntas hasta que falles mientras subes puestos en la tabla de clasificación!",
     "gameModes.endlessMarathon.name": "Maratón sin fin",

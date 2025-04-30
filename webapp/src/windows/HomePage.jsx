@@ -16,10 +16,10 @@ const HomePage = () => {
   const [randomized, setRandomized] = useState(false);
   const [disableSwitch, setDisableSwitch] = useState(false);
   
-  const [numQuestions] = useState(10);
-  const [gameMode, setGameMode] = useState('basicQuiz');
+  const [numQuestions, setNumQuestions] = useState(10);
+  const [timePerQuestion, setTimePerQuestion] = useState(60);
+
   const [questionType, setQuestionType] = useState('all');
-  const [timePerQuestion] = useState(60000);
   
   const { t } = useTranslation();
   
@@ -35,30 +35,29 @@ const HomePage = () => {
   ];
 
   const questionSliderMarks = [
-    { value: 0, label: '5' },
-    { value: 20, label: '10' },
-    { value: 40, label: '15' },
-    { value: 60, label: '20' },
-    { value: 80, label: '25' },
-    { value: 100, label: '30' }
+    { value: 5, label: '5' },
+    { value: 10, label: '10' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20' },
+    { value: 25, label: '25' },
+    { value: 30, label: '30' }
   ];
 
   const timeSliderMarks = [
-    { value: 0, label: '5 s' },
-    { value: 9, label: '10 s' },
-    { value: 18, label: '15 s' },
-    { value: 27, label: '20 s' },
-    { value: 36, label: '25 s' },
-    { value: 45, label: '30 s' },
-    { value: 54, label: '35 s' },
-    { value: 63, label: '40 s' },
-    { value: 72, label: '45 s' },
-    { value: 81, label: '50 s' },
-    { value: 90, label: '55 s' },
-    { value: 100, label: '60 s' }
+    { value: 5, label: '5 s' },
+    { value: 10, label: '10 s' },
+    { value: 15, label: '15 s' },
+    { value: 20, label: '20 s' },
+    { value: 25, label: '25 s' },
+    { value: 30, label: '30 s' },
+    { value: 35, label: '35 s' },
+    { value: 40, label: '40 s' },
+    { value: 45, label: '45 s' },
+    { value: 50, label: '50 s' },
+    { value: 55, label: '55 s' },
+    { value: 60, label: '60 s' }
   ];
 
-  const handleGameModeChange = (e) => setGameMode(e.target.value);
   const handleToggle = () => setRandomized((prev) => !prev);
   const handleChange = (e) => setQuestionType(e.target.value);
 
@@ -71,7 +70,21 @@ const HomePage = () => {
         </h1>
         <div className="menu-carousel" ref={scrollRef}>
           {gameModes.map((mode) => {
-            const selectedMode = mode.mode === 'custom' ? gameMode : mode.mode;
+
+            // Params for the game URL
+            const selectedMode = mode.mode;
+            const params = new URLSearchParams();
+            params.set('mode', selectedMode);
+            if (selectedMode !== 'endlessMarathon') {
+              params.set('numQuestions', String(numQuestions));
+            }
+            if (selectedMode === 'timeAttack') {
+              // Wait for TimeAttack mode to be implemented
+            } else {
+              params.set('timePerQuestion', String(timePerQuestion * 1000));
+            }
+            params.set('questionType', questionType);
+            
             return (
               <div key={mode.id} className="carousel-item">
                 <Card
@@ -94,27 +107,31 @@ const HomePage = () => {
                     {/* Custom game mode only */}
                     { mode.id === 5 && (
                       <>
-                        <FormControl fullWidth sx={{ margin: '1rem 0 2rem' }}>
-                          <InputLabel id="select-gamemode-label">Game mode</InputLabel>
-                          <Select
-                            labelId="select-gamemode-label"
-                            value={gameMode}
-                            label={t('homePage.selectGameMode')}
-                            onChange={handleGameModeChange}
-                          >
-                            <MenuItem value="basicQuiz">{t('gameModes.basicQuiz.name')}</MenuItem>
-                            <MenuItem value="expertDomain">{t('gameModes.expertDomain.name')}</MenuItem>
-                            <MenuItem value="timeAttack">{t('gameModes.timeAttack.name')}</MenuItem>
-                            <MenuItem value="endlessMarathon">{t('gameModes.endlessMarathon.name')}</MenuItem>
-                          </Select>
-                        </FormControl>
                         <Box sx={{ margin: '1rem 0' }}>
                           <p>{t('homePage.slider.questions')}</p>
-                          <Slider defaultValue={10} min={5} max={30} aria-label="Custom marks" step={5} label={t('homePage.slider.questions')} valueLabelDisplay="auto" marks={questionSliderMarks} />
+                          <Slider 
+                            value={numQuestions} 
+                            onChange={(e, v) => setNumQuestions(v)}
+                            defaultValue={10}
+                            min={5}
+                            max={30}
+                            step={5}
+                            valueLabelDisplay="auto"
+                            marks={questionSliderMarks}
+                          />
                         </Box>
                         <Box sx={{ margin: '1rem 0' }}>
                           <p>{t('homePage.slider.time')}</p>
-                          <Slider defaultValue={60} min={5} max={60} aria-label="Custom marks" step={5} label={t('homePage.slider.time')} valueLabelDisplay="auto" marks={timeSliderMarks} />
+                          <Slider
+                            value={timePerQuestion}
+                            onChange={(e, v) => setTimePerQuestion(v)}
+                            defaultValue={60}
+                            min={5}
+                            max={60}
+                            step={5}
+                            valueLabelDisplay="auto"
+                            marks={timeSliderMarks}
+                          />
                         </Box>
                       </>
                     )}
@@ -139,7 +156,7 @@ const HomePage = () => {
                         />
                         {!randomized ? (
                           <FormControl fullWidth sx={{ margin: '1rem 0 2rem' }}>
-                            <InputLabel id="select-label">Topic</InputLabel>
+                            <InputLabel id="select-label">{t('homePage.selectTopic')}</InputLabel>
                             <Select
                               labelId="select-label"
                               value={questionType}
@@ -163,7 +180,7 @@ const HomePage = () => {
                     )}
                     <Button
                       id={`${mode.mode}Button`}
-                      href={`/game?mode=${selectedMode}&numQuestions=${numQuestions}&questionType=${questionType}&timePerQuestion=${timePerQuestion}`}
+                      href={`/game?${params.toString()}`}
                       sx={{
                         width: '100%',
                         padding: '0.5rem',

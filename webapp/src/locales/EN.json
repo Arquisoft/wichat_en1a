@@ -7,7 +7,7 @@
     "forms.repeatPassword":"Repeat password",
     "gameModes.basicQuiz.description": "Play a basic quiz game. You will be presented with an image, a question related to the image, and a set of possible answers. Try to choose the correct answer. You can also ask the AI chat for a hint!",
     "gameModes.basicQuiz.name": "Normal game",
-    "gameModes.custom.description": "Play a customizable game. You can choose the number of questions, the time limit, the topic of the questions and the type of quiz that you will face.",
+    "gameModes.custom.description": "Play a customizable game. You can choose the number of questions, the time limit, and even the topic of the questions. Give a fresh breath to the game with infinite possible configurations!",
     "gameModes.custom.name": "Custom game",
     "gameModes.endlessMarathon.description": "Endless mode, no question limit. Keep answering questions until you miss while you climb up in the leaderboard!",
     "gameModes.endlessMarathon.name": "Endless marathon",
