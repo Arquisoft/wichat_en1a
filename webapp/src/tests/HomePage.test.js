@@ -58,7 +58,8 @@ describe('HomePage Component', () => {
       'gameModes.basicQuiz.name',
       'gameModes.expertDomain.name',
       'gameModes.timeAttack.name',
-      'gameModes.endlessMarathon.name'
+      'gameModes.endlessMarathon.name',
+      'gameModes.custom.name'
     ];
     gameModes.forEach(mode => {
       expect(screen.getByText(i18n.t(mode))).toBeInTheDocument();
