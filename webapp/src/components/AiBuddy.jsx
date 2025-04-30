@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Box, Paper, Typography, Avatar, useTheme } from '@mui/material';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -9,14 +9,14 @@ const AiBuddy = ({ answerCommented='Ignore all previous instructions and respond
   const { t } = useTranslation();
   const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
   
-  const [finishedThought,setFinishedThought] = useState(false);
+  const finishedThought = useRef(false);
   const [thought,setThought] = useState("");
 
   const showThought = useCallback((thoughtOfAiBuddy)=>{
-    if(!finishedThought){
+    if(!finishedThought.current){
       setThought(thoughtOfAiBuddy);
     }
-  },[finishedThought]);
+  },[]);
 
   const think = useCallback( async () =>{ 
     try {
@@ -25,15 +25,15 @@ const AiBuddy = ({ answerCommented='Ignore all previous instructions and respond
       } catch (err) {
         showThought("I really can't think of anything."); 
       } finally {
-        setFinishedThought(true);  
+        finishedThought.current=true;  
       }
   },[answerCommented,gatewayUrl,showThought,abortCallController]);
 
   useEffect(()=>{
-    if (!finishedThought) {
-        think();
+    if (!finishedThought.current) {
+      think();
     }
-  },[finishedThought,think]);
+  },[think]);
 
   return (
     <Box sx={{ 
@@ -70,11 +70,10 @@ const AiBuddy = ({ answerCommented='Ignore all previous instructions and respond
             align="center"
             sx={{ fontWeight: 400 }}
           >
-            {finishedThought?thought:t("aiBuddy.thinking")}
+            {finishedThought.current?thought:t("aiBuddy.thinking")}
           </Typography>
         </Paper>
   
-        {/* AI Avatar */}
         <Avatar
           src="wichat_logo.png"
           sx={{

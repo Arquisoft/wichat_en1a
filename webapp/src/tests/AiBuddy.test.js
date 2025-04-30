@@ -6,7 +6,7 @@ import AiBuddy from '../components/AiBuddy';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n'; // Make sure your i18n setup is exported from here
 
-const mockAxios = new MockAdapter(axios);
+const mockAxios = new MockAdapter(axios,{delayResponse: 200 });
 
 describe('AiBuddy component', () => {
   const mockAnswer = "Here's a helpful thought!";
@@ -20,10 +20,11 @@ describe('AiBuddy component', () => {
     mockAxios
       .onPost('http://localhost:8000/api/aiBuddy')
       .reply(200, { answer: mockAnswer });
-
+    const abortCallController=React.createRef();
+    abortCallController.current=new AbortController();
     render(
       <I18nextProvider i18n={i18n}>
-        <AiBuddy answerCommented={answerCommented} />
+        <AiBuddy answerCommented={answerCommented} abortCallController={abortCallController}/>
       </I18nextProvider>
     );
 
@@ -41,9 +42,11 @@ describe('AiBuddy component', () => {
       .onPost('http://localhost:8000/api/aiBuddy')
       .networkError();
 
+    const abortCallController=React.createRef();
+    abortCallController.current=new AbortController();
     render(
       <I18nextProvider i18n={i18n}>
-        <AiBuddy answerCommented={answerCommented} />
+        <AiBuddy answerCommented={answerCommented} abortCallController={abortCallController}/>
       </I18nextProvider>
     );
 
