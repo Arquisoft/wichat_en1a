@@ -242,15 +242,18 @@ describe('Gateway Service - Game Service', () => {
   };
 
   it('should forward scoresByUser request to GameService', async () => {
-    const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain', questionsPassed : 11, questionsFailed: 9, accuracy :55 }];
+    const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain', questionsPassed: 11, questionsFailed: 9, accuracy: 55 }];
     const token = generateToken('user1');
+
+    // Simula la respuesta de axios
+    axios.get.mockResolvedValue({ data: mockScores });
+
     await checkSuccessResponse(
-      '/api/scoresByUser/user1', 
-      mockScores, 
-      mockScores,
-      { Authorization: `Bearer ${token}` }  
+        '/api/scoresByUser/user1',
+        mockScores,
+        mockScores,
+        { Authorization: `Bearer ${token}` }
     );
-    
   });
 
   it('should forward leaderboard request to GameService', async () => {

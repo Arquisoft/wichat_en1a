@@ -16,7 +16,7 @@ const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
 const apiKey = process.env.LLM_API_KEY;
 
 const trustedSchemes = ["http:", "https:"];
-const trustedDomains = ["gameservice"];
+const trustedDomains = ["gameservice", "localhost"];
 
 const authenticateJWT = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', ''); // Extrae el token del encabezado Authorization
@@ -213,8 +213,6 @@ router.get('/scoresByUser/:userId',authenticateJWT, [
     } catch (err) {
       return res.status(400).json({ error: 'Invalid URL format' });
     }
-    console.log('Constructed URL:', url.hostname);
-
 
     // Check if the URL's scheme and domain are trusted
     if (!trustedSchemes.includes(url.protocol) || !trustedDomains.includes(url.hostname)) {
