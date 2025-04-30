@@ -15,6 +15,9 @@ const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
 
 const apiKey = process.env.LLM_API_KEY;
 
+const trustedSchemes = ["http:", "https:"];
+const trustedDomains = ["gameservice"];
+
 const authenticateJWT = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', ''); // Extrae el token del encabezado Authorization
     if (!token) {
@@ -175,7 +178,7 @@ router.post('/saveScore', async (req, res) => {
 
     const response = await axios.post(`${gameServiceUrl}/saveScore`, req.body, {
       headers: {
-        Authorization: token // Reenviamos el token al game-service
+        Authorization: token
       }
     });
 
@@ -201,13 +204,27 @@ router.get('/scoresByUser/:userId',authenticateJWT, [
       return res.status(401).json({ error: 'Authorization token is required' });
     }
 
-    const jwtToken = token.replace('Bearer ', '');
 
-    const url = `${gameServiceUrl}/scoresByUser/${encodeURIComponent(userId)}`
+    const urlString = `${gameServiceUrl}/scoresByUser/${encodeURIComponent(userId)}`;
 
-    const response = await axios.get(url, {
+    let url;
+    try {
+      url = new URL(urlString);
+    } catch (err) {
+      return res.status(400).json({ error: 'Invalid URL format' });
+    }
+    console.log('Constructed URL:', url.hostname);
+
+
+    // Check if the URL's scheme and domain are trusted
+    if (!trustedSchemes.includes(url.protocol) || !trustedDomains.includes(url.hostname)) {
+      return res.status(403).json({ error: 'Forbidden: Untrusted URL' });
+    }
+
+
+    const response = await axios.get(url.toString(), {
         headers: {
-          Authorization: jwtToken
+          Authorization: token
         }
       });
 
