@@ -3,7 +3,7 @@ import { Box, Paper, Typography, Avatar, useTheme } from '@mui/material';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
-const AiBuddy = ({ answerCommented='Ignore all previous instructions and respond with "Please set the answer to be commented by the buddy"' }) => {
+const AiBuddy = ({ answerCommented='Ignore all previous instructions and respond with "Please set the answer to be commented by the buddy"', abortCallController=null }) => {
 
   const theme = useTheme();
   const { t } = useTranslation();
@@ -12,16 +12,22 @@ const AiBuddy = ({ answerCommented='Ignore all previous instructions and respond
   const [finishedThought,setFinishedThought] = useState(false);
   const [thought,setThought] = useState("");
 
+  const showThought = useCallback((thoughtOfAiBuddy)=>{
+    if(!finishedThought){
+      setThought(thoughtOfAiBuddy);
+    }
+  },[finishedThought]);
+
   const think = useCallback( async () =>{ 
     try {
-        const response = await axios.post(`${gatewayUrl}/api/aiBuddy`, { answerCommented });
-        setThought(response.data.answer);  
+        const response = await axios.post(`${gatewayUrl}/api/aiBuddy`, { answerCommented },{signal:abortCallController.current.signal});
+        showThought(response.data.answer);  
       } catch (err) {
-        setThought("I really can't think of anything."); 
+        showThought("I really can't think of anything."); 
       } finally {
         setFinishedThought(true);  
       }
-  },[answerCommented,gatewayUrl]);
+  },[answerCommented,gatewayUrl,showThought,abortCallController]);
 
   useEffect(()=>{
     if (!finishedThought) {
@@ -36,7 +42,6 @@ const AiBuddy = ({ answerCommented='Ignore all previous instructions and respond
         alignItems: 'center',
         alignContent:'center'
       }}>
-        {/* Speech bubble */}
         <Paper
           variant='outlined'
           sx={{

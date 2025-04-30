@@ -75,10 +75,10 @@ async function askAiBuddy(answerCommented, apiKey, model = 'empathy') {
     (e.g., 'I think it’s India — I remember virtually visiting the Taj Mahal!'). Prioritize accuracy, but stay friendly and brief.
 
     Do not include any references to support your claim. 
-    You must be brief, you are limited to 5 lines.
+    You must be brief, you are limited to three lines.
+    Do not literally describe the element, just stick to the personal comment.
 
     Answer you are going to think its true and defend: "${answerCommented}".
-    Remember, keep it light, especially brief, and conversational.
   `;
 
   const requestData = config.transformRequest(prompt);

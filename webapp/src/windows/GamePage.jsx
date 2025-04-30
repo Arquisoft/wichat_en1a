@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import GameComponent from '../components/GameComponent';
 import { Navigate, useLocation } from "react-router-dom";
 import { Grid } from '@mui/material';
@@ -14,9 +14,11 @@ const GamePage = ({timePerQuestionTesting}) => {
   const [aiBuddyOptionCommented,setAiBuddyOptionCommented]= useState("");
 
   const [questions ,setQuestions] = useState(null);
-  const [loadedQuestions, setLoadedQuestions] = useState(false);
+  const loadedQuestions = useRef(false);
   const [endGame, setEndGame] = useState(false);
   const [navigate, setNavigate] = useState(false);
+
+  const abortCallController = useRef(null);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -44,12 +46,14 @@ const GamePage = ({timePerQuestionTesting}) => {
     try{
       const response = await axios.get(`${gatewayUrl}/api/questions/${questionType}/${numQuestions}`);
       setQuestions(response.data);
+      abortCallController.current=new AbortController();
       setAiBuddyOptionCommented(selectAiBuddyAnswer(response.data[0]));
-      setLoadedQuestions(true);
+      loadedQuestions.current=true;
     }catch(err){
       throw new Error('Network error:'+err)
     }
   },[gatewayUrl,numQuestions,questionType]);
+
   const saveResult = useCallback(async(questionsFailed,accuracy,meanTimeToAnswer)=>{
     let done=false;
     do{
@@ -71,24 +75,29 @@ const GamePage = ({timePerQuestionTesting}) => {
   },[score, gamemode, answersCorrect,gatewayUrl]);
   
   useEffect(()=>{
-    if (!loadedQuestions) {
+    if (!loadedQuestions.current) {
       fetchData();
     }
-  },[loadedQuestions,fetchData]);
+  },[fetchData]);
   
   const handleQuestionAnswered = (correct,timeLeft) => {
-      if(correct===true){
-        setScore(score + Math.floor(1000*timeLeft/timePerQuestion));
-        setAnswersCorrect(answersCorrect+1);
-      }
-      setQuestionTimeTakenSum(questionTimeTakenSum+(timePerQuestion-timeLeft)/1000);//change to seconds
-      setAiBuddyOptionCommented(selectAiBuddyAnswer(questions[questionNum]));
-      if (questionNum < questions.length - 1) { // Check if there are more questions
-        setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
-      } else {
-        setTimeout(() => setEndGame(true), 1000);
-      }
+    if (abortCallController.current) {
+      abortCallController.current.abort();
+      abortCallController.current = new AbortController();
+    }
+    if(correct===true){
+      setScore(score + Math.floor(1000*timeLeft/timePerQuestion));
+      setAnswersCorrect(answersCorrect+1);
+    }
+    setQuestionTimeTakenSum(questionTimeTakenSum+(timePerQuestion-timeLeft)/1000);//change to seconds
+    if (questionNum < questions.length - 1) { // Check if there are more questions
+      setAiBuddyOptionCommented(selectAiBuddyAnswer(questions[questionNum+1]));
+      setTimeout(() => {setQuestionNum((prev) => prev + 1);}, 1000);
+    } else {
+      setTimeout(() => setEndGame(true), 1000);
+    }
   };
+
   useEffect(() => {
     // This will ensure sessionStorage is updated after score change
     if(endGame){
@@ -105,13 +114,14 @@ const GamePage = ({timePerQuestionTesting}) => {
       setNavigate(true);
     }
   }, [endGame,answersCorrect, gamemode, numQuestions, questionNum, questionType, saveResult, score, timePerQuestion,questionTimeTakenSum]);
+  
   return (
     <React.Fragment>
-    {loadedQuestions && questions? (navigate?(<Navigate to="/results"/>):(
+    {loadedQuestions.current && questions? (navigate?(<Navigate to="/results"/>):(
     <Grid container spacing={2} justifyContent="center">
       <Grid item><AiChat key={questionNum} question={questions[questionNum]}/></Grid>
       <Grid item xs={12} md={2} alignContent='center' justifyContent='center'>
-        <AiBuddy key={questionNum} answerCommented={aiBuddyOptionCommented} />
+        <AiBuddy key={questionNum} answerCommented={aiBuddyOptionCommented} abortCallController={abortCallController}/>
       </Grid>
       <Grid item xs={12} md={9}>
         <GameComponent key={questionNum} question={questions[questionNum]} // Pass current question
