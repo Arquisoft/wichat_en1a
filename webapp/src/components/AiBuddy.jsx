@@ -81,7 +81,6 @@ const AiBuddy = ({ answerCommented }) => {
             borderColor: theme.palette.primary.main
           }}
         >
-          {/* Empty avatar to match the silhouette in the image */}
         </Avatar>
       </Box>
   );
