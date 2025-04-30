@@ -195,11 +195,12 @@ router.get('/scoresByUser/:userId',authenticateJWT, [
   }
   try {
       const { userId } = req.params;
-      const token = req.header('Authorization'); 
+      const token = req.header('Authorization');
 
-      const url = `${gameServiceUrl}/scoresByUser/${encodeURIComponent(userId)}`
+    const url = new URL(`${gameServiceUrl}/scoresByUser`);
+    url.searchParams.append('userId', userId);
 
-      const response = await axios.get(url, {
+    const response = await axios.get(url.toString(), {
         headers: {
           Authorization: token 
         }
