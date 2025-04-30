@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 const puppeteer = require('puppeteer');
 const { defineFeature, loadFeature }=require('jest-cucumber');
 const setDefaultOptions = require('expect-puppeteer').setDefaultOptions
@@ -9,6 +10,7 @@ let browser;
 defineFeature(feature, test => {
   
   beforeAll(async () => {
+    await fetch('http://localhost:8000/__test__/reset', { method: 'POST' });
     browser = process.env.GITHUB_ACTIONS
       ? await puppeteer.launch({headless: "new", args: ['--no-sandbox', '--disable-setuid-sandbox']})
       : await puppeteer.launch({ headless: true, slowMo: 1 });
@@ -29,7 +31,7 @@ defineFeature(feature, test => {
     let password;
     
     given('An unregistered user', async () => {
-      username = "pablo"
+      username = "pabloE2E"
       password = "Pablo15&asw"
       await expect(page).toClick('a[name="signup"]');
       await page.waitForSelector('input[name="username"]');//wait for redirection
@@ -40,10 +42,14 @@ defineFeature(feature, test => {
       await expect(page).toFill('input[name="password"]', password);
       await expect(page).toFill('input[name="repeatPassword"]', password);
       await expect(page).toClick('button[name="addUserButton"]');
+      await page.waitForSelector('button[name="loginButton"]');//wait for redirection
     });
     
     then('I am redirected to the login page', async () => {
-      await page.waitForSelector('button[name="loginButton"]');//wait for redirection
+      await expect(page).toFill('input[name="username"]', username);
+      await expect(page).toFill('input[name="password"]', password);
+      await expect(page).toClick('button[name="loginButton"]');
+      await page.waitForSelector('h1[id="home-title"]');//wait for redirection
     });
   })
   
@@ -53,8 +59,14 @@ defineFeature(feature, test => {
     let password;
     
     given('A registered user', async () => {
-      username = "pablo"
+      username = "pabloE2E"
       password = "Pablo15&asw"
+      await page
+      .goto("http://localhost:3000", {
+        waitUntil: "networkidle0",
+      })
+      .catch(() => {});
+      await expect(page).toClick('a[name="login"]'),
       await page.waitForSelector('input[name="username"]');//wait for redirection
     });
     
@@ -69,8 +81,7 @@ defineFeature(feature, test => {
     });
   })
 
-  afterAll(async ()=>{
+  afterAll(async ()=> {
     browser.close()
   })
-
 });
