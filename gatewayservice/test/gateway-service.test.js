@@ -119,6 +119,50 @@ describe('Gateway Service', () => {
   });
 });
 
+describe('Gateway Service - Ai buddy', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  axios.post.mockImplementation((url, data) => {
+    if (url.endsWith('/aiBuddy')) {
+      return Promise.resolve({ data: { answer: 'Ai buddy answer.' } });
+    }
+  });
+  it('should forward ai buddy request to llm service', async () => {
+    const requestData = {
+      answerCommented: 'What is the capital of France?'
+    };
+
+    const response = await request(app)
+        .post('/api/aiBuddy')
+        .send(requestData)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    expect(response.body.answer).not.toContain('buddy answer'); 
+    expect(response.body.answer).not.toBe(''); 
+  });
+
+  it('should return error if LLM service fails', async () => {
+    axios.post.mockRejectedValue(new Error('LLM Service Error'));
+
+    const response = await request(app)
+        .post('/api/aiBuddy')
+        .send({
+          answerCommented: 'What is the capital of France?'
+        })
+        .expect('Content-Type', /json/)
+        .expect(500);
+
+    expect(response.body.error).toBe('Failed to process request to aiBuddy');
+  });
+  
+  it('Debe devolver 400 si faltan todos los parámetros', async () => {
+    const response = await request(app).post('/api/aiBuddy').send({});
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain('Missing required fields:');
+  });
+});
 
 describe('Gateway Service - LLM Service', () => {
   beforeEach(() => {
@@ -149,7 +193,6 @@ describe('Gateway Service - LLM Service', () => {
     expect(response.body.answer).not.toContain('Paris'); // Asegura que la respuesta correcta no está en la respuesta final
     expect(response.body.answer).not.toBe(''); // Asegura que aún haya contenido
   });
-
   it('should return error if LLM service fails', async () => {
     axios.post.mockRejectedValue(new Error('LLM Service Error'));
 
