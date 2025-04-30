@@ -17,6 +17,7 @@ axios.post.mockImplementation((url) => {
 
 
 const testLLMRequest = async (body) => request(server).post('/ask').send(body);
+const testAiBuddyRequest = async (body) => request(server).post('/aiBuddy').send(body);
 
 describe('LLM Service', () => {
     const validBody = {
@@ -77,6 +78,64 @@ describe('LLM Service', () => {
         axios.post.mockRejectedValueOnce(new Error('API request failed'));
 
         const response = await testLLMRequest(validBody);
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toMatch('API request failed');
+    });
+
+
+});
+
+describe('Ai buddy function', () => {
+    const validBody = {
+        answerCommented:'Paris',
+        model: 'empathy',
+        apiKey: 'fake-api-key'
+    };
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it.each([
+        ['Gemini', 'gemini'],
+        ['EmpathyAI', 'empathy']
+    ])('should return an answer from %s', async (_, model) => {
+        const response = await testAiBuddyRequest({ ...validBody, model });
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.answer).toBe('llmanswer');
+    });
+
+    it.each([
+        ['Gemini', 'gemini'],
+        ['EmpathyAI', 'empathy']
+    ])('should return an answer from %s', async (_, model) => {
+        const response = await testAiBuddyRequest(validBody);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.answer).toContain('llmanswer');
+        expect(response.body.answer).not.toBe('');
+    });
+
+    it('should return an error if required fields are missing', async () => {
+        const response = await testAiBuddyRequest({ question: 'Incomplete request' });
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toContain('Missing required field');
+    });
+
+    it('should return an error for unsupported models', async () => {
+        const response = await testAiBuddyRequest({ ...validBody, model: 'unknownModel' });
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toMatch(/Model "unknownModel" is not supported/i);
+    });
+
+    it('should handle API failures gracefully', async () => {
+        axios.post.mockRejectedValueOnce(new Error('API request failed'));
+
+        const response = await testAiBuddyRequest(validBody);
 
         expect(response.statusCode).toBe(400);
         expect(response.body.error).toMatch('API request failed');

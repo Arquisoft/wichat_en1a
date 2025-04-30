@@ -63,6 +63,7 @@ async function sendQuestionToLLM(userQuestion, gameQuestion, correctAnswer, apiK
 
   return filterAnswer(llmAnswer, correctAnswer);
 }
+
 async function askAiBuddy(answerCommented, apiKey, model = 'empathy') {
   const config = llmConfigs[model];
   if (!config) throw new Error(`Model "${model}" is not supported.`);

@@ -120,6 +120,7 @@ router.post('/aiBuddy', async (req, res) => {
     const llmResponse = await axios.post(llmServiceUrl+'/aiBuddy', requestData);
     res.json(llmResponse.data);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Failed to process request to aiBuddy' });  }
 });
 
