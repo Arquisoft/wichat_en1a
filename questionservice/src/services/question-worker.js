@@ -29,7 +29,7 @@ mongoose.connect(mongoUri, {
 });
 
 // Generate question every 10 minutes
-cron.schedule("*/10 * * * *", async () => {
+cron.schedule("*/2 * * * *", async () => {
     console.log("Generating new questions...");
     try {
         await generateQuestions("flag",10);

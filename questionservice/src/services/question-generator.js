@@ -53,24 +53,18 @@ const questionConfigs = {
     },
 
     sport: {
-        entity: '?entity wdt:P106 wd:Q937857', // Ocupación: deportista
+        entity: '?entity wdt:P31 wd:Q31629',
         fields: '?entity ?entityLabel ?image',
         conditions: `
-        ?entity rdfs:label ?entityLabel.
-        ?entity wdt:P18 ?image.
-        ?entity schema:description ?description.
-        FILTER(LANG(?entityLabel) = "es").
-        FILTER(LANG(?description) = "es").
+        ?entity wikibase:sitelinks ?sitelinks;
+               wdt:P18 ?image.
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
     `,
-        questionTemplate: '¿Qué deportista famoso es este?',
+        questionTemplate: 'What sport is shown in the image?',
         correctAnswerField: 'entityLabel',
         imageField: 'image',
-        orderBy: ''
+        orderBy: 'ORDER BY DESC(?sitelinks)'
     }
-
-
-
-
 
 
 
