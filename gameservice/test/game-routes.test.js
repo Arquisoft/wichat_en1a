@@ -17,7 +17,8 @@ jest.mock('../src/services/game-service', () => ({
             gameMode: 'basicQuiz',
             questionsPassed: 18,
             questionsFailed: 2,
-            accuracy: 80
+            accuracy: 80,
+            meanTimeToAnswer:0.15
         } 
     }),
     updateScore: jest.fn().mockResolvedValue({ 
@@ -62,7 +63,8 @@ describe('Game Service Tests', () => {
                 gameMode: 'basicQuiz',
                 questionsPassed: 18,
                 questionsFailed: 2,
-                accuracy: 80
+                accuracy: 80,
+                meanTimeToAnswer:0.15
             }
         });
     });
@@ -151,12 +153,12 @@ describe('Game Routes Tests', () => {
         const res = await request(app)
             .post('/saveScore')
             .set('Authorization', `Bearer ${token}`)  // Incluir el token en los encabezados
-            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
+            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80, meanTimeToAnswer:0.15 });
 
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             success: true,
-            newScore: { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 }
+            newScore: { userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80, meanTimeToAnswer:0.15 }
         });
     });
 
@@ -180,7 +182,7 @@ describe('Game Routes Tests', () => {
         const res = await request(app)
             .post('/saveScore')
             .set('Authorization', `Bearer ${token}`)
-            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 10, questionsFailed: 5, accuracy: 80 });
+            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 10, questionsFailed: 5, accuracy: 80, meanTimeToAnswer:0.15 });
 
         expect(res.status).toBe(500);
         expect(res.body.error).toBe('Error saving score');
@@ -191,7 +193,7 @@ describe('Game Routes Tests', () => {
         const res = await request(app)
             .post('/saveScore')
             .set('Authorization', `Bearer ${token}`)
-            .send({ userId: 'user123', score: 100, gameMode: 'invalidMode', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
+            .send({ userId: 'user123', score: 100, gameMode: 'invalidMode', questionsPassed: 18, questionsFailed: 2, accuracy: 80, meanTimeToAnswer:0.15 });
 
         expect(res.status).toBe(400);
         expect(res.body.error).toBe('Invalid game mode');
@@ -206,7 +208,7 @@ describe('Game Routes Tests', () => {
         const res = await request(app)
             .post('/saveScore')
             .set('Authorization', `Bearer ${token}`)
-            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80 });
+            .send({ userId: 'user123', score: 100, gameMode: 'basicQuiz', questionsPassed: 18, questionsFailed: 2, accuracy: 80, meanTimeToAnswer:0.15 });
 
         expect(res.status).toBe(500);
         expect(res.body.error).toBe('Error saving score');

@@ -122,7 +122,7 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus-wichat_en1a
-    profiles: ["dev"]
+    profiles: ["dev", "prod"]
     networks:
       - mynetwork
     volumes:
@@ -136,7 +136,7 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana-wichat_en1a
-    profiles: ["dev"]
+    profiles: ["dev", "prod"]
     networks:
       - mynetwork
     volumes:
@@ -144,9 +144,8 @@ services:
       - ./gatewayservice/monitoring/grafana/provisioning:/etc/grafana/provisioning
     environment:
       - GF_SERVER_HTTP_PORT=9091
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
+      - GF_SECURITY_ADMIN_USER=admin
     ports:
       - "9091:9091"
     depends_on: 

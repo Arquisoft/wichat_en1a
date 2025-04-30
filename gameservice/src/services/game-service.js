@@ -3,8 +3,8 @@ const Score = require('../models/score-model');
 const validator = require('validator');
 
 
-const saveScore = async (userId, score, gameMode, questionsPassed,questionsFailed, accuracy) => {
-    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
+const saveScore = async (userId, score, gameMode, questionsPassed,questionsFailed, accuracy, meanTimeToAnswer) => {
+    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null || meanTimeToAnswer == null) {
         return { error: 'Missing required fields' };
     }
 
@@ -15,7 +15,8 @@ const saveScore = async (userId, score, gameMode, questionsPassed,questionsFaile
             gameMode,
             questionsPassed,
             questionsFailed,
-            accuracy
+            accuracy,
+            meanTimeToAnswer
         });
 
         await newScore.save();
@@ -89,7 +90,7 @@ const getScoresByUser = async (userId, gameMode) => {
     try {
         const escapedUserId = validator.escape(userId.toString());
 
-        const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
+        const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon','custom'];
         const escapedGameMode = gameMode ? validator.escape(gameMode.toString()) : null;
 
         const isValidGameMode = escapedGameMode && allowedGameModes.includes(escapedGameMode);
@@ -103,7 +104,7 @@ const getScoresByUser = async (userId, gameMode) => {
             query.gameMode = escapedGameMode;
         }
 
-        const scores = await Score.find(query);
+        const scores = await Score.find(query).sort({ createdAt: -1 });
 
         if (!scores?.length) {
             return { error: 'No scores found for this user' };

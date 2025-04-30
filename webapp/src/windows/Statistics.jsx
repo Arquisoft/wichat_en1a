@@ -20,6 +20,7 @@ Structure of the scores JSON object:
       "questionsPassed": 8,
       "questionsFailed": 2,
       "accuracy": 80,
+      "meanTimeToAnswer": 20,
       "createdAt": "2023-09-01T12:00:00.000Z",
       "__v": 0
     },
@@ -33,7 +34,7 @@ const computeUserStats = (scores) => {
   let totalQuestions = 0;
   let totalCorrect = 0;
   let totalWrong = 0;
-  // let totalTime = 0;
+  let totalTime = 0;
   const gameHistory = [];
   const gameModeMap = {};
 
@@ -42,12 +43,12 @@ const computeUserStats = (scores) => {
     const correct = Number(game.questionsPassed) || 0;
     const wrong = Number(game.questionsFailed) || 0;
     const questions = correct + wrong;
-    // const timePerQ = game.timePerQuestion || 0; // We could store only total time and calculate average later
+    const timePerQ = game.meanTimeToAnswer || 0; // We could store only total time and calculate average later
 
     totalQuestions += questions;
     totalCorrect += correct;
     totalWrong += wrong;
-    // totalTime += timePerQ * questions;
+    totalTime += timePerQ * questions;
 
     // Save a copy for the game history
     gameHistory.push({
@@ -56,22 +57,22 @@ const computeUserStats = (scores) => {
       correctAnswers: correct,
       wrongAnswers: wrong,
       accuracy: game.accuracy,
-      date: game.createdAt
-      // timePerQuestion: timePerQ
+      date: game.createdAt,
+      timePerQuestion: timePerQ
     });
 
     // Accumulate game mode stats
     const mode = game.gameMode || "unknown";
     if (!gameModeMap[mode]) {
-      gameModeMap[mode] = { gamesPlayed: 0, totalScore: 0 }; // , totalTime: 0 };
+      gameModeMap[mode] = { gamesPlayed: 0, totalScore: 0, totalTime: 0 };
     }
     gameModeMap[mode].gamesPlayed += 1;
     gameModeMap[mode].totalScore += game.score;
-    // gameModeMap[mode].totalTime += timePerQ;
+    gameModeMap[mode].totalTime += timePerQ;
   });
 
   // Calculate the overall average time per question
-  // const averageTimePerQuestion = totalQuestions > 0 ? totalTime / totalQuestions : 0;
+   const averageTimePerQuestion = totalQuestions > 0 ? (totalTime / totalQuestions).toFixed(2) : 0;
 
   // Create an array of stats per game mode
   const gameModeStats = Object.keys(gameModeMap).map((mode) => {
@@ -80,7 +81,7 @@ const computeUserStats = (scores) => {
       mode,
       gamesPlayed: stats.gamesPlayed,
       avgScore: stats.gamesPlayed > 0 ? stats.totalScore / stats.gamesPlayed : 0,
-      // avgTime: stats.gamesPlayed > 0 ? stats.totalTime / stats.gamesPlayed : 0
+      avgTime: stats.gamesPlayed > 0 ? stats.totalTime / stats.gamesPlayed : 0
     };
   });
 
@@ -89,7 +90,7 @@ const computeUserStats = (scores) => {
     totalQuestions,
     correctAnswers: totalCorrect,
     wrongAnswers: totalWrong,
-    // averageTimePerQuestion,
+    averageTimePerQuestion,
     gameHistory,
     gameModeStats,
   };
@@ -378,7 +379,7 @@ const Statistics = () => {
                               primary={new Date(game.date).toLocaleDateString(
                                 i18n.language === "es" ? "es-ES" : "en-US"
                               )}
-                              secondary={`${t("statistics.score")} (%) ${game.score}% | ${t("statistics.questions")} ${game.questionsAnswered} | ${t("statistics.avgTime")} ${game.timePerQuestion} s`}
+                              secondary={`${t("statistics.score")} ${game.score} | ${t("statistics.questions")} ${game.questionsAnswered} | ${t("statistics.avgTime")} ${game.timePerQuestion} s`}
                             />
                           </ListItem>
                           {index < safeStats.gameHistory.length - 1 && <Divider />}
@@ -455,7 +456,7 @@ const Statistics = () => {
                           <ListItem>
                             <ListItemText
                               primary={t(`gameModes.${mode.mode}.name`)}
-                              secondary={`${t("statistics.gamesPlayed")} ${mode.gamesPlayed} | ${t("statistics.avgScore")} ${mode.avgScore}% | ${t("statistics.avgTime")} ${mode.avgTime} s`}
+                              secondary={`${t("statistics.gamesPlayed")} ${mode.gamesPlayed} | ${t("statistics.avgScore")} ${mode.avgScore} | ${t("statistics.avgTime")} ${mode.avgTime} s`}
                             />
                           </ListItem>
                           {index < safeStats.gameModeStats.length - 1 && <Divider />}
