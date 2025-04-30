@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Button, Grid, LinearProgress, Typography, useTheme } from '@mui/material'
 
 const GameComponent = ({ question={
-  question:"Please pass the question parameter",
-  image:"no image",
-  correctAnswerId:0,
-  correctAnswer:"None",
-  answers:["No answer","No answer","No answer","No answer"]}, onQuestionAnswered=()=>{console.error("No parameters passed to component")}
+    question:"Please pass the question parameter",
+    image:"no image",
+    correctAnswerId:0,
+    correctAnswer:"None",
+    answers:["No answer","No answer","No answer","No answer"]
+  }, onQuestionAnswered=()=>{console.error("No parameters passed to component")}
   ,timePerQuestion=60000 }) => {
   const [responded,setResponded] = useState(false);
   const [guess,setGuess] = useState(-1);
