@@ -58,4 +58,31 @@ describe('Question Worker', () => {
 
         await expect(generateQuestions('flag', 10)).rejects.toThrow('Generation failed');
     });
+
+    it('should call generateQuestions for all categories with offset 0 initially', async () => {
+        loadQuestionWorker();
+
+        expect(generateQuestions).toHaveBeenCalledWith('flag', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('city', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('celebrity', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('science', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('sport', 10, 0);
+    });
+
+    it('should not crash if generateQuestions throws during scheduled execution', async () => {
+        generateQuestions.mockImplementationOnce(() => Promise.reject(new Error('Test error')))
+            .mockImplementation(() => Promise.resolve());
+
+        cron.schedule.mockImplementationOnce((cronExpression, callback) => {
+            callback();
+        });
+
+        loadQuestionWorker();
+
+        expect(generateQuestions).toHaveBeenCalled();
+    });
+
+
+
+
 });
