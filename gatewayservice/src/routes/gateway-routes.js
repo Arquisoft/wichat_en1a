@@ -197,12 +197,17 @@ router.get('/scoresByUser/:userId',authenticateJWT, [
       const { userId } = req.params;
       const token = req.header('Authorization');
 
-    const url = new URL(`${gameServiceUrl}/scoresByUser`);
-    url.searchParams.append('userId', userId);
+    if (!token) {
+      return res.status(401).json({ error: 'Authorization token is required' });
+    }
 
-    const response = await axios.get(url.toString(), {
+    const jwtToken = token.replace('Bearer ', '');
+
+    const url = `${gameServiceUrl}/scoresByUser/${encodeURIComponent(userId)}`
+
+    const response = await axios.get(url, {
         headers: {
-          Authorization: token 
+          Authorization: jwtToken
         }
       });
 
