@@ -189,12 +189,9 @@ router.get('/scoresByUser/:userId',authenticateJWT, async (req, res) => {
       const { userId } = req.params;
       const token = req.header('Authorization'); 
 
-      const urlObj = new URL(`${gameServiceUrl}/scoresByUser/${userId}`);
-      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
-          return res.status(400).json({ error: 'Invalid protocol' });
-      }
+      const url = `${gameServiceUrl}/scoresByUser/${encodeURIComponent(userId)}`
 
-      const response = await axios.get(urlObj, {
+      const response = await axios.get(url, {
         headers: {
           Authorization: token 
         }
