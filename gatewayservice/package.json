@@ -26,7 +26,8 @@
         "express-prom-bundle": "^8.0.0",
         "jsonwebtoken": "^9.0.2",
         "swagger-ui-express": "^5.0.1",
-        "yaml": "^2.7.0"
+        "yaml": "^2.7.0",
+        "express-validator": "^7.2.1"
     },
     "devDependencies": {
         "jest": "^29.7.0",

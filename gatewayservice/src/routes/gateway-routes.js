@@ -3,6 +3,8 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const { check, validationResult } = require('express-validator');
+
 
 
 const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8005';
@@ -184,7 +186,13 @@ router.post('/saveScore', async (req, res) => {
 });
 
 
-router.get('/scoresByUser/:userId',authenticateJWT, async (req, res) => {
+router.get('/scoresByUser/:userId',authenticateJWT, [
+  check('userId').isLength({ min: 3 }).trim().escape(),
+],async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
       const { userId } = req.params;
       const token = req.header('Authorization'); 
