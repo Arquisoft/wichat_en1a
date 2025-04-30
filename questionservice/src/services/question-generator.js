@@ -72,7 +72,7 @@ const questionConfigs = {
 };
 
 
-const generateSparqlQuery = (type, limit) => {
+const generateSparqlQuery = (type, limit, offset = 0) => {
     const config = questionConfigs[type];
     if (!config) throw new Error(`Unsupported question type: ${type}`);
 
@@ -83,6 +83,7 @@ const generateSparqlQuery = (type, limit) => {
         }
         ${config.orderBy}
         LIMIT ${limit}
+        OFFSET ${offset}
     `;
 };
 
@@ -145,9 +146,9 @@ const generateIncorrectOptions = (correctAnswer, data, numOptions) => {
 };
 
 
-const generateQuestions = async (type = 'city', numQuestions = 10) => {
+const generateQuestions = async (type = 'city', numQuestions = 10, offset = 0) => {
     try {
-        const query = generateSparqlQuery(type, numQuestions);
+        const query = generateSparqlQuery(type, numQuestions, offset);
         const data = await fetchWikidata(query);
 
         if (data.length === 0) {

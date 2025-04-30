@@ -24,8 +24,8 @@ describe('Question Worker', () => {
     it('should generate initial questions on start', async () => {
         loadQuestionWorker();
 
-        expect(generateQuestions).toHaveBeenCalledWith('flag', 10);
-        expect(generateQuestions).toHaveBeenCalledWith('city', 10);
+        expect(generateQuestions).toHaveBeenCalledWith('flag', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('city', 10, 0);
     });
 
     it('should schedule the cron job every 10 minutes', async () => {
@@ -46,11 +46,11 @@ describe('Question Worker', () => {
         });
 
         expect(generateQuestions).toHaveBeenCalledTimes(7);
-        expect(generateQuestions).toHaveBeenCalledWith('flag', 10);
-        expect(generateQuestions).toHaveBeenCalledWith('city', 10);
-        expect(generateQuestions).toHaveBeenCalledWith('celebrity', 10);
-        expect(generateQuestions).toHaveBeenCalledWith('science', 10);
-        expect(generateQuestions).toHaveBeenCalledWith('sport', 10);
+        expect(generateQuestions).toHaveBeenCalledWith('flag', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('city', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('celebrity', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('science', 10, 0);
+        expect(generateQuestions).toHaveBeenCalledWith('sport', 10, 0);
     });
 
     it('should handle errors when generating questions', async () => {
