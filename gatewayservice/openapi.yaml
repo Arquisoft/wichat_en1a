@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:8000
     description: Development server
-  - url: http://SOMEIP:8000
+  - url: https://wichat-en1a.duckdns.org/
     description: Production server
 paths:
   /api/user/signup:
