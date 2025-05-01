@@ -112,6 +112,12 @@ describe('question-storage', () => {
         const result = await getQuestionsByType('all', 1);
         expect(result).toEqual([{ question: 'Q' }]);
     });
+
+    test('getQuestionsByType with type different from all', async () => {
+        Question.aggregate.mockResolvedValue([{ question: 'Q' }]);
+        const result = await getQuestionsByType('flag', 1);
+        expect(result).toEqual([{ question: 'Q' }]);
+    });
 });
 
 

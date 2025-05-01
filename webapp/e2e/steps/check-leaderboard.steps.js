@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 const puppeteer = require('puppeteer');
 const { defineFeature, loadFeature } = require('jest-cucumber');
 const setDefaultOptions = require('expect-puppeteer').setDefaultOptions
@@ -11,12 +12,13 @@ let a, b; // Mock user objects
 defineFeature(feature, test => {
 
   beforeAll(async () => {
+    await fetch('http://localhost:8000/__test__/reset', { method: 'POST' });
     browser = process.env.GITHUB_ACTIONS
       ? await puppeteer.launch({headless: "new", args: ['--no-sandbox', '--disable-setuid-sandbox']})
       : await puppeteer.launch({ headless: false, slowMo: 1 });
     page = await browser.newPage();
-    a = { username: "UserA", password: 'PasswordA123!' };
-    b = { username: "UserB", password: 'PasswordB123!' };
+    a = { username: "UserE2EA", password: 'PasswordA123!' };
+    b = { username: "UserE2EB", password: 'PasswordB123!' };
     setDefaultOptions({ timeout: 10000 })
     await register(page, a); // Register user A
     await register(page, b); // Register user B

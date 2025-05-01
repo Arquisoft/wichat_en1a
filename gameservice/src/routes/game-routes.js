@@ -1,5 +1,23 @@
+require('dotenv').config();
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const { saveScore, updateScore, getScoresByUser, getLeaderboard } = require('../services/game-service');
+
+// Middleware para verificar el JWT
+const authenticateJWT = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', ''); // Extrae el token del encabezado Authorization
+    if (!token) {
+        return res.status(401).json({ error: 'No token provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'your-secret-key'); // Verificar el token
+        req.userId = decoded.userId;  // Guardar el userId decodificado en la solicitud
+        next();  // Llamar al siguiente middleware o ruta
+    } catch (err) {
+        return res.status(401).json({ error: 'Expired or invalid token' });
+    }
+};
 
 const router = express.Router();
 
@@ -7,15 +25,15 @@ router.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK' });
 });
 
-// Guardar puntaje
-router.post('/saveScore', async (req, res) => {
+// Guardar puntaje (requiere autenticación)
+router.post('/saveScore', authenticateJWT, async (req, res) => {
     const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy, meanTimeToAnswer } = req.body;
 
     if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null|| meanTimeToAnswer == null) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const validGameModes = ['basicQuiz','expertDomain','timeAttack','endlessMarathon','custom']; 
+    const validGameModes = ['basicQuiz','expertDomain','timeAttack','endlessMarathon','custom'];
     if (!validGameModes.includes(gameMode)) {
         return res.status(400).json({ error: 'Invalid game mode' });
     }
@@ -28,11 +46,11 @@ router.post('/saveScore', async (req, res) => {
     }
 });
 
-// Actualizar puntaje
-router.put('/updateScore', async (req, res) => {
+// Actualizar puntaje (requiere autenticación)
+router.put('/updateScore', authenticateJWT, async (req, res) => {
     const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
 
-    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null ) {
+    if (!userId || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -47,9 +65,9 @@ router.put('/updateScore', async (req, res) => {
     }
 });
 
-// Obtener puntajes por usuario
-router.get('/scoresByUser/:userId', async (req, res) => {
-    const userId = req.params.userId;
+// Obtener puntajes por usuario (requiere autenticación)
+router.get('/scoresByUser/:userId', authenticateJWT, async (req, res) => {
+    const userId = req.params.userId; // Usamos el userId de los parámetros de la ruta
     const { gameMode } = req.query;
 
     try {
@@ -63,7 +81,7 @@ router.get('/scoresByUser/:userId', async (req, res) => {
     }
 });
 
-// Obtener el ranking
+// Obtener el ranking (requiere autenticación)
 router.get('/leaderboard/:gameMode?', async (req, res) => {
     let { gameMode } = req.params;
     if (!gameMode) gameMode = null;
