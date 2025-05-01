@@ -4,46 +4,22 @@
     margin: 1rem auto;
     padding: 4rem;
 }
-
-/* Carousel container for future game modes (Configurable game mode) */
-.leaderboard-carousel {
-    display: flex;
-    overflow-x: scroll;
-    gap: 5rem;
-    scroll-snap-type: x mandatory;
-    padding: 1rem 0; 
-  }
-  
-.leaderboard-carousel::-webkit-scrollbar {
-    height: 8px;
-}
-.leaderboard-carousel::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-}
-.leaderboard-carousel::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-}
   
 .leaderboard-section {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
     scroll-snap-align: start;
+    align-items: center;
+    width: 100%;
 }
 
-/* Showing smaller items in PC */
-@media (min-width: 1440px) {
-    .carousel-item {
-        flex: 0 0 25%;
-    }
-}
-  
 .section-title {
     margin: 1rem 0;
 }
   
 .leaderboard-card {
     margin-bottom: 1rem;
-    width: 100%;
+    width: 80%;
     max-height: 44rem;      /* 4 rem per list item (10 items max.) + 4rem (margins and dividers) */
     height: auto;           /* Shrink to match fewer than 10 */
     overflow-y: auto;
