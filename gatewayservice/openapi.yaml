@@ -822,38 +822,9 @@ paths:
               type: object
               properties:
                 answerCommented:
-                  type: object
-                  description: Question to answer.
-                  properties:
-                    _id:
-                      type: string
-                      example: "67e41a6d752e3f6ba5f9f6c0"
-                    question:
-                      type: string
-                      description: Question text.
-                      example: What is the capital of France?
-                    answers:
-                      type: array
-                      items:
-                        type: string
-                      description: Answer options.
-                      example: [ "Kampen", "París", "Vianen", "IJsselstein" ]
-                    correctAnswerId:
-                      type: number
-                      description: Correct answer ID.
-                      example: 1
-                    type:
-                      type: string
-                      description: Type of question.
-                      example: city
-                    image:
-                      type: string
-                      description: Image URL.
-                      example: http://example.com/image.png
-                    createdAt:
-                      type: string
-                      description: Creation date.
-                      example: '2025-04-03T09:15:15.279Z'
+                  type: string
+                  description: Answer that the aiBuddy believes is correct.
+                  example: París
                 model:
                   type: string
                   description: Model to use for the AI Buddy service.
