@@ -5,11 +5,10 @@ import NavBar from '../components/NavBarSignedIn';
 import { jwtDecode } from 'jwt-decode';
 import { useTranslation } from 'react-i18next';
 import '../css/Leaderboard.css';
-// Swiper core and required modules
-import { Navigation } from "swiper/modules";
+// Swiper imports
+import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import "swiper/css/navigation";
+import 'swiper/css/bundle';
 
 const Leaderboard = () => {
 
@@ -35,7 +34,7 @@ const Leaderboard = () => {
   const loggedInPlayerId = getLoggedInUserId();
   const [leaderboardData, setLeaderboardData] = useState(null);
   const [error, setError] = useState(null);
-  const gameModes = useMemo(()=>['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'],[]);
+  const gameModes = useMemo(()=>['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon', 'custom'],[]);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -123,9 +122,9 @@ const Leaderboard = () => {
           </Typography>
         )}
         {leaderboardData ? (
-          <Swiper 
+          <Swiper
             modules={[Navigation]}
-            navigation={true}
+            navigation
             spaceBetween={500}
             slidesPerView={1}
           >
