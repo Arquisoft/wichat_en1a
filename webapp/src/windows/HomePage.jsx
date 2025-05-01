@@ -44,18 +44,18 @@ const HomePage = () => {
   ];
 
   const timeSliderMarks = [
-    { value: 5, label: '5 s' },
-    { value: 10, label: '10 s' },
-    { value: 15, label: '15 s' },
-    { value: 20, label: '20 s' },
-    { value: 25, label: '25 s' },
-    { value: 30, label: '30 s' },
-    { value: 35, label: '35 s' },
-    { value: 40, label: '40 s' },
-    { value: 45, label: '45 s' },
-    { value: 50, label: '50 s' },
-    { value: 55, label: '55 s' },
-    { value: 60, label: '60 s' }
+    { value: 5, label: '5' },
+    { value: 10, label: '10' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20' },
+    { value: 25, label: '25' },
+    { value: 30, label: '30' },
+    { value: 35, label: '35' },
+    { value: 40, label: '40' },
+    { value: 45, label: '45' },
+    { value: 50, label: '50' },
+    { value: 55, label: '55' },
+    { value: 60, label: '60' }
   ];
 
   const handleToggle = () => setRandomized((prev) => !prev);

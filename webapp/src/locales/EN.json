@@ -22,7 +22,7 @@
     "homePage.selectGameMode": "Game mode",
     "homePage.selectTopic": "Topic",
     "homePage.slider.questions": "Number of questions:",
-    "homePage.slider.time": "Time per question:",
+    "homePage.slider.time": "Time per question (seconds):",
     "homePage.welcome": "Welcome to WiChat game! Select a game mode to start playing:",
     "index.description":"WiChat is a trivial-style game where you are given an image, a basic question and four possible answers, and you must select the correct one, with the help of an AI powered chatbot.",
     "index.howItWorks":"All questions are generated from Wikidata, the wikipedia information database, and are switched periodically to ensure fresh gameplay every game!",
