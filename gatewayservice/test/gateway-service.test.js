@@ -1,6 +1,7 @@
 const request = require('supertest');
 const axios = require('axios');
 const app = require('../src/index');
+const jwt = require('jsonwebtoken');
 
 afterAll(async () => {
     app.close();
@@ -17,16 +18,22 @@ const checkErrorResponse = async (url, expectedError, statusCode) => {
   expect(response.body.error).toBe(expectedError);
 };
 
-const checkSuccessResponse = async (url, mockData, expectedData) => {
+const checkSuccessResponse = async (url, mockData, expectedData, headers = {}) => {
   axios.get.mockResolvedValue({ data: mockData });
 
-  const response = await request(app)
-      .get(url)
+  const req = request(app).get(url);
+
+  for (const [key, value] of Object.entries(headers)) {
+    req.set(key, value);
+  }
+
+  const response = await req
       .expect('Content-Type', /json/)
       .expect(200);
 
   expect(response.body).toEqual(expectedData);
 };
+
 
 const checkPostSuccessResponse = async (url, requestData, mockData, expectedData) => {
   axios.post.mockResolvedValue({ data: mockData });
@@ -119,16 +126,56 @@ describe('Gateway Service', () => {
   });
 });
 
-
-describe('Gateway Service - LLM Service', () => {
+describe('Gateway Service - Ai buddy', () => {
+  
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   axios.post.mockImplementation((url, data) => {
-    if (url.endsWith('/ask')) {
-      return Promise.resolve({ data: { answer: 'The capital of France is Paris.' } });
+    if (url.endsWith('/aiBuddy')) {
+      return Promise.resolve({ data: { answer: 'Ai buddy answer.' } });
     }
+  });
+  it('should forward ai buddy request to llm service', async () => {
+    const requestData = {
+      answerCommented: 'What is the capital of France?'
+    };
+
+    const response = await request(app)
+        .post('/api/aiBuddy')
+        .send(requestData)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+    expect(response.body.answer).not.toContain('buddy answer'); 
+    expect(response.body.answer).not.toBe(''); 
+  });
+
+  it('should return error if LLM service fails', async () => {
+    axios.post.mockRejectedValue(new Error('LLM Service Error'));
+
+    const response = await request(app)
+        .post('/api/aiBuddy')
+        .send({
+          answerCommented: 'What is the capital of France?'
+        })
+        .expect('Content-Type', /json/)
+        .expect(500);
+
+    expect(response.body.error).toBe('Failed to process request to aiBuddy');
+  });
+  
+  it('Debe devolver 400 si faltan todos los parámetros', async () => {
+    const response = await request(app).post('/api/aiBuddy').send({});
+    expect(response.status).toBe(400);
+    expect(response.body.error).toContain('Missing required fields:');
+  });
+});
+
+describe('Gateway Service - LLM Service', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should forward ask request to llm service and filter the correct answer', async () => {
@@ -139,17 +186,20 @@ describe('Gateway Service - LLM Service', () => {
       apiKey: 'fake-api-key',
       model: 'gemini'
     };
-
+    axios.post.mockImplementation((url, data) => {
+      if (url.endsWith('/ask')) {
+        return Promise.resolve({ data: { answer: 'The capital of France is Paris.' } });
+      }
+    });
     const response = await request(app)
         .post('/api/askllm')
         .send(requestData)
         .expect('Content-Type', /json/)
         .expect(200);
 
-    expect(response.body.answer).not.toContain('Paris'); // Asegura que la respuesta correcta no está en la respuesta final
+    expect(response.body.answer).toContain('Paris'); // el filtrado ocurre en el servicio real
     expect(response.body.answer).not.toBe(''); // Asegura que aún haya contenido
   });
-
   it('should return error if LLM service fails', async () => {
     axios.post.mockRejectedValue(new Error('LLM Service Error'));
 
@@ -230,9 +280,23 @@ describe('Gateway Service - Game Service', () => {
     expect(response.body.error).toBe('Missing required fields');
   });
 
+  const generateToken = (userId) => {
+      return jwt.sign({ userId }, 'your-secret-key', { expiresIn: '1h' });
+  };
+
   it('should forward scoresByUser request to GameService', async () => {
-    const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain', questionsPassed : 11, questionsFailed: 9, accuracy :55 }];
-    await checkSuccessResponse('/api/scoresByUser/user1', mockScores, mockScores);
+    const mockScores = [{ userId: 'user1', score: 200, gameMode: 'expertDomain', questionsPassed: 11, questionsFailed: 9, accuracy: 55 }];
+    const token = generateToken('user1');
+
+    // Simula la respuesta de axios
+    axios.get.mockResolvedValue({ data: mockScores });
+
+    await checkSuccessResponse(
+        '/api/scoresByUser/user1',
+        mockScores,
+        mockScores,
+        { Authorization: `Bearer ${token}` }
+    );
   });
 
   it('should forward leaderboard request to GameService', async () => {

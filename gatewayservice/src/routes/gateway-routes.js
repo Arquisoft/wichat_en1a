@@ -2,6 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const { check, validationResult } = require('express-validator');
+
 
 
 const gameServiceUrl = process.env.GAME_SERVICE_URL || 'http://localhost:8005';
@@ -11,6 +14,24 @@ const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:8002';
 const userServiceUrl = process.env.USER_SERVICE_URL || 'http://localhost:8001';
 
 const apiKey = process.env.LLM_API_KEY;
+
+const trustedSchemes = ["http:", "https:"];
+const trustedDomains = ["gameservice", "localhost"];
+
+const authenticateJWT = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', ''); // Extrae el token del encabezado Authorization
+    if (!token) {
+        return res.status(401).json({ error: 'No token provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'your-secret-key'); // Verificar el token
+        req.userId = decoded.userId;  // Guardar el userId decodificado en la solicitud
+        next();  // Llamar al siguiente middleware o ruta
+    } catch (err) {
+        return res.status(401).json({ error: 'Expired or invalid token' });
+    }
+};
 
 
 // Health check endpoint
@@ -104,6 +125,26 @@ router.post('/askllm', async (req, res) => {
     res.status(500).json({ error: 'Failed to process request to LLM Service' });  }
 });
 
+router.post('/aiBuddy', async (req, res) => {
+  try {
+    const { answerCommented, model } = req.body;
+    if (!answerCommented ) {
+      return res.status(400).json({ error: 'Missing required fields:  answerCommented' });
+    }
+    const requestData = {
+      ...req.body,
+      apiKey,
+      model: model || 'empathy'
+    };
+
+    // Forward the add user request to the user service
+    const llmResponse = await axios.post(llmServiceUrl+'/aiBuddy', requestData);
+    res.json(llmResponse.data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Failed to process request to aiBuddy' });  }
+});
+
 router.get('/generate-questions', async (req, res) => {
   try {
     const { type, numQuestions } = req.query;
@@ -148,32 +189,72 @@ router.get('/question', async (req, res) => {
 
 router.post('/saveScore', async (req, res) => {
   try {
-    const { userId, score, gameMode, questionsPassed,questionsFailed, accuracy } = req.body;
+    const { userId, score, gameMode, questionsPassed, questionsFailed, accuracy } = req.body;
     if (!userId || typeof userId !== 'string' || score == null || !gameMode || questionsPassed == null || questionsFailed == null || accuracy == null) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const response = await axios.post(`${gameServiceUrl}/saveScore`, req.body);
+    const token = req.header('Authorization');
+
+    const response = await axios.post(`${gameServiceUrl}/saveScore`, req.body, {
+      headers: {
+        Authorization: token
+      }
+    });
+
     res.json(response.data);
   } catch (error) {
     res.status(error.response?.status || 500).json({ error: error.message });
   }
 });
 
-router.get('/scoresByUser/:userId', async (req, res) => {
+
+router.get('/scoresByUser/:userId',authenticateJWT, [
+  check('userId').isLength({ min: 3 }).trim().escape(),
+],async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
-      const userId = req.params.userId;
-      const response = await axios.get(`${gameServiceUrl}/scoresByUser/${userId}`);
+      const { userId } = req.params;
+      const token = req.header('Authorization');
+
+    if (!token) {
+      return res.status(401).json({ error: 'Authorization token is required' });
+    }
+
+
+    const urlString = `${gameServiceUrl}/scoresByUser/${encodeURIComponent(userId)}`;
+
+    let url;
+    try {
+      url = new URL(urlString);
+    } catch (err) {
+      return res.status(400).json({ error: 'Invalid URL format' });
+    }
+
+    // Check if the URL's scheme and domain are trusted
+    if (!trustedSchemes.includes(url.protocol) || !trustedDomains.includes(url.hostname)) {
+      return res.status(403).json({ error: 'Forbidden: Untrusted URL' });
+    }
+
+
+    const response = await axios.get(url.toString(), {
+        headers: {
+          Authorization: token
+        }
+      });
 
       if (!response.data) {
           return res.status(404).json({ error: 'No scores found for this user' });
       }
-
       res.json(response.data);
   } catch (error) {
       res.status(500).json({ error: 'Error retrieving scores' });
   }
 });
+
 router.get('/leaderboard/:gameMode?', async (req, res) => {
   try {
     const { gameMode } = req.params;

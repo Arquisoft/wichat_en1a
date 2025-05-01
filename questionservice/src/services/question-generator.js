@@ -11,7 +11,8 @@ const questionConfigs = {
             '            FILTER(LANG(?entityLabel) = "es").', // Flag image
         questionTemplate: '¿De qué país es esta bandera?',
         correctAnswerField: 'entityLabel',
-        imageField: 'image'
+        imageField: 'image',
+        orderBy: ''
     },
 
     city: {
@@ -24,14 +25,54 @@ const questionConfigs = {
     `,
         questionTemplate: '¿Qué ciudad es esta?',
         correctAnswerField: 'entityLabel',
-        imageField: 'image'
+        imageField: 'image',
+        orderBy: ''
+    },
+    celebrity: {
+        entity: '?entity wdt:P106 wd:Q33999',
+        fields: '?entity ?entityLabel ?image',
+        conditions: '?entity rdfs:label ?entityLabel.\n' +
+            '?entity wdt:P18 ?image.\n' +
+            'FILTER(LANG(?entityLabel) = "es").',
+        questionTemplate: '¿Quién es esta celebridad?',
+        correctAnswerField: 'entityLabel',
+        imageField: 'image',
+        orderBy: ''
+    },
+
+    science: {
+        entity: '?entity wdt:P106 wd:Q901',
+        fields: '?entity ?entityLabel ?image',
+        conditions: '?entity rdfs:label ?entityLabel.\n' +
+            '?entity wdt:P18 ?image.\n' +
+            'FILTER(LANG(?entityLabel) = "es").',
+        questionTemplate: '¿Qué científico/a es este/a?',
+        correctAnswerField: 'entityLabel',
+        imageField: 'image',
+        orderBy: ''
+    },
+
+    sport: {
+        entity: '?entity wdt:P31 wd:Q31629',
+        fields: '?entity ?entityLabel ?image',
+        conditions: `
+        ?entity wikibase:sitelinks ?sitelinks;
+               wdt:P18 ?image.
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+    `,
+        questionTemplate: 'What sport is shown in the image?',
+        correctAnswerField: 'entityLabel',
+        imageField: 'image',
+        orderBy: 'ORDER BY DESC(?sitelinks)'
     }
+
+
 
 
 };
 
 
-const generateSparqlQuery = (type, limit) => {
+const generateSparqlQuery = (type, limit, offset = 0) => {
     const config = questionConfigs[type];
     if (!config) throw new Error(`Unsupported question type: ${type}`);
 
@@ -40,7 +81,9 @@ const generateSparqlQuery = (type, limit) => {
             ${config.entity}.
             ${config.conditions}
         }
+        ${config.orderBy}
         LIMIT ${limit}
+        OFFSET ${offset}
     `;
 };
 
@@ -103,9 +146,9 @@ const generateIncorrectOptions = (correctAnswer, data, numOptions) => {
 };
 
 
-const generateQuestions = async (type = 'city', numQuestions = 10) => {
+const generateQuestions = async (type = 'city', numQuestions = 10, offset = 0) => {
     try {
-        const query = generateSparqlQuery(type, numQuestions);
+        const query = generateSparqlQuery(type, numQuestions, offset);
         const data = await fetchWikidata(query);
 
         if (data.length === 0) {

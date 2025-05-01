@@ -11,6 +11,10 @@ Welcome to WiChat!
 This is a web service where you log in and can play several trivial-style games, and your score is saved, like a social network of sorts.
 The application is expected to feature four different game modes, a custom one, an ai chat in all of them and many more exciting features!
 
+Furthermore, upon playing, you will encounter your very own Ai Buddy!
+
+He's here to help, but remeber that as every friend, he may be wrong, so take his comments with a grain of salt!
+
 ## Information about the project
 This project comes from a template to ease our development as we had never used any of these technologies, except the javascript languaje itself.
 - For any documentation regarding our workflow or how to deploy this application for yourself, refer to our [wiki](https://github.com/Arquisoft/wichat_en1a/wiki).
