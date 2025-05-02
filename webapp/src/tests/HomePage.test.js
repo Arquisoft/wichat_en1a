@@ -58,53 +58,64 @@ describe('HomePage Component', () => {
       'gameModes.basicQuiz.name',
       'gameModes.expertDomain.name',
       'gameModes.timeAttack.name',
-      'gameModes.endlessMarathon.name'
+      'gameModes.endlessMarathon.name',
+      'gameModes.custom.name'
     ];
     gameModes.forEach(mode => {
       expect(screen.getByText(i18n.t(mode))).toBeInTheDocument();
     });
   });
 
-  test('Toggles the switch for Expert Domain mode and updates UI', () => {
+  test("Toggles the switches for Expert's Domain mode and Custom game mode and updates UI", () => {
     renderHome();    
-    const toggle = screen.getByRole('checkbox');
-    expect(toggle).toBeInTheDocument();
-    expect(toggle).not.toBeChecked();
-    
-    // Click to turn on randomization (roulette must be shown and selector must be hidden)
-    fireEvent.click(toggle);
-    expect(toggle).toBeChecked();
-    expect(screen.getByTestId('roulette')).toBeInTheDocument();
+    const toggles = screen.getAllByRole('checkbox');
+    for (let i = 0; i < toggles.length; i++) {
+      expect(toggles[i]).toBeInTheDocument();
+      expect(toggles[i]).not.toBeChecked();
 
-    // Click to turn off randomization (roulette must be hidden and selector must be shown)
-    fireEvent.click(toggle);
-    expect(toggle).not.toBeChecked();
-    expect(screen.queryByTestId('roulette')).not.toBeInTheDocument();
+      // Click to turn on randomization (roulette must be shown and selector must be hidden)
+      fireEvent.click(toggles[i]);
+      expect(toggles[i]).toBeChecked();
+      const roulettes = screen.getAllByTestId('roulette');
+      
+      for (let j = 0; j < roulettes.length; j++) {
+        expect(roulettes[j]).toBeInTheDocument();
+      }
+      
+      // Click to turn off randomization (roulette must be hidden and selector must be shown)
+      fireEvent.click(toggles[i]);
+      expect(toggles[i]).not.toBeChecked();
+
+      for (let j = 0; j < roulettes.length; j++) {
+        expect(roulettes[j]).not.toBeInTheDocument();
+      }
+    }
   });
 
-  test('Shows the topic dropdown when Expert Domain is not randomized', () => {
+  test("Shows the topic dropdown when Expert's Domain is not randomized", () => {
     renderHome();
-    const topicDropdown = screen.getByLabelText('Topic');
-    expect(topicDropdown).toBeInTheDocument();
-    
-    fireEvent.mouseDown(topicDropdown);
-    const listbox = screen.getByRole('listbox');
-    expect(listbox).toBeInTheDocument();
-    
-    fireEvent.click(screen.getByText(i18n.t('roulette.topics.science')));
-    expect(topicDropdown).toHaveTextContent(i18n.t('roulette.topics.science'));
+    const topicDropdowns = screen.getAllByLabelText('Topic');
+    for (let i = 0; i < topicDropdowns.length; i++) {
+      expect(topicDropdowns[i]).toBeInTheDocument();
+        
+      fireEvent.mouseDown(topicDropdowns[i]);
+      const listbox = screen.getByRole('listbox');
+      expect(listbox).toBeInTheDocument();
+      
+      const topicTexts = screen.getAllByText(i18n.t('roulette.topics.science'))
+      fireEvent.click(topicTexts[i]);
+      expect(topicDropdowns[i]).toHaveTextContent(i18n.t('roulette.topics.science'));
+    }
   });
 
   test('Disables switch after clicking roulette spin button', async () => {
     renderHome();
-    const toggle = screen.getByRole('checkbox');
-    fireEvent.click(toggle);
-  
-    const spinButton = screen.getByTestId('roulette');
-    expect(spinButton).toBeInTheDocument();
-  
-    fireEvent.click(spinButton);
-    expect(toggle).toBeDisabled();
+    const toggles = screen.getAllByRole('checkbox');
+    fireEvent.click(toggles[0]);
+    const spinButtons = screen.getAllByTestId('roulette');
+    expect(spinButtons[0]).toBeInTheDocument();
+    fireEvent.click(spinButtons[0]);
+    expect(toggles[0]).toBeDisabled();
   });
 
   test('Play button links to the correct game URL', () => {
