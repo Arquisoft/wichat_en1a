@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import NavBar from '../components/NavBarSignedIn';
@@ -15,7 +15,6 @@ const Leaderboard = () => {
   const gatewayUrl = process.env.REACT_APP_API_ENDPOINT || 'http://localhost:8000';
 
   const theme = useTheme();
-  const scrollRef = useRef();
   const { t } = useTranslation();
   
   const getLoggedInUserId = () => {
