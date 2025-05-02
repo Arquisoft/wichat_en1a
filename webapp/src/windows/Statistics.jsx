@@ -292,7 +292,9 @@ const Statistics = () => {
                       {t("statistics.answerDistribution")}
                     </Typography>
                     <ResponsiveContainer width="100%" height={300}>
-                      <PieChart>
+                      <PieChart
+                        padding={5}
+                      >
                         <Pie
                           data={pieChartData}
                           cx="50%"

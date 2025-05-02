@@ -11,7 +11,7 @@ const scoreSchema = new mongoose.Schema({
     },
     gameMode: {
         type: String,
-        enum: ['basicQuiz','expertDomain','timeAttack','endlessMarathon'], 
+        enum: ['basicQuiz','expertDomain','timeAttack','endlessMarathon','custom'], 
         required: true,
     },
     questionsPassed: {

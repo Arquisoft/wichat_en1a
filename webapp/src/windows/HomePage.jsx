@@ -70,6 +70,7 @@ const HomePage = () => {
       <div className="menu-container">
         <h1 className="menu-title" id="home-title">{t('homePage.welcome')}</h1>
         <Swiper
+          allowTouchMove={false}
           modules={[Navigation]}
           navigation
           spaceBetween={100}

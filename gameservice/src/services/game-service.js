@@ -28,7 +28,7 @@ const saveScore = async (userId, score, gameMode, questionsPassed,questionsFaile
 
 
 const updateScore = async (userId, score, gameMode, questionsPassed, questionsFailed, accuracy) => {
-    const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
+    const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon', 'custom'];
 
     if (
         !userId ||
@@ -90,7 +90,7 @@ const getScoresByUser = async (userId, gameMode) => {
     try {
         const escapedUserId = validator.escape(userId.toString());
 
-        const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon','custom'];
+        const allowedGameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon', 'custom'];
         const escapedGameMode = gameMode ? validator.escape(gameMode.toString()) : null;
 
         const isValidGameMode = escapedGameMode && allowedGameModes.includes(escapedGameMode);
