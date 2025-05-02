@@ -6,10 +6,10 @@ info:
 servers:
   - url: http://localhost:8000
     description: Development server
-  - url: http://SOMEIP:8000
+  - url: https://wichat-en1a.duckdns.org/
     description: Production server
 paths:
-  /adduser:
+  /api/user/signup:
     post:
       summary: Add a new user to the database.
       operationId: addUser
@@ -69,7 +69,7 @@ paths:
                     type: string
                     description: Error information.
                     example: getaddrinfo EAI_AGAIN mongodb
-  /health:
+  /api/health:
     get:
       summary: Check the health status of the service.
       operationId: checkHealth
@@ -85,7 +85,7 @@ paths:
                     type: string
                     description: Health status.
                     example: OK
-  /login:
+  /api/user/login:
     post:
       summary: Log in to the system.
       operationId: loginUser
@@ -146,7 +146,7 @@ paths:
                     type: string
                     description: Error information.
                     example: Internal Server Error
-  /askllm:
+  /api/askllm:
     post:
       summary: Ask a question to the LLM service.
       operationId: askLLM
@@ -210,7 +210,7 @@ paths:
                     example: Failed to process request to LLM Service
 
 
-  /generate-questions:
+  /api/generate-questions:
     get:
       summary: Generate questions based on type and number.
       operationId: generateQuestions
@@ -345,7 +345,7 @@ paths:
                     description: Error information.
                     example: Internal Server Error
 
-  /questions/{type}/{limit}:
+  /api/questions/{type}/{limit}:
     get:
       summary: Obtain questions by type and limit.
       operationId: getQuestionsByTypeAndLimit
@@ -402,6 +402,10 @@ paths:
                           type: string
                           description: Image URL.
                           example: http://example.com/image.png
+                        createdAt:
+                          type: string
+                          description: Creation date.
+                          example: '2025-04-03T09:15:15.279Z'
                 example:
                   - _id: "67e41a6d752e3f6ba5f9f6c0"
                     question: ¿Qué ciudad es esta?
@@ -481,7 +485,7 @@ paths:
                     example: Internal Server Error
 
 
-  /question:
+  /api/question:
     get:
       summary: Obtain a random question.
       operationId: getRandomQuestion
@@ -518,6 +522,10 @@ paths:
                     type: string
                     description: Image URL.
                     example: http://example.com/image.png
+                  createdAt:
+                    type: string
+                    description: Creation date.
+                    example: '2025-04-03T09:15:15.279Z'
         '404':
           description: No question found.
           content:
@@ -541,7 +549,7 @@ paths:
                     description: Error information.
                     example: Internal Server Error
 
-  /saveScore:
+  /api/saveScore:
     post:
       summary: Save a user's score.
       operationId: saveScore
@@ -645,7 +653,7 @@ paths:
                     description: Error information.
                     example: Internal Server Error
 
-  /scoresByUser/{userId}:
+  /api/scoresByUser/{userId}:
     get:
       summary: Get scores by user ID.
       operationId: getScoresByUser
@@ -656,7 +664,7 @@ paths:
           schema:
             type: string
           description: User ID.
-          example: dsfsdf
+          example: Miguel
       responses:
         '200':
           description: Scores retrieved successfully.
@@ -731,7 +739,7 @@ paths:
                     description: Error information.
                     example: Error retrieving scores
 
-  /leaderboard/{gameMode}:
+  /api/leaderboard/{gameMode}:
     get:
       summary: Get leaderboard by game mode.
       operationId: getLeaderboard
@@ -801,3 +809,57 @@ paths:
                     type: string
                     description: Error information.
                     example: Error retrieving leaderboard
+
+  /aiBuddy:
+    post:
+      summary: Interact with AI Buddy.
+      operationId: aiBuddy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answerCommented:
+                  type: string
+                  description: Answer that the aiBuddy believes is correct.
+                  example: París
+                model:
+                  type: string
+                  description: Model to use for the AI Buddy service.
+                  example: empathy
+      responses:
+        '200':
+          description: AI Buddy interaction successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: Response from AI Buddy.
+                    example: " I believe Paris is the capital of France. It's where I've always imagined myself sipping coffee in a charming café, just like in a romantic movie!"
+        '400':
+          description: Missing required fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: "Missing required fields: answerCommented"
+        '500':
+          description: Failed to process request to AI Buddy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error information.
+                    example: Failed to process request to AI Buddy

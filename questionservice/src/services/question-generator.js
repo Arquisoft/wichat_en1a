@@ -8,8 +8,8 @@ const questionConfigs = {
         fields: '?entity ?entityLabel ?image',
         conditions: '?entity rdfs:label ?entityLabel.\n' +
             '            ?entity wdt:P18 ?image.\n' +
-            '            FILTER(LANG(?entityLabel) = "es").', // Flag image
-        questionTemplate: '¿De qué país es esta bandera?',
+            '            FILTER(LANG(?entityLabel) = "en").', // Flag image
+        questionTemplate: 'What country\'s flag is this?',
         correctAnswerField: 'entityLabel',
         imageField: 'image',
         orderBy: ''
@@ -21,9 +21,9 @@ const questionConfigs = {
         conditions: `
         ?entity rdfs:label ?entityLabel.
         ?entity wdt:P18 ?image.  
-        FILTER(LANG(?entityLabel) = "es").
+        FILTER(LANG(?entityLabel) = "en").
     `,
-        questionTemplate: '¿Qué ciudad es esta?',
+        questionTemplate: 'What city is this?',
         correctAnswerField: 'entityLabel',
         imageField: 'image',
         orderBy: ''
@@ -33,8 +33,8 @@ const questionConfigs = {
         fields: '?entity ?entityLabel ?image',
         conditions: '?entity rdfs:label ?entityLabel.\n' +
             '?entity wdt:P18 ?image.\n' +
-            'FILTER(LANG(?entityLabel) = "es").',
-        questionTemplate: '¿Quién es esta celebridad?',
+            'FILTER(LANG(?entityLabel) = "en").',
+        questionTemplate: 'Who is this celebrity?',
         correctAnswerField: 'entityLabel',
         imageField: 'image',
         orderBy: ''
@@ -45,8 +45,8 @@ const questionConfigs = {
         fields: '?entity ?entityLabel ?image',
         conditions: '?entity rdfs:label ?entityLabel.\n' +
             '?entity wdt:P18 ?image.\n' +
-            'FILTER(LANG(?entityLabel) = "es").',
-        questionTemplate: '¿Qué científico/a es este/a?',
+            'FILTER(LANG(?entityLabel) = "en").',
+        questionTemplate: 'What scientist is this?',
         correctAnswerField: 'entityLabel',
         imageField: 'image',
         orderBy: ''
