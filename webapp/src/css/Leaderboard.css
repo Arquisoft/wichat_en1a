@@ -22,7 +22,7 @@
     width: 80%;
     max-height: 44rem;      /* 4 rem per list item (10 items max.) + 4rem (margins and dividers) */
     height: auto;
-    overflow-y: auto;
+    text-overflow: ellipsis;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s, box-shadow 0.2s;
 }
