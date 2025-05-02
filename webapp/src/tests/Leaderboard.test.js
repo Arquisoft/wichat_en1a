@@ -16,15 +16,9 @@ const sessionStorageMock = (() => {
   let store = {};
   return {
     getItem: jest.fn((key) => store[key] || null),
-    setItem: jest.fn((key, value) => {
-      store[key] = value;
-    }),
-    clear: jest.fn(() => {
-      store = {};
-    }),
-    removeItem: jest.fn((key) => {
-      delete store[key];
-    }),
+    setItem: jest.fn((key, value) => { store[key] = value; }),
+    clear: jest.fn(() => { store = {}; }),
+    removeItem: jest.fn((key) => { delete store[key]; }),
   };
 })();
 
@@ -82,12 +76,13 @@ describe('Leaderboard Component', () => {
     jwtDecode.mockReturnValue({ userId: 'user1' });
 
     // Prepare dummy responses for each game mode
-    const gameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'];
+    const gameModes = ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon', 'custom'];
     const gameTitles = [
         i18n.t('gameModes.basicQuiz.name'),
         i18n.t('gameModes.expertDomain.name'),
         i18n.t('gameModes.timeAttack.name'),
-        i18n.t('gameModes.endlessMarathon.name')
+        i18n.t('gameModes.endlessMarathon.name'),
+        i18n.t('gameModes.custom.name')
     ];
     
     const responses = gameModes.map(mode => ({
@@ -112,7 +107,7 @@ describe('Leaderboard Component', () => {
       </ThemeProvider>
     );
 
-    // Wait for the leaderboard sections to be rendered
+    // Wait for the leaderboard sections to be rendered (only basicQuiz should be visible at first)
     await waitFor(() => {
       gameTitles.forEach((mode) => {
         expect(screen.getByText(mode)).toBeInTheDocument();

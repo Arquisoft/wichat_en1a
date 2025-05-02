@@ -5,6 +5,10 @@ import NavBar from '../components/NavBarSignedIn';
 import { jwtDecode } from 'jwt-decode';
 import { useTranslation } from 'react-i18next';
 import '../css/Leaderboard.css';
+// Swiper imports
+import { Navigation } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css/bundle';
 
 const Leaderboard = () => {
 
@@ -29,7 +33,7 @@ const Leaderboard = () => {
   const loggedInPlayerId = getLoggedInUserId();
   const [leaderboardData, setLeaderboardData] = useState(null);
   const [error, setError] = useState(null);
-  const gameModes = useMemo(()=>['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon'],[]);
+  const gameModes = useMemo(()=>['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon', 'custom'],[]);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -66,39 +70,41 @@ const Leaderboard = () => {
   const renderLeaderboardSection = (modeKey, modeDisplayName) => {
     const results = leaderboardData[modeKey] || [];
     return (
-      <div 
-        key={modeKey} 
-        className="leaderboard-section"
-      >
-        <Typography variant="h5" className="section-title">
-          {modeDisplayName}
-        </Typography>
-        <Card 
-          variant="outlined" 
-          className="leaderboard-card"
-          style={{
-            background: `${theme.palette.secondary.light}`
-          }}
+      <SwiperSlide>
+        <div 
+          key={modeKey} 
+          className="leaderboard-section"
         >
-          <CardContent>
-            <List>
-              {results.slice(0, 10).map((result, index) => (
-                <React.Fragment key={result.id}>
-                  <ListItem
-                    className={result.userId?.toString() === loggedInPlayerId?.toString() ? 'list-item highlighted' : 'list-item'}
-                  >
-                    <ListItemText 
-                      primary={`${index + 1}. ${result.userId} ${result.userId?.toString() === loggedInPlayerId?.toString() ? '(You)' : ''}`}
-                      secondary={`${t('score')}: ${result.score}`} 
-                    />
-                  </ListItem>
-                  {index < results.length - 1 && <Divider />}
-                </React.Fragment>
-              ))}
-            </List>
-          </CardContent>
-        </Card>
-      </div>
+          <Typography variant="h5" className="section-title">
+            {modeDisplayName}
+          </Typography>
+          <Card 
+            variant="outlined" 
+            className="leaderboard-card"
+            style={{
+              background: `${theme.palette.secondary.light}`
+            }}
+          >
+            <CardContent>
+              <List>
+                {results.slice(0, 10).map((result, index) => (
+                  <React.Fragment key={result.id}>
+                    <ListItem
+                      className={result.userId?.toString() === loggedInPlayerId?.toString() ? 'list-item highlighted' : 'list-item'}
+                    >
+                      <ListItemText 
+                        primary={`${index + 1}. ${result.userId} ${result.userId?.toString() === loggedInPlayerId?.toString() ? '(You)' : ''}`}
+                        secondary={`${t('score')}: ${result.score}`} 
+                      />
+                    </ListItem>
+                    {index < results.length - 1 && <Divider />}
+                  </React.Fragment>
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        </div>
+      </SwiperSlide>
     );
   };
 
@@ -115,9 +121,14 @@ const Leaderboard = () => {
           </Typography>
         )}
         {leaderboardData ? (
-          <div className="leaderboard-grid">
+          <Swiper
+            modules={[Navigation]}
+            navigation
+            spaceBetween={500}
+            slidesPerView={1}
+          >
             {gameModes.map(mode => renderLeaderboardSection(mode, t(`gameModes.${mode}.name`)))}
-          </div>
+          </Swiper>
         ) : (
           !error && <Typography>{t('loading')}</Typography>
         )}

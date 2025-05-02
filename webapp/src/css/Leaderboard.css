@@ -5,31 +5,23 @@
     padding: 4rem;
 }
   
-.leaderboard-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 5rem;
-}
-  
-@media (min-width: 1440px) {
-    .leaderboard-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-}
-  
 .leaderboard-section {
-    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: start;
+    align-items: center;
+    width: 100%;
 }
-  
+
 .section-title {
     margin: 1rem 0;
 }
   
 .leaderboard-card {
     margin-bottom: 1rem;
-    width: 100%;
+    width: 80%;
     max-height: 44rem;      /* 4 rem per list item (10 items max.) + 4rem (margins and dividers) */
-    height: auto;           /* Shrink to match fewer than 10 */
+    height: auto;
     overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s, box-shadow 0.2s;

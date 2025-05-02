@@ -21,6 +21,7 @@
     "react-scripts": "^5.0.1",
     "react-simple-typewriter": "^5.0.1",
     "recharts": "^2.15.2",
+    "swiper": "^11.2.6",
     "web-vitals": "^3.5.1"
   },
   "scripts": {
