@@ -80,11 +80,15 @@ Mapping of Building Blocks to Infrastructure::
 |===
 | Building Block | Infrastructure Component
 | **Client / Frontend** | Contained in the `webapp` subfolder. Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.
-| **APIs / Backend** | Docker container hosted on Azure. Handles game logic, user management and question generation. Communicates with the MongoDB database.
 | **Gateway Service** | Contained in the `gatewayservice` subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.
-| **LLM Service** | Contained in the `llmservice` subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed via HTTPS from the backend to generate conversational hints.
+| **LLM Service** | Contained in the `llmservice` subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed from the backend to generate conversational hints.
+| **Game Service** | Contained in the `gameservice` subfolder. Accessed from the backend to store all the relevant information after a game is finished.
 | **Question Generator** | A separate component that runs during all the life application. Queries Wikidata using MQL to generate questions and answers, which are then stored in the MongoDB database.
+| **Authentication Service** | Contained in the `authservice` subfolder. Accessed from the backend to store the user information.
+| **User Service** | Contained in the `userservice` subfolder. Accessed from the backend to store the user information into the database.
 | **MongoDB Database** | Containerized instance.
+| **Grafana** | Containerized monitoring dashboard hosted alongside backend services.
+| **Prometheus** | Containerized metrics collection and alerting tool.
 |===
 
 === Infrastructure Level 2
@@ -103,6 +107,9 @@ The **frontend** is a single-page application (SPA) that runs in the user's web 
 
 ==== APIs / Backend
 The **backend** is a set of RESTful APIs that provide game logic, user management, and question generation services. It is built using Node.js and Express, and communicates with the MongoDB database. The backend is containerized using Docker and deployed on a cloud platform. The backend is stateless and horizontally scalable, allowing it to handle increased traffic by spinning up additional instances.
+
+==== Proxy (NGINX)
+NGINX acts as a reverse proxy and is used primarily to enable HTTPS by handling SSL/TLS termination. It is deployed as a Docker container alongside other services within the infrastructure.
 
 === Conclusion
 
