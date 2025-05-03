@@ -1,102 +1,39 @@
 @startuml Domain_Model
 
-' Define entities (classes)
-class User {
-    -String userId
-    +String username
-    +String password
-    
-    +void register()
-    +void login()
-    +void play()
-    +void viewStats()
-    +void viewLeaderboard()
-    +void logout()
+entity "User" {
+  * username: String
+    - required, unique, regex: /^[a-zA-Z0-9_]+$/, 3–30 chars
+  * password: String
+    - required
+  * createdAt: Date = now
 }
 
-class UserStats {
-    +int totalGamesPlayed
-    +int totalQuestionsAnswered
-    +int totalCorrectAnswers
-    +int totalIncorrectAnswers
-    +int totalHintsUsed
-    +double averageTimePerQuestion
-
-    +void updateStats()
+entity "Score" {
+  * userId: String
+    - references User._id
+  * score: Number = 0
+  * gameMode: String ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon', 'custom']
+    - required
+  * questionsPassed: Number = 0
+  * questionsFailed: Number = 0
+  * accuracy: Number = 0
+  * meanTimeToAnswer: Number = 0
+  * createdAt: Date = now
 }
 
-class Game {
-    +String gameId
-    +User player
-    +GameMode gameMode
-    +GameConfiguration gameConfig
-    +List<Question> questions
-
-    +void startGame()
-    +void endGame()
-    +void obtainQuestions()
-    +void answerQuestion()
-    +void askForHint()
+entity "Question" {
+  * question: String
+    - required
+  * answers: [Object]
+    - required
+  * correctAnswerId: Number
+    - required
+  * type: String
+    - required
+  * image: String
+    - optional
+  * createdAt: Date = now (expires in 30 min)
 }
-
-enum GameMode {
-    "Basic Quiz"
-    "Expert's Domain"
-    "Time attack"
-    "Endless Marathon"
-    etc.
-}
-
-class GameConfiguration {
-    +int numberOfQuestions
-    +int timeLimit
-    +int questionsCategory
-
-    +void configureGame()
-}
-
-class Question {
-    +String questionId
-    +String imageUrl
-    +String questionText
-    +String wikiDataReference
-    +QuestionCategory category
-    +List<AnswerOption> answerOptions
-
-    +void validateAnswer()
-    +void provideHint()
-}
-
-enum QuestionCategory {
-    "Flags"
-    "Science"
-    "Sports"
-    "Cities"
-    "Celebrities"
-    etc.
-}
-
-class AnswerOption {
-    +String optionId
-    +String optionText
-    +bool isCorrect
-}
-
-class AIChat {
-    +String sessionId
-    +String chatHistory
-    +String wikiDataReference
-}
-
-
-' Define relationships
-User "1" --> "0..*" Game : plays
-User "1" --> UserStats : has
-Game "1" --> "1..*" Question : contains
-Game "1" --> GameConfiguration : has
-Game "1" --> GameMode : has
-Game "1" --> AIChat : includes
-Question "1" --> "1..*" AnswerOption : has
-Question "1" --> QuestionCategory : belongs to
 
 @enduml
+
