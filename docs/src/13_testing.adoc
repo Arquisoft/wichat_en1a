@@ -1,0 +1,44 @@
+[[section-testing]]
+== Testing Strategy and results
+
+ifdef::arc42help[]
+[role="arc42help"]
+****
+.Contents  
+This section describes the project's testing approach and results, and how quality requirements are verified through testing.
+
+.Motivation  
+Testing ensures the system meets its functional and non-functional (quality) requirements, increases maintainability, and reduces risks.
+
+.Form  
+Describe test strategies for different levels (unit, integration, E2E, etc.), tools used, and how testing supports quality attributes like performance, robustness, and usability.
+
+****
+endif::arc42help[]
+
+[cols="1,3"]
+|===
+|Type of Test | Description
+
+|Unit Testing
+|Each module (mainly utility and core logic functions) is covered by unit tests using *Jest*. Unit tests ensure that individual components behave as expected in isolation. Code coverage is enforced via sonarQube to remain above *80%*, and code duplication below *3%*. Mocking is used for external dependencies.
+
+|End-to-End Testing
+|E2E tests are implemented using a BDD approach with *.feature* files and step definitions (*.steps.js*), following the Gherkin syntax. This allows tests to be written in a human-readable form closely aligned with user stories and acceptance criteria.
+
+Tests are executed using *Jest* as the runner, configured via `jest_config.js`. The `test_environment_setup` script ensures that all required services (e.g., gatewayservice, gameservice, questionservice...) are initialized and cleaned before and after test runs.
+
+Our E2E workflows include:
+* Sign up and Log in correctly
+* Starting a game and completing a full session
+* Interacting with leaderboards and user statistics
+
+Tests are automatically run in every new release via a github action, and are kept up to date with each feature release to ensure no regressions. Browser-level interactions are simulated through a headless environment or Puppeteer/Playwright depending on the test scenario.
+
+|Load Testing
+|As described in the load testing results section, at section 10 quality requirements (as they direcly prove or disprove our quality requirements, that is the best location for them following official arc42 documentation), load testing is conducted using *Gatling* and focused on critical endpoints: login, game creation, game results saving, and user statistics. Results confirm that the application supports *up to 485 concurrent users* with only minor latency. Load test scripts and results are stored in `docs/loadtesting`.
+
+|Real User Testing
+|Real user feedback was encouraged and requested at some points, recruiting a set of testers with different degrees of software engineering knowledge. All of them were asked to submit their findings, data that was collected and summarized link:https://github.com/Arquisoft/wichat_en1a/wiki/feedback-for-v1.0.9[here]. Almost all of the submissions by the users were solved upon the new release of v2.0.0.
+
+|===
