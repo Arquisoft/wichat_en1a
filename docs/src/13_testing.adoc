@@ -29,9 +29,12 @@ endif::arc42help[]
 Tests are executed using *Jest* as the runner, configured via `jest_config.js`. The `test_environment_setup` script ensures that all required services (e.g., gatewayservice, gameservice, questionservice...) are initialized and cleaned before and after test runs.
 
 Our E2E workflows include:
-* Sign up and Log in correctly
-* Starting a game and completing a full session
-* Interacting with leaderboards and user statistics
+
+- Signing up and logging in correctly
+
+- Starting a game and completing a full session
+
+- Interacting with leaderboards and user statistics
 
 Tests are automatically run in every new release via a github action, and are kept up to date with each feature release to ensure no regressions. Browser-level interactions are simulated through a headless environment or Puppeteer/Playwright depending on the test scenario.
 
