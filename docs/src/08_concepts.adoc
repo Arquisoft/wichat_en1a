@@ -87,7 +87,9 @@ The application will be developed following a microservices Architecture. It wil
 
 === Persistence Layer
 
-The application will rely its data persistence dependencies presumably on a MongoDB database that will manage the data of the application related to the game sessions (questions, answers, game configurations) or related to the user (user session, user statistics...).
+The application will rely its data persistence dependencies on a MongoDB database that will manage the data of the application related to the game sessions (questions, answers, game configurations) or related to the user (user session, user statistics...).
+
+In the future we will change the MongoDB that stores the users to a sqlite database, because with a relational database the user scheme will be more well defined.
 
 MongoDB is a NoSQL database that stores data in flexible, JSON-like documents, meaning fields can vary from document to document and data structure can be changed over time. This flexibility will help to manage the data of the application, as the structure of the data may change over time as the application evolves. It is not a definite decission, but it is a good starting point to consider.
 
@@ -96,15 +98,15 @@ MongoDB is a NoSQL database that stores data in flexible, JSON-like documents, m
 
 ==== User Interface
 
-The idea of the development team regarding the final application is to make it specially atractive to the final user, with a clean and intuitive design that will make the user experience as pleasant as possible. The application will be developed using a responsive design, so it can be used in different devices, like smartphones, tablets, or desktop computers, enhancing usability, accesibility and adaptability at the maximum possible level. For this reason, the internazionalization of the application will be a key point to consider, as the application is intended to be used by any kind of users of a wide variety of ages and genders and from different countries and cultures.
+The development team regarding the final application has make it specially atractive to the final user, with a clean and intuitive design that will make the user experience as pleasant as possible. They have developed the application using a responsive design, so it can be used in different devices, like smartphones, tablets, or desktop computers, enhancing usability, accesibility and adaptability at the maximum possible level. For this reason, the internazionalization of the application was a key point to consider, as the application is intended to be used by any kind of users of a wide variety of ages and genders and from different countries and cultures. Right now the application is available in English and Spanish.
 
 ==== Session handling and Security
 
-The application will incorporate a basic session handling mechanism to manage the user sessions and to provide a secure environment for the users. The session handling mechanism will be based on the use of JSON Web Tokens (JWT) to authenticate the users and to manage the user sessions.
+The application has incorporate a basic session handling mechanism to manage the user sessions and to provide a secure environment for the users. The session handling mechanism is be based on the use of JSON Web Tokens (JWT) to authenticate the users and to manage the user sessions.
 
 ==== Error handling
 
-The application will include a robust error handling mechanism to manage the errors that may occur during the execution of the application. The error handling mechanism will be based on the use of custom error messages and error codes to provide meaningful information to the users and to help the developers to identify and fix the errors. Error messages will be logged to help the developers to identify and fix the errors. It will be important to have a clear and consistent error handling mechanism to ensure that the application is reliable and user-friendly, and that the user does receive only the feedback that is expected to receive (no technical message should be displayed to the final user).
+The application includes a robust error handling mechanism to manage the errors that may occur during the execution of the application. The error handling mechanism is be based on the use of custom error messages and error codes to provide meaningful information to the users and to help the developers to identify and fix the errors. Error messages are be logged to help the developers to identify and fix the errors. It is important to have a clear and consistent error handling mechanism to ensure that the application is reliable and user-friendly, and that the user does receive only the feedback that is expected to receive (no technical message is displayed to the final user).
 
 ==== Logging
 
@@ -112,14 +114,20 @@ The application will have a logging system to monitor the activity of the applic
 
 ==== Testing
 
-The application is expected to be tested using a combination of unit tests, integration tests, and end-to-end tests. 
+The application is  tested using a combination of unit tests, end-to-end tests, load test and usability tests. 
 
-- **Unit tests** will be used to test individual components of the application, mainly based on testing backend functionality to ensure that the internal part of the applications works as expected. Since the application will be Dockerized in containers, unit tests can be executed within a container or in a separate testing container that has access to the application's code and dependencies, ensuring that the tests run in an environment identical to production.
+- **Unit tests** are used to test individual components of the application, mainly based on testing backend functionality to ensure that the internal part of the applications works as expected. Since the application is Dockerized in containers, unit tests can be executed within a container or in a separate testing container that has access to the application's code and dependencies, ensuring that the tests run in an environment identical to production.
 
-- **Integration tests** will be used to test the interaction between different components of the application. They can be executed by running multiple service containers in a Docker setup, allowing the test environment to closely mimic the production deployment.
+- **End-to-end tests** are used to test the application as a whole, simulating the user interaction with the application. They are be performed using containers running the full application stack. This helps to ensure that the application works as expected from the user's perspective.
 
-- **End-to-end tests** will be used to test the application as a whole, simulating the user interaction with the application. They can be performed using containers running the full application stack. This will help to ensure that the application works as expected from the user's perspective.
+- **Load tests** are used to test the performance of the application using Gattling.
+
+- **Usability tests** are used to test with real users that the application works as expected. 
 
 === Deployment
 
-The application will be deployed using Docker containers. Docker is a platform that allows developers to develop, ship, and run applications in containers. Containers are lightweight, standalone, and executable packages of software that include everything needed to run an application: code, runtime, system tools, system libraries, and settings. This will help to ensure that the application runs consistently in different environments, and that the deployment process is as smooth as possible.
+The application is deployed using Docker containers. Docker is a platform that allows developers to develop, ship, and run applications in containers. Containers are lightweight, standalone, and executable packages of software that include everything needed to run an application: code, runtime, system tools, system libraries, and settings. This ensures that the application runs consistently across different environments and that the deployment process remains smooth.
+
+To enable secure HTTPS connections, a reverse proxy such as Nginx is used. Nginx handles SSL termination and routes incoming HTTPS traffic to the appropriate Docker containers. This setup ensures secure communication between clients and the application and simplifies the management of certificates and routing.
+
+
