@@ -54,7 +54,7 @@ async function seeGameStats(page) {
 
 async function openLeaderboard(page) {
     await expect(page).toClick('a[href="/leaderboard"]');
-    await page.waitForSelector('div.leaderboard-grid', {
+    await page.waitForSelector('div.leaderboard-section', {
         visible: true,
         timeout: 5000
     });
