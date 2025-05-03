@@ -2,15 +2,15 @@
 
 ' Define entities (classes)
 class User {
-    +String userId
+    -String userId
     +String username
-    +String email
     +String password
     
     +void register()
     +void login()
     +void play()
     +void viewStats()
+    +void viewLeaderboard()
     +void logout()
 }
 
@@ -40,17 +40,17 @@ class Game {
 }
 
 enum GameMode {
-    "Each wise man with his subject"
-    "Travel with us"
-    "The hot question"
-    "Discovering cities"
+    "Basic Quiz"
+    "Expert's Domain"
+    "Time attack"
+    "Endless Marathon"
     etc.
 }
 
 class GameConfiguration {
     +int numberOfQuestions
     +int timeLimit
-    +bool hintsEnabled
+    +int questionsCategory
 
     +void configureGame()
 }
@@ -68,12 +68,11 @@ class Question {
 }
 
 enum QuestionCategory {
-    "Entertainment"
+    "Flags"
     "Science"
     "Sports"
-    "Geography"
-    "History"
-    "Literature"
+    "Cities"
+    "Celebrities"
     etc.
 }
 
