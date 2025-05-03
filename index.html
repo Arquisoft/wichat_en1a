@@ -528,6 +528,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#section-glossary">12. Glossary</a></li>
+<li><a href="#section-testing">13. Testing Strategy and results</a></li>
 </ul>
 </div>
 </div>
@@ -1115,7 +1116,7 @@ The title of the table is the name of your system, the three columns contain the
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20-%20Business%20context.png" alt="C4 Diagram   Business context" width="1175" height="1266">
+<img src="./images/C4%20Diagram%20-%20Business%20context.png" alt="C4 Diagram   Business context" width="987" height="1481">
 </div>
 <div class="title">Figure 1. Overall view of the business context</div>
 </div>
@@ -1145,7 +1146,7 @@ together with a mapping table showing the relationships between channels and inp
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20-%20Technical%20context%20diagram.png" alt="C4 Diagram   Technical context diagram" width="915" height="837">
+<img src="./images/C4%20Diagram%20-%20Technical%20context%20diagram.png" alt="C4 Diagram   Technical context diagram" width="1135" height="837">
 </div>
 <div class="title">Figure 2. Overall view of the technical context</div>
 </div>
@@ -1156,11 +1157,11 @@ together with a mapping table showing the relationships between channels and inp
 <ul>
 <li>
 <p><strong>Wichat Application Proxy: </strong>
-When interacting with the server, a &lt;TO BE DEFINED&gt; proxy will be tasked with redirecting the queries to the petitions to the Wichat application client, which will also be deployed on a &lt;TO BE DEFINED&gt; web server.</p>
+When interacting with the server, a &lt;TO BE DEFINED&gt; proxy will be tasked with redirecting the queries to the petitions to the Wichat application client, which will also be deployed on a Azure web server.</p>
 </li>
 <li>
 <p><strong>Wichat Application Client: </strong>
-This client will be served to the user and communicates with the API through HTTPS calls and exchanges information through JSON objects. The client (Front-End of the application) will be developed in React (+ JavaScript), and it is deployed via a &lt;TO BE DEFINED&gt; server.</p>
+This client will be served to the user and communicates with the API through HTTPS calls and exchanges information through JSON objects. The client (Front-End of the application) will be developed in React (+ JavaScript), and it is deployed via a Azure server.</p>
 </li>
 <li>
 <p><strong>Wichat REST API:</strong>
@@ -2565,7 +2566,7 @@ when your infrastructure is more complex.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%201)%20-%20Deployment%20view%20diagram.png" alt="C4 Diagram (Level 1)   Deployment view diagram" width="731" height="519">
+<img src="./images/C4%20Diagram%20(Level%201)%20-%20Deployment%20view%20diagram.png" alt="C4 Diagram (Level 1)   Deployment view diagram" width="1157" height="519">
 </div>
 <div class="title">Figure 10. Overview of the deployment infraestructure</div>
 </div>
@@ -2643,24 +2644,40 @@ when your infrastructure is more complex.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>webapp</code> subfolder. Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>APIs / Backend</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Docker container hosted on Azure. Handles game logic, user management and question generation. Communicates with the MongoDB database.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Gateway Service</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>gatewayservice</code> subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LLM Service</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>llmservice</code> subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed via HTTPS from the backend to generate conversational hints.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>llmservice</code> subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed from the backend to generate conversational hints.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Game Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>gameservice</code> subfolder. Accessed from the backend to store all the relevant information after a game is finished.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Question Generator</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A separate component that runs during all the life application. Queries Wikidata using MQL to generate questions and answers, which are then stored in the MongoDB database.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Authentication Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>authservice</code> subfolder. Accessed from the backend to store the user information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>User Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>userservice</code> subfolder. Accessed from the backend to store the user information into the database.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MongoDB Database</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Containerized instance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Grafana</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Containerized monitoring dashboard hosted alongside backend services.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Prometheus</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Containerized metrics collection and alerting tool.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2687,6 +2704,12 @@ when your infrastructure is more complex.</p>
 <h4 id="_apis_backend">7.2.2. APIs / Backend</h4>
 <div class="paragraph">
 <p>The <strong>backend</strong> is a set of RESTful APIs that provide game logic, user management, and question generation services. It is built using Node.js and Express, and communicates with the MongoDB database. The backend is containerized using Docker and deployed on a cloud platform. The backend is stateless and horizontally scalable, allowing it to handle increased traffic by spinning up additional instances.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_proxy_nginx">7.2.3. Proxy (NGINX)</h4>
+<div class="paragraph">
+<p>NGINX acts as a reverse proxy and is used primarily to enable HTTPS by handling SSL/TLS termination. It is deployed as a Docker container alongside other services within the infrastructure.</p>
 </div>
 </div>
 </div>
@@ -3675,13 +3698,71 @@ Load test results are stored on docs/loadtesting.</p>
 </tr>
 </tbody>
 </table>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="section-testing">13. Testing Strategy and results</h2>
+<div class="sectionbody">
+<div class="sidebarblock arc42help">
+<div class="content">
+<div class="paragraph">
+<div class="title">Contents</div>
+<p>This section describes the project&#8217;s testing approach and results, and how quality requirements are verified through testing.</p>
+</div>
+<div class="paragraph">
+<div class="title">Motivation</div>
+<p>Testing ensures the system meets its functional and non-functional (quality) requirements, increases maintainability, and reduces risks.</p>
+</div>
+<div class="paragraph">
+<div class="title">Form</div>
+<p>Describe test strategies for different levels (unit, integration, E2E, etc.), tools used, and how testing supports quality attributes like performance, robustness, and usability.</p>
+</div>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type of Test</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unit Testing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Each module (mainly utility and core logic functions) is covered by unit tests using <strong>Jest</strong>. Unit tests ensure that individual components behave as expected in isolation. Code coverage is enforced via sonarQube to remain above <strong>80%</strong>, and code duplication below <strong>3%</strong>. Mocking is used for external dependencies.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">End-to-End Testing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">E2E tests are implemented using a BDD approach with <strong>.feature</strong> files and step definitions (<strong>.steps.js</strong>), following the Gherkin syntax. This allows tests to be written in a human-readable form closely aligned with user stories and acceptance criteria.</p>
+<p class="tableblock">Tests are executed using <strong>Jest</strong> as the runner, configured via <code>jest_config.js</code>. The <code>test_environment_setup</code> script ensures that all required services (e.g., gatewayservice, gameservice, questionservice&#8230;&#8203;) are initialized and cleaned before and after test runs.</p>
+<p class="tableblock">Our E2E workflows include:</p>
+<p class="tableblock">- Signing up and logging in correctly</p>
+<p class="tableblock">- Starting a game and completing a full session</p>
+<p class="tableblock">- Interacting with leaderboards and user statistics</p>
+<p class="tableblock">Tests are automatically run in every new release via a github action, and are kept up to date with each feature release to ensure no regressions. Browser-level interactions are simulated through a headless environment or Puppeteer/Playwright depending on the test scenario.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Load Testing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As described in the load testing results section, at section 10 quality requirements (as they direcly prove or disprove our quality requirements, that is the best location for them following official arc42 documentation), load testing is conducted using <strong>Gatling</strong> and focused on critical endpoints: login, game creation, game results saving, and user statistics. Results confirm that the application supports <strong>up to 485 concurrent users</strong> with only minor latency. Load test scripts and results are stored in <code>docs/loadtesting</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Real User Testing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Real user feedback was encouraged and requested at some points, recruiting a set of testers with different degrees of software engineering knowledge. All of them were asked to submit their findings, data that was collected and summarized <a href="https://github.com/Arquisoft/wichat_en1a/wiki/feedback-for-v1.0.9">here</a>. Almost all of the submissions by the users were solved upon the new release of v2.0.0.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-02-16 16:41:11 +0100
+Last updated 2025-05-03 23:28:25 +0200
 </div>
 </div>
 </body>
