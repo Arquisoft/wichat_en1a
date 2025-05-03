@@ -292,15 +292,14 @@ const Statistics = () => {
                       {t("statistics.answerDistribution")}
                     </Typography>
                     <ResponsiveContainer width="100%" height={300}>
-                      <PieChart
-                        padding={5}
-                      >
+                      <PieChart>
                         <Pie
                           data={pieChartData}
                           cx="50%"
                           cy="50%"
                           labelLine={false}
-                          outerRadius={100}
+                          outerRadius={80}
+                          paddingAngle={5}
                           fill="#8884d8"
                           dataKey="value"
                           label={({ name, percent }) =>

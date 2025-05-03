@@ -94,7 +94,11 @@ const Leaderboard = () => {
                     >
                       <ListItemText 
                         primary={`${index + 1}. ${result.userId} ${result.userId?.toString() === loggedInPlayerId?.toString() ? '(You)' : ''}`}
-                        secondary={`${t('score')}: ${result.score}`} 
+                        secondary={`${t('score')}: ${result.score}`}
+                        primaryTypographyProps={{
+                          noWrap: true,
+                          style: { maxWidth: "18ch" }
+                        }}
                       />
                     </ListItem>
                     {index < results.length - 1 && <Divider />}
