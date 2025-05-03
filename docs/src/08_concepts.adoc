@@ -65,13 +65,9 @@ include::./diagrams/Domain_Model.puml[]
 [cols="2,5",options="header"]
 |===
 | Entity | Description
-| **UserClient** | Represents a player, a stakeholder that will make use of the application.
-| **API Gateway** | Represents the Gateway that interacts with the microservices that implementation the application functionality.
-| **Auth Service** | Represents the Authentication service that will handle the log in of the user.
-| **Question Service** | Represents the Question service that will generate the questions that the user will answered during the game.
-| **Game Service** | Represents the Game Service that will store the information of the game once it has finished.
-| **LLM Service** | Represents the AI chat that will provide hints to the user. 
-| **User Service** | Represents the User Service that will add the user information to the database. 
+| **User** | Represents a registered player with a unique username and password.
+| **Score** | Stores gameplay results, including game mode, accuracy, and performance.
+| **Question** | Contains the quiz question, possible answers, correct answer, and image of the question.
 |===
 
 === Design Patterns and Architectural Styles

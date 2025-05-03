@@ -1,27 +1,38 @@
 @startuml Domain_Model
 
-skinparam componentStyle rectangle
-
-actor UserClient
-
-rectangle "API Gateway" {
-  [Gateway API]
+entity "User" {
+  * username: String
+    - required, unique, regex: /^[a-zA-Z0-9_]+$/, 3–30 chars
+  * password: String
+    - required
+  * createdAt: Date = now
 }
 
-package "Microservices" {
-  [Auth Service] as AuthSvc
-  [Question Service] as QuestionSvc
-  [Game Service] as GameSvc
-  [LLM Service] as LLM
-  [User Service] as UserSvc
+entity "Score" {
+  * userId: String
+    - references User._id
+  * score: Number = 0
+  * gameMode: String ['basicQuiz', 'expertDomain', 'timeAttack', 'endlessMarathon', 'custom']
+    - required
+  * questionsPassed: Number = 0
+  * questionsFailed: Number = 0
+  * accuracy: Number = 0
+  * meanTimeToAnswer: Number = 0
+  * createdAt: Date = now
 }
 
-UserClient --> [Gateway API] : Client interacts with the gateway
-[Gateway API] --> AuthSvc : /login
-[Gateway API] --> QuestionSvc : /generate-questions, /questions/:type/:limit, /question
-[Gateway API] --> GameSvc : /saveScore, /scoresByUser, /leaderboard
-[Gateway API] --> LLM : /askllm, /aiBuddy
-[Gateway API] --> UserSvc : /signup
-
+entity "Question" {
+  * question: String
+    - required
+  * answers: [Object]
+    - required
+  * correctAnswerId: Number
+    - required
+  * type: String
+    - required
+  * image: String
+    - optional
+  * createdAt: Date = now (expires in 30 min)
+}
 
 @enduml
