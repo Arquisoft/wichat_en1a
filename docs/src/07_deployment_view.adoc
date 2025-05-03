@@ -80,12 +80,12 @@ Mapping of Building Blocks to Infrastructure::
 |===
 | Building Block | Infrastructure Component
 | **Client / Frontend** | Contained in the `webapp` subfolder. Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.
-| **APIs / Backend** | Docker container hosted on Azure. Handles game logic, user management, question generation and llm service. Communicates with the MongoDB database.
 | **Gateway Service** | Contained in the `gatewayservice` subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.
 | **LLM Service** | Contained in the `llmservice` subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed from the backend to generate conversational hints.
 | **Game Service** | Contained in the `gameservice` subfolder. Accessed from the backend to store all the relevant information after a game is finished.
 | **Question Generator** | A separate component that runs during all the life application. Queries Wikidata using MQL to generate questions and answers, which are then stored in the MongoDB database.
 | **Authentication Service** | Contained in the `authservice` subfolder. Accessed from the backend to store the user information.
+| **User Service** | Contained in the `userservice` subfolder. Accessed from the backend to store the user information into the database.
 | **MongoDB Database** | Containerized instance.
 | **Grafana** | Containerized monitoring dashboard hosted alongside backend services.
 | **Prometheus** | Containerized metrics collection and alerting tool.
