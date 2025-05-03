@@ -10,7 +10,7 @@ System_Boundary(quizGame, "WiChat Application") {
     Container(llmChat, "LLM AI Chat", "Empathy", "Application service that works as an interface with the LLM API", "Internal system")
     Container(auth, "Authentication Module", "", "Application module to manage the sessions and authentications", "Internal system")
     Container(user, "User Module", "", "Application module to manage the users", "Internal system")
-    Container(gameService, "Game Module", "Application module that provides the game logic", "Internal system")
+    Container(gameService, "Game Module", "", "Application module that provides the game logic", "Internal system")
     Container(questionGen, "Question Generator", "", "Application module that generates the questions of the game using information from Wikidata", "Internal system")
     SystemDb(mongodb, "MongoDB Database", "Database to store the game questions, possible answers, the user data, rankings and other statistics")    
 }
