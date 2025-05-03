@@ -3,14 +3,12 @@
 
 Person(user, "User", "Plays the quiz game")
 System_Boundary(quizGame, "Quiz Game System") {
-    System(frontend, "Frontend", "React + JavaScript", "GUI for playing the game")
-    System(backend, "Backend", "Node.js", "Handles authentication, quiz logic, and API communication")
+    System(frontend, "Frontend", "GUI for playing the game\n[React + JavaScript]")
+    System(backend, "Backend", "Handles authentication, quiz logic, and API communication\n[Node.js]")
 }
-SystemDb(database, "Database", "MongoDB", "Stores users, quiz data and game information")
-System_Ext(authAPI, "Authentication API", "Validates user authentication")
+SystemDb(database, "Database", "Stores users, quiz data and game information\n[MongoDB]")
 System_Ext(wikidata, "Wikidata API", "Provides quiz questions and answers")
 System_Ext(llm, "LLM Chat API", "Provides hints based on quiz questions")
-System_Ext(game, "Game API", "Provides users scores and statistics")
 
 ' User interactions
 user --> frontend : "Plays the quiz"
@@ -18,9 +16,7 @@ frontend --> backend : "Requests quiz questions & hints"
 backend --> database : "Stores application progress"
 
 ' External API calls
-backend --> authAPI : "Validates login/register"
 backend --> wikidata : "Fetches quiz questions"
 backend --> llm : "Requests hint"
-backend --> game : "Stores user progress"
 
 @enduml

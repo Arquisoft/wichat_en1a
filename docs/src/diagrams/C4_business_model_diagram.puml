@@ -4,12 +4,12 @@
 
 title Context Diagram of the Business Model for the System of the application (C4 Diagram - Level 1)
 AddElementTag("Person", $bgColor="#darkgreen", $fontColor="#white")
-AddElementTag("Internal system", $bgColor="#darkseagreen", $fontColor="#003300")
-AddElementTag("External system", $bgColor="#gray", $fontColor="#white")
+AddElementTag("Internal system", $bgColor="#DarkSeaGreen", $fontColor="#003300")
+AddElementTag("External system", $bgColor="#DarkGray", $fontColor="#white")
 
 'Containers
-Person(player, Player,"A logged player that wants to play the game offered by wichat application", $tags="Person")
-Container(wichat, "Wichat application system", "System that allows the users to register, play the game and interact with the application", $tags="Internal system")
+Person(player, Player,"A logged player that wants to play the game offered by WiChat application", $tags="Person")
+System(wichat, "Wichat application system", "System that allows the users to register, play the game and interact with the application", $tags="Internal system")
 System_Ext(wikidata, "WikiData API", "API that contains the information used for the image quiz generation", $tags="External system")
 System_Ext(llm_chat, "LLM AI API", "LLM helper that provides an AI to help the player, providing clues about the images", $tags="External system")
 
