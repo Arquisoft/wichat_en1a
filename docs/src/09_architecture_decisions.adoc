@@ -26,7 +26,7 @@ approach or maintain a Node.js microservices system. One of the main reasons for
 Boot is the team's lack of experience with Node.js. Additionally, last year’s project was implemented using Spring Boot,
 which could facilitate development. If needed, Spring Boot provides flexibility for a future migration to microservices.
 
-Decision taken: [TO_BE_TAKEN]
+Decision taken: The team has decide to use Node.js microservices system.
 
 === Use of MongoDB
 
@@ -55,13 +55,16 @@ Decision taken: The team has decided to implement the question generator as a se
 
 === Connection to the database with the question generator
 
-Date Recorded:
+Date Recorded: 17/02/2025
 
 Scope: backend, question generator, database
 
-Description: [TO_BE_DISCUSSED]
+Description: When the questions are generated at background by the question-worker they are stored in the database "questiondb".
+Then when someone is playing one of ours games, the questions are retrieved from the database. Furthermore,
+the questions have a specific life duration, this means, that when the time specified from its creation passes, the question are eliminated
+from the database, the purpose of this is to avoid players to get repeated questions continuously
 
-Decision taken: [TO_BE_TAKEN]
+Decision taken: The team has decided to specify a life duration for the questions
 
 
 === Integration of an LLM for hints
@@ -74,8 +77,29 @@ Description: The game will integrate an AI model to provide hints to players.
 The chosen model must be capable of interpreting image-based questions and
 generating meaningful hints.
 
-Decision taken: The team has decided to integrate
-the Empathy AI model for generating hints in the game.
+Decision taken: The team has decided to integrate the Empathy AI model for generating hints in the game.
+
+
+=== Use of JWT tokens
+
+Date Recorded: 4/04/2025
+
+Scope: backend, game service, auth service
+
+Description: When the user logs into the application a token will be generated. We will use this token to make sure that the user is log in when we save a score after a game or when we access the user statistics.
+
+Decision taken: The team has decided to integrate the JWT token functionallity to the game service.
+
+
+=== Implementation of https
+
+Date Recorded: 4/04/2025
+
+Scope: backend, gateway service
+
+Description: The application will have https. It will be implemnted using NGINX that acts as a reverse proxy and is used primarily to eneable HTTPS.
+
+Decision taken: The team has decided to implement the functionallity
 
 ifdef::arc42help[]
 [role="arc42help"]
