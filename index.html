@@ -471,6 +471,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_workflow_of_the_team">4.2. Workflow of the team</a></li>
 <li><a href="#_team_organization_and_structure">4.3. Team organization and structure</a></li>
 <li><a href="#_third_parties_and_the_responsabilities_delegated_to_them">4.4. Third parties and the responsabilities delegated to them</a></li>
+<li><a href="#_ui_design_wireframes">4.5. UI Design - Wireframes</a></li>
 </ul>
 </li>
 <li><a href="#section-building-block-view">5. Building Block View</a>
@@ -491,13 +492,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_infrastructure_level_1">7.1. Infrastructure Level 1</a></li>
 <li><a href="#_infrastructure_level_2">7.2. Infrastructure Level 2</a></li>
+<li><a href="#_conclusion">7.3. Conclusion</a></li>
 </ul>
 </li>
 <li><a href="#section-concepts">8. Cross-cutting Concepts</a>
 <ul class="sectlevel2">
-<li><a href="#_concept_1">8.1. <em>&lt;Concept 1&gt;</em></a></li>
-<li><a href="#_concept_2">8.2. <em>&lt;Concept 2&gt;</em></a></li>
-<li><a href="#_concept_n">8.3. <em>&lt;Concept n&gt;</em></a></li>
+<li><a href="#_domain_model">8.1. Domain Model</a></li>
+<li><a href="#_design_patterns_and_architectural_styles">8.2. Design Patterns and Architectural Styles</a></li>
+<li><a href="#_persistence_layer">8.3. Persistence Layer</a></li>
+<li><a href="#_ensuring_a_wealthy_user_experience">8.4. Ensuring a wealthy user experience</a></li>
+<li><a href="#_deployment">8.5. Deployment</a></li>
 </ul>
 </li>
 <li><a href="#section-design-decisions">9. Architecture Decisions</a>
@@ -521,6 +525,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_quality_tree">10.1. Quality Tree</a></li>
 <li><a href="#_quality_scenarios">10.2. Quality Scenarios</a></li>
+<li><a href="#_load_testing_results">10.3. Load testing results</a></li>
 </ul>
 </li>
 <li><a href="#section-technical-risks">11. Risks and Technical Debts</a>
@@ -530,6 +535,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#section-glossary">12. Glossary</a></li>
+<li><a href="#section-testing">13. Testing Strategy and results</a></li>
 </ul>
 </div>
 </div>
@@ -1117,13 +1123,15 @@ The title of the table is the name of your system, the three columns contain the
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%201)%20-%20Business%20context%20diagram.png" alt="C4 Diagram (Level 1)   Business context diagram" width="663" height="857">
+<img src="./images/C4%20Diagram%20-%20Business%20context.png" alt="C4 Diagram   Business context" width="1621" height="1041">
 </div>
 <div class="title">Figure 1. Overall view of the business context</div>
 </div>
 <div class="paragraph">
-<p>The business model diagram represents how the player interacts with the system of the wichat application, which will communicate with the WikiData API using the HTTP protocol and MongoDB Query Languague (MQL) queries to retrieve the information. The data retrieved by the API will be used to generate the questions that the player must answer, in this case, an image will be retrieved, and the player must select the option that best fits what is shown in the picture. The player can also ask for help from the LLM Chat, which will use the information from the WikiData API to provide clues about the image.
-A simple example of the functioning of the system is the following: the player logs in and starts a game. The system retrieves data from the WikiData API and generates the image and the possible answers (for example, an image of the Eiffel Tower, and four cities of Europe, like Madrid, Rome, London and Paris). The player may ask for help to the LLM Chat if he/she is not sure about the answer, and the AI will use the information from the WikiData API to provide clues about the image. The player can then select the correct answer, and the system will inform if it is correct or not.</p>
+<p>The business model diagram represents how the player interacts with the system of the WiChat application. The core API will communicate with the external WikiData API using the HTTPS protocol and SPARQL queries to retrieve the information, using independent modules that generate a microservice architecture to decouple the system. The data retrieved by the API will be used to generate the questions that the player must answer. In this case, an image will be retrieved, and the player must select the option that best fits what is shown in the picture. The player can also ask for help, interacting with an LLM Chat, provided by another external API. The LLM will use the information from the WikiData API without direct interaction to provide clues about the image (the corresponding modules are in charge of gathering the information from WikiData API and passing it to the LLM API).</p>
+</div>
+<div class="paragraph">
+<p>A simple example of the functioning of the system is the following: the player logs in and starts a game. The system retrieves data from the WikiData API and generates the image and the possible answers (for example, an image of the Eiffel Tower, and four cities of Europe, like Madrid, Rome, London and Paris). The player may ask for help to the LLM Chat if he/she is not sure about the answer, and the AI will use the information from the WikiData API to provide clues about the image. The player can then select the correct answer, and the system will inform if it is correct or not. After the game is finished the user will see the game results and can access his statistics and the leaderboards.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1147,34 +1155,38 @@ together with a mapping table showing the relationships between channels and inp
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%202)%20-%20Container%20context%20diagram.png" alt="C4 Diagram (Level 2)   Container context diagram" width="671" height="1131">
+<img src="./images/C4%20Diagram%20-%20Technical%20context%20diagram.png" alt="C4 Diagram   Technical context diagram" width="665" height="837">
 </div>
 <div class="title">Figure 2. Overall view of the technical context</div>
 </div>
 <div class="paragraph">
-<p>The system will be deployed in a single server containing all the functionalities separated in different modules:</p>
+<p>The system will be deployed over a virtual machine in a single Azure server (using <strong>Docker</strong>) containing all the functionalities separated in different modules:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Wichat Application Proxy: </strong>
-When interacting with the server, an &lt;TO BE DEFINED&gt; proxy will be tasked with redirecting the queries to the petitions to the Wichat application client, which will also be deployed on a &lt;TO BE DEFINED&gt; web server.</p>
+<p><strong>Wichat Application Proxy:</strong>
+When interacting with the server, a Nginx proxy gateway will be tasked with redirecting incoming requests to the Wichat application client, which will also be deployed on the Azure web server.</p>
 </li>
 <li>
-<p><strong>Wichat Application Client: </strong>
-This client will be served to the user and communicates with the API through HTTPS calls and exchanges information through JSON objects. The client (Front-End of the application) will be developed in React (+ JavaScript), and it is deployed via a &lt;TO BE DEFINED&gt; server.</p>
+<p><strong>Wichat Application Client:</strong>
+This client will be served to the user and communicates with the API through HTTPS calls and exchanges information through JSON objects. The client (Front-End of the application) will be developed in React (+ JavaScript).</p>
 </li>
 <li>
 <p><strong>Wichat REST API:</strong>
-The Wichat REST API will be run as a .jar file on the server and connect to a database running on a MongoDB docker container. The connection layer between the &lt;TO BE DEFINED&gt; API and the database will be &lt;TO BE DEFINED&gt;.</p>
-</li>
-<li>
-<p><strong>Wichat Application Database:</strong>
-In the database the questions and answers generated by the Question Generator module will be stored, written in &lt;TO BE DEFINED ¿Java?&gt; and using &lt;TO BE DEFINED&gt; as a connection layer. The DBMS is MongoDB.</p>
+The Wichat REST API will be run as a .jar file on the server and connect to a database running on a MongoDB docker container.</p>
 </li>
 <li>
 <p><strong>Question generator:</strong>
-The Question Generator will also use the WikiData REST API to retrieve information to generate questions. It  will generate the questions by connecting to the WikiData REST API through HTTPS calls and passing a MQL query to retrieve the data that will later be used in the question generation. It is written in &lt;TO BE DEFINED ¿Java?&gt; and uses &lt;TO BE DEFINED&gt;</p>
+The Question Generator will use the external WikiData REST API to retrieve the information to generate the images and questions of the quiz. It will connect to the WikiData REST API through HTTPS calls, passing a Mongo Query Language (MQL) query to retrieve the data that will later be used as the questions of the game. The module is implemented using Node.js and uses Axios for making HTTP requests.</p>
+</li>
+<li>
+<p><strong>LLM AI Chat:</strong>
+This component connects to an external LLM API, Empathy, to provide hints to players.  The module retrieves structured data from WikiData via the Question Generator and uses it to formulate meaningful prompts for the LLM. The LLM response is then passed back to the player through the main API.</p>
+</li>
+<li>
+<p><strong>Wichat Application Database:</strong>
+The questions and answers generated by the Question Generator module will be stored in a MongoDB database. It is supposed to be a unique database for the entire system, but containing several different collections for a series of purposes (one for user session data, other for quiz questions, other for statistics and game data&#8230;&#8203;). The connection layer will use Mongoose.</p>
 </li>
 </ul>
 </div>
@@ -1257,6 +1269,9 @@ Refer to details in the following sections.</p>
 <li>
 <p>Use of semantic versioning (<a href="https://semver.org/" class="bare">https://semver.org/</a>) for specifying versions meaningfully.</p>
 </li>
+<li>
+<p>The Ui wireframes are designed using <a href="app.moqups.com">Moqups</a>, a tool designed just for that. The decision stems from a recommendation from a work colleage that fit our researched technologies, and its ease of use over <a href="https://miro.com/">Miro</a> led to its use.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -1326,6 +1341,12 @@ Refer to details in the following sections.</p>
 <p>University of Oviedo provides the installations and the technical assistance for the team&#8217;s mandatory meeting, as well as the contact mail domain.</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ui_design_wireframes">4.5. UI Design - Wireframes</h3>
+<div class="paragraph">
+<p>The most up to date Ui designs can be found <a href="https://app.moqups.com/HlaJ7rOGqhY1EkHifxBrLncQWB5eXIaO/view/page/ad64222d5">here</a>.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -1421,7 +1442,7 @@ In the best case you will get away with examples or simple signatures.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%201)%20-%20Business%20context%20diagram.png" alt="C4 Diagram (Level 1)   Business context diagram" width="663" height="857">
+<img src="./images/C4%20Diagram%20(Level%201)%20-%20Business%20context%20diagram.png" alt="C4 Diagram (Level 1)   Business context diagram" width="663" height="664">
 </div>
 <div class="title">Figure 3. Overall view of the business context</div>
 </div>
@@ -1453,7 +1474,7 @@ The purpose of this section is to provide a high-level view of the system and it
 <td class="tableblock halign-left valign-top"><p class="tableblock">The central application that facilitates player interaction, communication with external services, and question generation.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI API</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Provides hints to the player when requested.</p></td>
 </tr>
 <tr>
@@ -1483,7 +1504,7 @@ The purpose of this section is to provide a high-level view of the system and it
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application-LLM Interface</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Manages communication between the application and the LLM AI Chat to request hints.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages communication between the application and the LLM AI API to request hints.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application-WikiData Interface</p></td>
@@ -1513,9 +1534,6 @@ The purpose of this section is to provide a high-level view of the system and it
 </li>
 <li>
 <p>(Optional) Quality-/Performance Characteristics: Smooth, responsive UI with minimal delays.</p>
-</li>
-<li>
-<p>(Optional) Directory/File Location: src/client</p>
 </li>
 <li>
 <p>(Optional) Fulfilled Requirements: Real-time gameplay experience with clear and engaging UI.</p>
@@ -1560,9 +1578,6 @@ The purpose of this section is to provide a high-level view of the system and it
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/application</p>
-</li>
-<li>
 <p>(Optional) Fulfilled Requirements: Real-time interaction and data handling.</p>
 </li>
 <li>
@@ -1572,11 +1587,11 @@ The purpose of this section is to provide a high-level view of the system and it
 </div>
 </div>
 <div class="sect3">
-<h4 id="_llm_ai_chat">5.1.3. LLM AI Chat</h4>
+<h4 id="_llm_ai_api">5.1.3. LLM AI API</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Purpose/Responsibility: Provides AI-generated hints to players based on their interactions within the game.</p>
+<p>Purpose/Responsibility: External service that provides AI-generated hints to players based on their interactions within the game.</p>
 </li>
 <li>
 <p>Interface(s):</p>
@@ -1654,7 +1669,7 @@ The purpose of this section is to provide a high-level view of the system and it
 <h3 id="_container_diagram_c4_level_2">5.2. Container Diagram (C4 Level 2)</h3>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%202)%20-%20Container%20context%20diagram.png" alt="C4 Diagram (Level 2)   Container context diagram" width="671" height="1131">
+<img src="./images/C4%20Diagram%20(Level%202)%20-%20Container%20context%20diagram.png" alt="C4 Diagram (Level 2)   Container context diagram" width="1363" height="1835">
 </div>
 <div class="title">Figure 4. Overall view of the technical context</div>
 </div>
@@ -1686,6 +1701,10 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <td class="tableblock halign-left valign-top"><p class="tableblock">User interface that interacts with the application.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WiChat API (API Gateway)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages requests between frontend and backend services, routes traffic to the correct backend service.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">REST API</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API that handles requests and responses between the client and server.</p></td>
 </tr>
@@ -1702,7 +1721,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <td class="tableblock halign-left valign-top"><p class="tableblock">External service providing data for generating questions about images and concepts.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI API</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">External service that generates hints for players.</p></td>
 </tr>
 </tbody>
@@ -1735,7 +1754,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <td class="tableblock halign-left valign-top"><p class="tableblock">Interface for retrieving information about images and questions for the game.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI Chat Interface</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLM AI API Interface</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Interface for generating hints and assisting players based on their interactions.</p></td>
 </tr>
 </tbody>
@@ -1769,9 +1788,6 @@ The system decomposition has been done to efficiently divide responsibilities, e
 </li>
 </ul>
 </div>
-</li>
-<li>
-<p>(Optional) Directory/File Location: src/proxy/WIChatProxy</p>
 </li>
 <li>
 <p>(Optional) Fulfilled Requirements: The architecture supports application scalability.</p>
@@ -1813,9 +1829,6 @@ The system decomposition has been done to efficiently divide responsibilities, e
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/client</p>
-</li>
-<li>
 <p>(Optional) Fulfilled Requirements: Accessible and responsive design for various devices.</p>
 </li>
 <li>
@@ -1825,21 +1838,66 @@ The system decomposition has been done to efficiently divide responsibilities, e
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rest_api">5.2.3. REST API</h4>
+<h4 id="_wichat_api_api_gateway">5.2.3. WiChat API (API Gateway)</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Purpose/Responsibility: Manages communication between the client and the database, allowing queries, inserts, and updates of data.</p>
+<p>Purpose/Responsibility: Manages requests between the frontend (Client) and backend services, routing them to the appropriate backend service.</p>
 </li>
 <li>
 <p>Interface(s):</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Endpoint to get questions from the Question Generator.</p>
+<p>Forwards requests from the Client to the REST API for further processing.</p>
 </li>
 <li>
-<p>Endpoint to record responses and retrieve results from the database.</p>
+<p>Routes AI-related requests to the LLM AI Chat Service.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Quality-/Performance Characteristics:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Efficient request handling and routing, ensuring that each request reaches the correct backend service.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) Directory/File Location: gatewayservice</p>
+</li>
+<li>
+<p>(Optional) Fulfilled Requirements:  Efficient request routing.</p>
+</li>
+<li>
+<p>(Optional) Open Issues/Problems/Risks: Potential bottlenecks if request routing becomes too complex.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_rest_api">5.2.4. REST API</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Purpose/Responsibility: Handles requests and responses between the backend services and the client, through the WiChat API (API Gateway). This container interacts with services like the Question Generator, Database, and LLM AI Chat Service, but it only receives requests routed by the API Gateway.</p>
+</li>
+<li>
+<p>Interface(s):</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Receives requests from the WiChat API (API Gateway), which routes requests from the client.</p>
+</li>
+<li>
+<p>Endpoint to fetch questions from the Question Generator.</p>
+</li>
+<li>
+<p>Endpoint to record answers and retrieve results from the Database.</p>
 </li>
 </ul>
 </div>
@@ -1851,23 +1909,23 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <li>
 <p>Fast response time and security for API calls.</p>
 </li>
+<li>
+<p>The routing logic is delegated to the API Gateway, allowing for a cleaner and more scalable approach.</p>
+</li>
 </ul>
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/api</p>
+<p>(Optional) Fulfilled Requirements:  Meets security and efficiency requirements for processing requests.</p>
 </li>
 <li>
-<p>(Optional) Fulfilled Requirements: Meets security and efficiency requirements.</p>
-</li>
-<li>
-<p>(Optional) Open Issues/Problems/Risks: Scalability for handling large traffic volumes in the future.</p>
+<p>(Optional) Open Issues/Problems/Risks: scalability to handle large traffic volumes in the future, especially if routing through the API Gateway introduces any bottlenecks.</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_database">5.2.4. Database</h4>
+<h4 id="_database">5.2.5. Database</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1903,9 +1961,6 @@ The system decomposition has been done to efficiently divide responsibilities, e
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/database</p>
-</li>
-<li>
 <p>(Optional) Fulfilled Requirements: Secure data storage, backup, and recovery.</p>
 </li>
 <li>
@@ -1915,7 +1970,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 </div>
 </div>
 <div class="sect3">
-<h4 id="_question_generator">5.2.5. Question Generator</h4>
+<h4 id="_question_generator">5.2.6. Question Generator</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1942,7 +1997,7 @@ The system decomposition has been done to efficiently divide responsibilities, e
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/question_generator</p>
+<p>(Optional) Directory/File Location: questionservice/src/services/question_generator</p>
 </li>
 <li>
 <p>(Optional) Fulfilled Requirements: Efficient and accurate question generation.</p>
@@ -1958,13 +2013,13 @@ The system decomposition has been done to efficiently divide responsibilities, e
 <h3 id="_component_diagram_c4_level_3">5.3. Component Diagram (C4 Level 3)</h3>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/C4%20Diagram%20(Level%203)%20-%20Component%20diagram.png" alt="C4 Diagram (Level 3)   Component diagram" width="1274" height="1463">
+<img src="./images/C4%20Diagram%20(Level%203)%20-%20Component%20diagram.png" alt="C4 Diagram (Level 3)   Component diagram" width="1912" height="1229">
 </div>
 <div class="title">Figure 5. Overall view of the component context</div>
 </div>
 <div class="paragraph">
 <p><strong>Motivation:</strong>
-The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal components within the WIChat Application, focusing specifically on the division of the REST API into four modules for better organization and management of the system&#8217;s functionalities.</p>
+The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal components within the WIChat Application, focusing specifically on the division of the REST API into five modules for better organization and management of the system&#8217;s functionalities.</p>
 </div>
 <div class="paragraph">
 <p><strong>Contained Components:</strong></p>
@@ -1976,26 +2031,30 @@ The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top"><strong>Component</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Responsibility</strong></th>
+<th class="tableblock halign-left valign-top">Component</th>
+<th class="tableblock halign-left valign-top">Responsibility</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Authenticated Module</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Manages authenticated requests, ensuring secure access to the system for registered users.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AuthService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages user authentication and session management, ensuring secure access to the system.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Game Module</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Manages game-related requests, such as starting a game, updating progress, and storing player responses.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GameService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Handles gameplay, including starting a game, submitting answers, and tracking player progress.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Statistics Module</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Handles the tracking and reporting of player statistics, such as scores and performance over time.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QuestionService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages the generation and retrieval of questions from the WikiData API.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Question Module</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Manages requests for generating and retrieving questions, interacting with the WikiData API.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLMService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interacts with the LLM API to fetch hints for players.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages user registration, profiles, and stores relevant data for the leaderboard.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2003,157 +2062,343 @@ The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal
 <p><strong>Modules Overview:</strong></p>
 </div>
 <div class="sect3">
-<h4 id="_authenticated_module">5.3.1. Authenticated Module</h4>
+<h4 id="_authservice">5.3.1. AuthService</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Purpose/Responsibility: Handles authentication and authorization processes for users to securely access the system.</p>
+<p><strong>Purpose/Responsibility</strong>: AuthService handles the authentication and session management for users. It ensures that only authenticated users can access the system.</p>
 </li>
 <li>
-<p>Interface(s):</p>
+<p><strong>Interface(s)</strong>:</p>
 <div class="ulist">
 <ul>
 <li>
 <p>API endpoints for login, registration, and session management.</p>
 </li>
 <li>
-<p>Interacts with the Database to store and verify user credentials.</p>
+<p>Interacts with the <strong>User Database</strong> to store and verify user credentials.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>(Optional) Quality-/Performance Characteristics:</p>
+<p><strong>Quality-/Performance Characteristics</strong>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Ensures secure handling of sensitive user data with encryption.</p>
+<p>Secures user credentials with encryption and token management.</p>
+</li>
+<li>
+<p>Ensures protection against unauthorized access by enforcing strict authentication mechanisms.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/rest_api/authenticated</p>
+<p><strong>Directory/File Location</strong>: users/authservice</p>
 </li>
 <li>
-<p>(Optional) Fulfilled Requirements: Secure login, registration, and session management.</p>
+<p><strong>Fulfilled Requirements</strong>: Secure user login, registration, and session management.</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_game_module">5.3.2. Game Module</h4>
+<h4 id="_gameservice">5.3.2. GameService</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Purpose/Responsibility: Handles interactions related to gameplay, such as starting the game, submitting answers, and tracking game progress.</p>
+<p><strong>Purpose/Responsibility</strong>: GameService handles all game-related activities such as starting a new game, submitting answers, and tracking progress.</p>
 </li>
 <li>
-<p>Interface(s):</p>
+<p><strong>Interface(s)</strong>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>API endpoints for starting the game, submitting responses, and tracking progress.</p>
+<p>API endpoints for starting the game, submitting answers, and tracking player progress.</p>
 </li>
 <li>
-<p>Interacts with the Database to store player progress.</p>
+<p>Interacts with the <strong>Game Database</strong> to store player data and responses.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>(Optional) Quality-/Performance Characteristics:</p>
+<p><strong>Quality-/Performance Characteristics</strong>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Efficient state management with low-latency updates.</p>
+<p>Low-latency, high-performance state management to ensure smooth game progress.</p>
+</li>
+<li>
+<p>Efficient handling of player responses and game state updates.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/rest_api/game</p>
+<p><strong>Directory/File Location</strong>: gameservice</p>
 </li>
 <li>
-<p>(Optional) Fulfilled Requirements: Manage game flow and player data efficiently.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_statistics_module">5.3.3. Statistics Module</h4>
-<div class="ulist">
-<ul>
-<li>
-<p>Purpose/Responsibility: Tracks player performance and generates reports on their gameplay statistics.</p>
-</li>
-<li>
-<p>Interface(s):</p>
-<div class="ulist">
-<ul>
-<li>
-<p>API endpoints for retrieving statistics and generating reports.</p>
-</li>
-<li>
-<p>Interacts with the Database to store and retrieve player statistics.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>(Optional) Quality-/Performance Characteristics:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>High-performance data retrieval for real-time reports.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>(Optional) Directory/File Location: src/rest_api/statistics</p>
-</li>
-<li>
-<p>(Optional) Fulfilled Requirements: Accurate and timely reporting of player statistics.</p>
+<p><strong>Fulfilled Requirements</strong>: Game flow management, including game initiation, answer submission, and progress tracking.</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_question_module">5.3.4. Question Module</h4>
+<h4 id="_questionservice">5.3.3. QuestionService</h4>
+<div class="paragraph">
+<p><strong>Motivation:</strong>
+The Component Diagram (C4 Level 3) provides a detailed breakdown of the internal components within the WIChat Application, focusing specifically on the division of the REST API into five modules for better organization and management of the system&#8217;s functionalities. Additionally, it includes background services such as question generation to support game content dynamically.</p>
+</div>
+<div class="paragraph">
+<p><strong>Contained Components:</strong></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Component</th>
+<th class="tableblock halign-left valign-top">Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AuthService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages user authentication and session management, ensuring secure access to the system.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GameService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Handles gameplay, including starting a game, submitting answers, and tracking player progress.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QuestionService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Composed of two subcomponents: QuestionStorage (for exposing question-related APIs) and QuestionGenerator (for fetching and updating question data from WikiData).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LLMService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interacts with the LLM API to fetch hints for players.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UserService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages user registration, profiles, and stores relevant data for the leaderboard.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Modules Overview:</strong></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_authservice_2">5.3.4. AuthService</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Purpose/Responsibility: Manages the generation and retrieval of image-based questions based on data from the WikiData API.</p>
+<p><strong>Purpose/Responsibility</strong>: AuthService handles the authentication and session management for users. It ensures that only authenticated users can access the system.</p>
 </li>
 <li>
-<p>Interface(s):</p>
+<p><strong>Interface(s)</strong>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>API endpoints for retrieving questions for the game.</p>
+<p>API endpoints for login, registration, and session management.</p>
 </li>
 <li>
-<p>Communication with the Question Management component to generate and serve questions.</p>
+<p>Interacts with the <strong>User Database</strong> to store and verify user credentials.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>(Optional) Quality-/Performance Characteristics:</p>
+<p><strong>Quality-/Performance Characteristics</strong>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Relevant and contextually accurate questions.</p>
+<p>Secures user credentials with encryption and token management.</p>
+</li>
+<li>
+<p>Ensures protection against unauthorized access by enforcing strict authentication mechanisms.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>(Optional) Directory/File Location: src/rest_api/questions</p>
+<p><strong>Directory/File Location</strong>: users/authservice</p>
 </li>
 <li>
-<p>(Optional) Fulfilled Requirements: Relevant question retrieval and accurate question generation.</p>
+<p><strong>Fulfilled Requirements</strong>: Secure user login, registration, and session management.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gameservice_2">5.3.5. GameService</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Purpose/Responsibility</strong>: GameService handles all game-related activities such as starting a new game, submitting answers, and tracking progress.</p>
+</li>
+<li>
+<p><strong>Interface(s)</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>API endpoints for starting the game, submitting answers, and tracking player progress.</p>
+</li>
+<li>
+<p>Interacts with the <strong>Game Database</strong> to store player data and responses.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Quality-/Performance Characteristics</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Low-latency, high-performance state management to ensure smooth game progress.</p>
+</li>
+<li>
+<p>Efficient handling of player responses and game state updates.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Directory/File Location</strong>: gameservice</p>
+</li>
+<li>
+<p><strong>Fulfilled Requirements</strong>: Game flow management, including game initiation, answer submission, and progress tracking.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_questionservice_2">5.3.6. QuestionService</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Purpose/Responsibility</strong>: QuestionService is divided into two logical components:
+<strong>QuestionStorage</strong> exposes APIs for retrieving questions, and <strong>QuestionGenerator</strong> (or questionworker) runs in the background to fetch and update question data from WikiData.</p>
+</li>
+<li>
+<p><strong>Interface(s)</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>QuestionStorage: API endpoints for delivering questions to the frontend.</p>
+</li>
+<li>
+<p>QuestionGenerator: Periodic interaction with the <strong>WikiData API</strong> and writes updates to the <strong>Question Database</strong>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Quality-/Performance Characteristics</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Ensures players receive contextually relevant and up-to-date questions.</p>
+</li>
+<li>
+<p>Maintains a fresh and diverse question set via automated periodic updates.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Directory/File Location</strong>: questionservice/</p>
+</li>
+<li>
+<p><strong>Fulfilled Requirements</strong>: Reliable question retrieval and automated content updating from WikiData.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_llmservice">5.3.7. LLMService</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Purpose/Responsibility</strong>: LLMService is responsible for communicating with the LLM API to retrieve hints for players during gameplay.</p>
+</li>
+<li>
+<p><strong>Interface(s)</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>API endpoint for sending a prompt to the LLM API and receiving hints.</p>
+</li>
+<li>
+<p>Interacts with the <strong>LLM API</strong> for natural language processing and context-based hints.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Quality-/Performance Characteristics</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Efficient interaction with external LLM services to fetch hints in real-time.</p>
+</li>
+<li>
+<p>Ensures hints are contextually accurate and aid the player appropriately.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Directory/File Location</strong>: llmservice</p>
+</li>
+<li>
+<p><strong>Fulfilled Requirements</strong>: Provides relevant hints to players based on their game progress and context.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_userservice">5.3.8. UserService</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Purpose/Responsibility</strong>: UserService manages user registration, profile management, and stores data necessary for the leaderboard.</p>
+</li>
+<li>
+<p><strong>Interface(s)</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>API endpoints for user registration, updating profiles, and interacting with the leaderboard.</p>
+</li>
+<li>
+<p>Communicates with the <strong>User Database</strong> to store and retrieve user data, including authentication details and game scores.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Quality-/Performance Characteristics</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Efficient user data management with scalable storage and retrieval mechanisms.</p>
+</li>
+<li>
+<p>Ensures user data privacy and integrity.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Directory/File Location</strong>: users/userservice</p>
+</li>
+<li>
+<p><strong>Fulfilled Requirements</strong>: User registration, profile management, and leaderboard functionality.</p>
 </li>
 </ul>
 </div>
@@ -2237,13 +2482,13 @@ You will mainly capture scenarios in your documentation to communicate your arch
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/Sequential%20diagram%20of%20the%20process%20of%20registration.png" alt="Sequential diagram of the process of registration" width="516" height="481">
+<img src="./images/Sequential%20diagram%20of%20the%20process%20of%20registration.png" alt="Sequential diagram of the process of registration" width="933" height="620">
 </div>
 <div class="title">Figure 6. Registration Sequence Diagram</div>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/Sequential%20diagram%20representing%20the%20Log%20In%20process.png" alt="Sequential diagram representing the Log In process" width="520" height="481">
+<img src="./images/Sequential%20diagram%20representing%20the%20Log%20In%20process.png" alt="Sequential diagram representing the Log In process" width="923" height="663">
 </div>
 <div class="title">Figure 7. Login Sequence Diagram</div>
 </div>
@@ -2255,7 +2500,7 @@ You will mainly capture scenarios in your documentation to communicate your arch
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/Sequential%20diagram%20representing%20the%20interaction%20in%20a%20game%20session.png" alt="Sequential diagram representing the interaction in a game session" width="606" height="799">
+<img src="./images/Sequential%20diagram%20representing%20the%20interaction%20in%20a%20game%20session.png" alt="Sequential diagram representing the interaction in a game session" width="1153" height="1295">
 </div>
 <div class="title">Figure 8. Game&#8217;s Lifecycle Sequence Diagram</div>
 </div>
@@ -2267,7 +2512,7 @@ You will mainly capture scenarios in your documentation to communicate your arch
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/Sequential%20diagram%20representing%20the%20question%20generation%20process.png" alt="Sequential diagram representing the question generation process" width="379" height="360">
+<img src="./images/Sequential%20diagram%20representing%20the%20question%20generation%20process.png" alt="Sequential diagram representing the question generation process" width="519" height="391">
 </div>
 <div class="title">Figure 9. Question Generation Sequence Diagram</div>
 </div>
@@ -2332,6 +2577,12 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/C4%20Diagram%20(Level%201)%20-%20Deployment%20view%20diagram.png" alt="C4 Diagram (Level 1)   Deployment view diagram" width="1157" height="519">
+</div>
+<div class="title">Figure 10. Overview of the deployment infraestructure</div>
+</div>
 <div class="sect2">
 <h3 id="_infrastructure_level_1">7.1. Infrastructure Level 1</h3>
 <div class="sidebarblock arc42help">
@@ -2360,25 +2611,89 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p><em><strong>&lt;Overview Diagram&gt;</strong></em></p>
-</div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">Motivation</dt>
 <dd>
-<p><em>&lt;explanation in text form&gt;</em></p>
+<p>The above diagram illustrates the high-level deployment architecture of the WIChat application. All components, including the web client (UI) and backend services, are containerized using Docker and deployed on a cloud-based Ubuntu VM (Azure). Although the web client executes in the user&#8217;s web browser, it is served as a container from the application server. When a user connects, the browser downloads and runs the web application, eliminating the need for a distinct "Client Node."</p>
 </dd>
 <dt class="hdlist1">Quality and/or Performance Features</dt>
 <dd>
-<p><em>&lt;explanation in text form&gt;</em></p>
+<p>The main advantages of this architecture are:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Modularity</strong>: All components are deployed as independent containers that can be updated and scaled separately.</p>
+</li>
+<li>
+<p><strong>Interchangeability</strong>: By the same reason as why it is modular, as long as the common API is mantained, the separation of the architecture will allow the replacement and upgrade of implementations without affecting the rest of the system.</p>
+</li>
+<li>
+<p><strong>Portability</strong>: Since Docker containers are platform-agnostic, the application can be easily deployed across different environments (e.g., local development, cloud production) without modification.</p>
+</li>
+<li>
+<p><strong>Scalability</strong>: Having a Gateway Service ensures the system can handle increased traffic by distributing requests across multiple backend instances, enabling horizontal scaling, and integrating with cloud auto-scaling tools.</p>
+</li>
+</ul>
+</div>
 </dd>
 <dt class="hdlist1">Mapping of Building Blocks to Infrastructure</dt>
-<dd>
-<p><em>&lt;description of the mapping&gt;</em></p>
-</dd>
 </dl>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Building Block</th>
+<th class="tableblock halign-left valign-top">Infrastructure Component</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Client / Frontend</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>webapp</code> subfolder. Docker container hosted on Azure. Serves the user interface and communicates with the backend via the gateway service.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Gateway Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>gatewayservice</code> subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>LLM Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>llmservice</code> subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed from the backend to generate conversational hints.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Game Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>gameservice</code> subfolder. Accessed from the backend to store all the relevant information after a game is finished.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Question Generator</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A separate component that runs during all the life application. Queries Wikidata using MQL to generate questions and answers, which are then stored in the MongoDB database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Authentication Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>authservice</code> subfolder. Accessed from the backend to store the user information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>User Service</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contained in the <code>userservice</code> subfolder. Accessed from the backend to store the user information into the database.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MongoDB Database</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Containerized instance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Grafana</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Containerized monitoring dashboard hosted alongside backend services.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Prometheus</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Containerized metrics collection and alerting tool.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_infrastructure_level_2">7.2. Infrastructure Level 2</h3>
@@ -2393,27 +2708,30 @@ when your infrastructure is more complex.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_infrastructure_element_1">7.2.1. <em>&lt;Infrastructure Element 1&gt;</em></h4>
+<h4 id="_client_frontend">7.2.1. Client / Frontend</h4>
 <div class="paragraph">
-<p><em>&lt;diagram + explanation&gt;</em></p>
+<p>The <strong>frontend</strong> is a single-page application (SPA) that runs in the user&#8217;s web browser. It is built using React and communicates with the backend via the API. The frontend is containerized using Docker and deployed on a cloud platform together with the rest of the components of the application. Static assets (e.g., images, CSS, JavaScript) are served via a CDN to reduce latency and improve load times.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_infrastructure_element_2">7.2.2. <em>&lt;Infrastructure Element 2&gt;</em></h4>
+<h4 id="_apis_backend">7.2.2. APIs / Backend</h4>
 <div class="paragraph">
-<p><em>&lt;diagram + explanation&gt;</em></p>
-</div>
-<div class="paragraph">
-<p>&#8230;&#8203;</p>
+<p>The <strong>backend</strong> is a set of RESTful APIs that provide game logic, user management, and question generation services. It is built using Node.js and Express, and communicates with the MongoDB database. The backend is containerized using Docker and deployed on a cloud platform. The backend is stateless and horizontally scalable, allowing it to handle increased traffic by spinning up additional instances.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_infrastructure_element_n">7.2.3. <em>&lt;Infrastructure Element n&gt;</em></h4>
+<h4 id="_proxy_nginx">7.2.3. Proxy (NGINX)</h4>
 <div class="paragraph">
-<p><em>&lt;diagram + explanation&gt;</em></p>
+<p>NGINX acts as a reverse proxy and is used primarily to enable HTTPS by handling SSL/TLS termination. It is deployed as a Docker container alongside other services within the infrastructure.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_conclusion">7.3. Conclusion</h3>
+<div class="paragraph">
+<p>The Deployment View provides a detailed overview of how the WiChat application will be deployed across different environments and infrastructure components. It ensures that the system meets the quality goal of scalability while supporting efficient development and deployment processes.</p>
 </div>
 <div style="page-break-after: always;"></div>
-</div>
 </div>
 </div>
 </div>
@@ -2520,27 +2838,139 @@ on this list.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_1">8.1. <em>&lt;Concept 1&gt;</em></h3>
+<h3 id="_domain_model">8.1. Domain Model</h3>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
+<p>A first version of the domain model of the application, representing all the entities that interact with the application and their relations, is shown in the following diagram:</p>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/Domain%20Model.svg" alt="Domain Model" width="985" height="539">
+</div>
+<div class="title">Figure 11. Domain Model</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Entity</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>User</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents a registered player with a unique username and password.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Score</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Stores gameplay results, including game mode, accuracy, and performance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Question</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contains the quiz question, possible answers, correct answer, and image of the question.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_design_patterns_and_architectural_styles">8.2. Design Patterns and Architectural Styles</h3>
 <div class="paragraph">
-<p>&#8230;&#8203;</p>
+<p>The application will be developed following a microservices Architecture. It will have the following microservices:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Auth Service: It will manage the user login and the creation of the user token.</p>
+</li>
+<li>
+<p>User Service: It will manage the signup of new users into the system.</p>
+</li>
+<li>
+<p>Question Service: It will manage the generation of questions of different topics that the user will answer.</p>
+</li>
+<li>
+<p>Game Service: It will store the game information on the database once the game has finished.</p>
+</li>
+<li>
+<p>LLM Service: It will manage the interaction with the AI and it will generate the hints for the user.</p>
+</li>
+<li>
+<p>Gateway Service: It will communicate with the rest of microservices to send the information to the frontend.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_2">8.2. <em>&lt;Concept 2&gt;</em></h3>
+<h3 id="_persistence_layer">8.3. Persistence Layer</h3>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
+<p>The application will rely its data persistence dependencies on a MongoDB database that will manage the data of the application related to the game sessions (questions, answers, game configurations) or related to the user (user session, user statistics&#8230;&#8203;).</p>
 </div>
 <div class="paragraph">
-<p>&#8230;&#8203;</p>
+<p>In the future we will change the MongoDB that stores the users to a sqlite database, because with a relational database the user scheme will be more well defined. And several MongoDB instances will be used in the future to avoid the fall of one to affect all microservices.</p>
+</div>
+<div class="paragraph">
+<p>MongoDB is a NoSQL database that stores data in flexible, JSON-like documents, meaning fields can vary from document to document and data structure can be changed over time. This flexibility will help to manage the data of the application, as the structure of the data may change over time as the application evolves. It is not a definite decission, but it is a good starting point to consider.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_concept_n">8.3. <em>&lt;Concept n&gt;</em></h3>
+<h3 id="_ensuring_a_wealthy_user_experience">8.4. Ensuring a wealthy user experience</h3>
+<div class="sect3">
+<h4 id="_user_interface">8.4.1. User Interface</h4>
 <div class="paragraph">
-<p><em>&lt;explanation&gt;</em></p>
+<p>The development team have designed the application catering to the final user, with a clean and intuitive design that will make the user experience as pleasant as possible. They have developed the application using a responsive design, so it can be used in different devices, like smartphones, tablets, or desktop computers, enhancing usability, accesibility and adaptability at the maximum possible level. For this reason, the internazionalization of the application was a key point to consider, as the application is intended to be used by any kind of users of a wide variety of ages and genders and from different countries and cultures. Right now the application is available in English and Spanish.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_session_handling_and_security">8.4.2. Session handling and Security</h4>
+<div class="paragraph">
+<p>The application has incorporated a basic session handling mechanism to manage the user sessions and to provide a secure environment for the users. The session handling mechanism is be based on the use of JSON Web Tokens (JWT) to authenticate the users and to manage the user sessions.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_error_handling">8.4.3. Error handling</h4>
+<div class="paragraph">
+<p>The application will include a robust error handling mechanism to manage the errors that may occur during the execution of the application. The error handling mechanism will be based on the use of custom error messages and error codes to provide meaningful information to the users and to help the developers to identify and fix the errors. Error messages will be logged to help the developers to identify and fix the errors. It will be important to have a clear and consistent error handling mechanism to ensure that the application is reliable and user-friendly, and that the user does receive only the feedback that is expected to receive (no technical message should be displayed to the final user).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_logging">8.4.4. Logging</h4>
+<div class="paragraph">
+<p>The application will have a logging system to monitor the activity of the application and to help the developers to identify and fix the errors that may occur during the execution of the application. The logging system will be based on the use of log files to store the log messages and to provide a history of the activity of the application. The log messages will be stored in a structured format to help the developers to analyze the log messages and to identify the root cause of the errors.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_testing">8.4.5. Testing</h4>
+<div class="paragraph">
+<p>The application is  tested using a combination of unit tests, end-to-end tests, load test and usability tests.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Unit tests</strong> are used to test individual components of the application, mainly based on testing backend functionality to ensure that the internal part of the applications works as expected. Since the application is Dockerized in containers, unit tests can be executed within a container or in a separate testing container that has access to the application&#8217;s code and dependencies, ensuring that the tests run in an environment identical to production.</p>
+</li>
+<li>
+<p><strong>End-to-end tests</strong> are used to test the application as a whole, simulating the user interaction with the application. They are be performed using containers running the full application stack. This helps to ensure that the application works as expected from the user&#8217;s perspective.</p>
+</li>
+<li>
+<p><strong>Load tests</strong> are used to test the performance of the application using Gattling.</p>
+</li>
+<li>
+<p><strong>Usability tests</strong> are used to test with real users that the application works as expected.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deployment">8.5. Deployment</h3>
+<div class="paragraph">
+<p>The application is deployed using Docker containers. Docker is a platform that allows developers to develop, ship, and run applications in containers. Containers are lightweight, standalone, and executable packages of software that include everything needed to run an application: code, runtime, system tools, system libraries, and settings. This ensures that the application runs consistently across different environments and that the deployment process remains smooth.</p>
+</div>
+<div class="paragraph">
+<p>To enable secure HTTPS connections, a reverse proxy such as Nginx is used. Nginx handles SSL termination and routes incoming HTTPS traffic to the appropriate Docker containers. This setup ensures secure communication between clients and the application and simplifies the management of certificates and routing.</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -2612,12 +3042,14 @@ efficiently and leverage NoSQL advantages for scalability and flexibility.</p>
 <p>Scope: backend, question generator</p>
 </div>
 <div class="paragraph">
-<p>Description: The question generator is a key component of the system but does not need to run continuously.
-It will be executed when new questions need to be loaded or updated. To maintain a clean architecture, it
-should be implemented as a separate module rather than part of the API.</p>
+<p>Description: The question generator is a key component of the system that runs continuously.
+It is executed at background periodically to generate new questions. The life of the question generation is the same as the application one, as it is running concurrently.
+The question service is divided in question-storage to retrieve
+the queries from the database, question-generator who has the logic to generate questions and the question-worker which is the application running concurrently that actually
+generates questions.</p>
 </div>
 <div class="paragraph">
-<p>Decision taken: The team has decided to implement the question generator as a separate module of the application.</p>
+<p>Decision taken: The team has decided to implement the question generator as a separate concurrent application.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2863,6 +3295,55 @@ concrete and measurable.</p>
 </div>
 </div>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quality Category</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quality</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Performance</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Responsiveness</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system is expected to respond quickly to user inputs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Concurrency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiple users must have service at the same time</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Security</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Individuality</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User&#8217;s actions must not interfere with another user&#8217;s experience. For example, pressing a button in one session should not affect any other user&#8217;s game.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Robustness</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user must not see anything he&#8217;s not expected to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User experience</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Continuity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A player must be able to continue playing without issue for as long as he wishes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intuitiveness</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The system must be easy to understand and use</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Freshness</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The questions on the sytem musn&#8217;t become predictable nor be the same all the time.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_quality_scenarios">10.2. Quality Scenarios</h3>
@@ -2903,6 +3384,44 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <p>Tabular or free form text.</p>
 </div>
 </div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Responsiveness &#8594; Every input from the frontend must have an appropiate response before a second has passed, else a loading page must be shown.</p>
+</li>
+<li>
+<p>Concurrency &#8594; One hundred users at least must be supported simultaneously</p>
+</li>
+<li>
+<p>Individuality &#8594; A user selecting the fourth option must not generate any option in another one&#8217;s game. Each game is a separate entity.</p>
+</li>
+<li>
+<p>Robustness &#8594; A bad input from a user must not neither crash nor break the system.</p>
+</li>
+<li>
+<p>Continuity &#8594; A user may play 20 games straight without pause.</p>
+</li>
+<li>
+<p>Intuitiveness &#8594; The ui must be clean to enable non tech-savvy users to  enjoy the game within 15 minutes from picking up the game.</p>
+</li>
+<li>
+<p>Freshness &#8594; New questions must be inserted into the db to avoid any repetition of questions in a single game. Questions are to be updated every 30 minutes</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_load_testing_results">10.3. Load testing results</h3>
+<div class="paragraph">
+<p>Load test results were made on the deployed application, making use of the gatling tool.
+Load test results are stored on docs/loadtesting.</p>
+</div>
+<div class="paragraph">
+<p>As you can check, on last version at the time, v1.2.0, the tool showed we passed the concurrency requirement by quite a lot: 485 users concurrently will make only a few users experience some latency, a total of 14% of the total requests, but no fairlures. &gt;500 users does arise some errors, as we tested on 536 users and 5 errors were recorded.</p>
+</div>
+<div class="paragraph">
+<p>The top latency responses where concentrated on saving the game, but more interestingly, the second behind it often won at the mean latency and were either requests to the leaderboard (api/leaderboard) or to the user&#8217;s statistics (api/scoresByUser).</p>
 </div>
 <div style="page-break-after: always;"></div>
 </div>
@@ -3060,12 +3579,266 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Term-1&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;definition-1&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>WIChat</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The updated version of the <strong>Saber y Ganar</strong> quiz show, incorporating a new hint system powered by an external Large Language Model (LLM).</em></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;Term-2&gt;</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>&lt;definition-2&gt;</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>LLM (Large Language Model)</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An advanced AI model used to generate hints for quiz questions in a conversational manner.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Wikidata</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An external API that serves as the main source for all presented data, including questions and images.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>RTVE</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The organization that has hired ChattySw to update the quiz show application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>ChattySw</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The software development company responsible for updating the quiz show application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>HappySw</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The company that developed the previous version of the quiz show application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Web-based system</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An application that must be accessible via web browsers.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>APIs for Data Access</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>APIs that provide access to user and question data, with proper documentation.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Prevention of Correct Answer Disclosure</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Mechanisms to prevent the LLM from directly revealing the correct answer in hints.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Coding Standards</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Industry best practices for maintainable code.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Version Control</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Managing all source code in a repository with clear commit messages.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>HTTP Protocol</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A protocol used for transmitting hypertext requests and information on the internet.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>MongoDB</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A NoSQL database that stores data in flexible, JSON-like documents. Chosen for its ability to efficiently store unstructured question-based data and its scalability.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>MongoDB Query Language (MQL)</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A query language used to interact with MongoDB databases.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>React</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A JavaScript library for building user interfaces, particularly single-page applications.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>REST API</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An API that conforms to the constraints of REST architectural style and allows for interaction with RESTful web services.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Docker</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A platform used to develop, ship, and run applications inside containers.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>NodeJs</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A JavaScript runtime built on Chrome&#8217;s V8 JavaScript engine, used for building the backend of the application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Git</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A distributed version control system used for tracking changes in source code during software development.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Swagger</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A tool used for designing and documenting APIs.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Kanban</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An agile framework used to manage and improve work across human systems.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>INVEST Acronym</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A mnemonic for writing well-formed user stories in agile development: Independent, Negotiable, Valuable, Estimable, Small, Testable.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Semantic Versioning</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A versioning scheme for software that uses a three-part version number: major, minor, and patch.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Github Flow</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A branch strategy for managing changes in a Git repository, emphasizing simplicity and collaboration.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Building Block View</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A hierarchical collection of black boxes and white boxes that describe the system&#8217;s structure.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>White Box</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A detailed description of a system or component, including its internal structure and interactions.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Black Box</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A description of a system or component that focuses on its external behavior and interfaces, without detailing its internal structure.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>WIChat Application Proxy</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Manages communication between the client and system services.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>REST API Interface</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Interface for managing interactions between the client and the database.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Database</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Stores persistent system data, including user histories, generated questions, answers, and scores.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A type of diagram that shows how objects interact in a particular scenario of a use case.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Registration Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A sequence diagram that represents the process of user registration in the system.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Login Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A sequence diagram that represents the process of user login in the system.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Game&#8217;s Lifecycle Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A sequence diagram that represents the lifecycle of a game session in the system.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Question Generation Sequence Diagram</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A sequence diagram that represents the process of generating questions in the system.inition-2&gt;</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Domain Model</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A conceptual model that represents the entities and their relationships within the application domain.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Model-View-Controller (MVC)</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An architectural pattern that separates an application into three main components: Model, View, and Controller.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Singleton Pattern</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A design pattern that ensures a class has only one instance and provides a global point of access to it.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Factory Pattern</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A design pattern used to create objects without specifying the exact class of object that will be created.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Observer Pattern</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A design pattern where an object maintains a list of dependents and notifies them of any state changes.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Strategy Pattern</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A design pattern that defines a family of algorithms, encapsulates each one, and makes them interchangeable.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>JSON Web Tokens (JWT)</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>A compact, URL-safe means of representing claims to be transferred between two parties, used for authentication and session management.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Unit Tests</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Tests that verify the functionality of individual components of the application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Integration Tests</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Tests that verify the interaction between different components of the application.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>End-to-End Tests</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>Tests that simulate user interaction with the application to verify it works as a whole.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Deployment</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The process of distributing and installing the application in a production environment, often using Docker containers.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Empathy AI Model</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An AI model integrated into the game to provide hints to players. Capable of interpreting image-based questions and generating meaningful hints.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Frontend</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The part of the application that interacts with the user, typically involving the user interface and user experience.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Backend</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>The part of the application that handles data processing, business logic, and interactions with databases and external services.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Microservices</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An architectural style that structures an application as a collection of loosely coupled services. Each service is independently deployable and scalable.</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em><strong>Monolithic Architecture</strong></em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>An architectural style where the entire application is built as a single, unified unit. Easier to develop initially but can become difficult to manage as the application grows.</em></p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="section-testing">13. Testing Strategy and results</h2>
+<div class="sectionbody">
+<div class="sidebarblock arc42help">
+<div class="content">
+<div class="paragraph">
+<div class="title">Contents</div>
+<p>This section describes the project&#8217;s testing approach and results, and how quality requirements are verified through testing.</p>
+</div>
+<div class="paragraph">
+<div class="title">Motivation</div>
+<p>Testing ensures the system meets its functional and non-functional (quality) requirements, increases maintainability, and reduces risks.</p>
+</div>
+<div class="paragraph">
+<div class="title">Form</div>
+<p>Describe test strategies for different levels (unit, integration, E2E, etc.), tools used, and how testing supports quality attributes like performance, robustness, and usability.</p>
+</div>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type of Test</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unit Testing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Each module (mainly utility and core logic functions) is covered by unit tests using <strong>Jest</strong>. Unit tests ensure that individual components behave as expected in isolation. Code coverage is enforced via sonarQube to remain above <strong>80%</strong>, and code duplication below <strong>3%</strong>. Mocking is used for external dependencies.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">End-to-End Testing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">E2E tests are implemented using a BDD approach with <strong>.feature</strong> files and step definitions (<strong>.steps.js</strong>), following the Gherkin syntax. This allows tests to be written in a human-readable form closely aligned with user stories and acceptance criteria.</p>
+<p class="tableblock">Tests are executed using <strong>Jest</strong> as the runner, configured via <code>jest_config.js</code>. The <code>test_environment_setup</code> script ensures that all required services (e.g., gatewayservice, gameservice, questionservice&#8230;&#8203;) are initialized and cleaned before and after test runs.</p>
+<p class="tableblock">Our E2E workflows include:</p>
+<p class="tableblock">- Signing up and logging in correctly</p>
+<p class="tableblock">- Starting a game and completing a full session</p>
+<p class="tableblock">- Interacting with leaderboards and user statistics</p>
+<p class="tableblock">Tests are automatically run in every new release via a github action, and are kept up to date with each feature release to ensure no regressions. Browser-level interactions are simulated through a headless environment or Puppeteer/Playwright depending on the test scenario.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Load Testing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As described in the load testing results section, at section 10 quality requirements (as they direcly prove or disprove our quality requirements, that is the best location for them following official arc42 documentation), load testing is conducted using <strong>Gatling</strong> and focused on critical endpoints: login, game creation, game results saving, and user statistics. Results confirm that the application supports <strong>up to 485 concurrent users</strong> with only minor latency. Load test scripts and results are stored in <code>docs/loadtesting</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Real User Testing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Real user feedback was encouraged and requested at some points, recruiting a set of testers with different degrees of software engineering knowledge. All of them were asked to submit their findings, data that was collected and summarized <a href="https://github.com/Arquisoft/wichat_en1a/wiki/feedback-for-v1.0.9">here</a>. Almost all of the submissions by the users were solved upon the new release of v2.0.0.</p></td>
 </tr>
 </tbody>
 </table>
@@ -3075,7 +3848,7 @@ more precisely down to a level of scenarios that can be discussed and evaluated.
 <div id="footer">
 <div id="footer-text">
 Version 8.2 EN<br>
-Last updated 2025-05-04 00:36:18 +0200
+Last updated 2025-05-03 23:28:25 +0200
 </div>
 </div>
 </body>
