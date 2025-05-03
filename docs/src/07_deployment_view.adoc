@@ -83,6 +83,7 @@ Mapping of Building Blocks to Infrastructure::
 | **APIs / Backend** | Docker container hosted on Azure. Handles game logic, user management and question generation. Communicates with the MongoDB database.
 | **Gateway Service** | Contained in the `gatewayservice` subfolder. Docker container hosted on a cloud platform. Acts as a single entry point for all incoming requests, routing them to the appropriate services.
 | **LLM Service** | Contained in the `llmservice` subfolder. Configuration and API for the external service hosted by the LLM provider. Accessed via HTTPS from the backend to generate conversational hints.
+| **Game Service** | Contained in the `gameservice` subfolder. Accessed via HTTPS from the backend to store game scores and provide information for the users statistics and leaderboards.
 | **Question Generator** | A separate component that runs during all the life application. Queries Wikidata using MQL to generate questions and answers, which are then stored in the MongoDB database.
 | **MongoDB Database** | Containerized instance.
 |===

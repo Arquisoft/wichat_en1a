@@ -10,6 +10,7 @@ Deployment_Node(serverNode, "Application Server", "Ubuntu VM (Azure)") {
     Container(auth, "User Authentication Service", 8002)
     Container(qg, "Question Generator Service", 8004)
     Container(llm, "LLM Service", 8003)
+    Container(game, "Game Service", 8005)
     ContainerDb(db, "MongoDB", 27017)
 }
 
@@ -18,8 +19,10 @@ Rel(gateway, auth, "")
 Rel(gateway, users, "")
 Rel(gateway, qg, "")
 Rel(gateway, llm, "")
+Rel(gateway, game, "")
 BiRel(auth, db, "")
 BiRel(users, db, "")
+BiRel(game, db, "")
 Rel(qg, db, "")
 
 @enduml
