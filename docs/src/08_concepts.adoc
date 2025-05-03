@@ -65,40 +65,32 @@ include::./diagrams/Domain_Model.puml[]
 [cols="2,5",options="header"]
 |===
 | Entity | Description
-| **User** | Represents a player, a stakeholder that will make use of the application. Contains the user's name, email, password, and the list of games played. It represents as well the actions that the user may perform once entering the application, like registering, logging in, playing a game, consulting the statistics.
-| **UserStats** | Represents the statistics of a user. Contains the number of games played, the number of questions answered correctly, the number of questions answered wrong, the number of hints used, and other statistics of the user that may be recorded to generate a ranking based on performance.
-| **Game** | Represents a game played by a user. Contains the game's mode, the user who played it, the questions, and the answers. It models the main interaction class or entity of the application, as it represents the game itself, the core of the project.
-| **GameConfiguration** | Represents the configuration of a game. Contains the number of questions, the time limit, the hints available, and other configurations that may be set by the user before starting a game.
-| **Question** | Represents a question in a game. Contains the question's text, the image, the possible answers, and the correct answer.
-| **Answer** | Represents an answer to a question. Contains the answer's text and a flag indicating if it is the correct answer.
-| **AIChat** | Represents the AI chat that will provide hints to the user. 
-| **GameMode (Enum)** | Represents the different game modes available in the application. Among the available modes it is possible to find some widely recognized like "Each wise man with his subject", "Travel with us" or "The hot question".
-| **QuestionCategory (Enum)** | Represents the different categories of questions available in the application. Some of them are "Science", "Literature", "Famous People", "Sports" or "History".
+| **UserClient** | Represents a player, a stakeholder that will make use of the application.
+| **API Gateway** | Represents the Gateway that interacts with the microservices that implementation the application functionality.
+| **Auth Service** | Represents the Authentication service that will handle the log in of the user.
+| **Question Service** | Represents the Question service that will generate the questions that the user will answered during the game.
+| **Game Service** | Represents the Game Service that will store the information of the game once it has finished.
+| **LLM Service** | Represents the AI chat that will provide hints to the user. 
+| **User Service** | Represents the User Service that will add the user information to the database. 
 |===
 
 === Design Patterns and Architectural Styles
 
-The application will be developed following a layered architecture based in the Model-View-Controller (MVC) architectural pattern. This pattern is widely used in web applications and will help to separate the concerns of the application, making it easier to maintain and extend. The MVC pattern divides the application into three interconnected components:
+The application will be developed following a microservices Architecture. It will have the following microservices:
 
-- Model: Represents the data of the application, the business logic, and the rules to manage the data. It acts as an intermediary between the external sources of data (persistence systems, APIs, etc.) and the internal structure of the application.
-- View: Represents the user interface of the application, the way the data is presented to the user and the way the user interacts with the application.
-- Controller: Represents the logic of the application, the way the user input is handled, the way the data is retrieved from the model and the way the view is updated.
-
-Regarding design patterns, the application will make use of the following patterns:
-
-- Singleton: The application will use this pattern to ensure that a class has only one instance and provide a global point of access to it. For example, to ensure that only one instance of the AI chat is created and used to provide hints to the user.
-- Factory: The application will use this pattern to create different types of questions and answers based on the game mode selected by the user in an automated and extensible way.
-- Observer: The application will use this pattern to define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.
-- Strategy: This pattern will be used to define a family of algorithms, encapsulate each one, and make them interchangeable. This will help to promote modularity and maintainability. For example, it will be used to define different strategies for generating questions and answers, and for providing hints to the user.
-- Template: This pattern may be used to define the skeleton of an algorithm in any superclass, letting the subclasses override specific steps of the algorithm without changing its structure. This will help to promote code reuse and extensibility, and can be used in different concerns of the application. For example, when defining the different types (categories) of questions or the game modes available in the application.
+- Auth Service: It will manage the user login and the creation of the user token.
+- User Service: It will add the user to the database.
+- Question Service: It will manage the generation of questions of different topics that the user will answer.
+- Game Service: It will store the game information on the database once the game has finished.
+- LLM Service: It will manage the interaction with the AI and it will generate the hints for the user.
+- Gateway Service: It will communicate with the rest of microservices to send the information to the frontend.
 
 === Persistence Layer
 
-The application will rely its data persistence dependencies presumably on a MongoDB database that will manage the data of the application related to the game sessions (questions, answers, game configurations) or related to the user (user session, user statistics...), with the possibility to incorporate another database of the same type and with similar features to treat any of those concerns. 
+The application will rely its data persistence dependencies presumably on a MongoDB database that will manage the data of the application related to the game sessions (questions, answers, game configurations) or related to the user (user session, user statistics...).
 
 MongoDB is a NoSQL database that stores data in flexible, JSON-like documents, meaning fields can vary from document to document and data structure can be changed over time. This flexibility will help to manage the data of the application, as the structure of the data may change over time as the application evolves. It is not a definite decission, but it is a good starting point to consider.
 
-**NOTE:** The persistence layer is susceptible for change at this point. Using MongoDB is not a final decision.
 
 === Ensuring a wealthy user experience
 
