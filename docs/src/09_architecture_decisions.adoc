@@ -26,7 +26,7 @@ approach or maintain a Node.js microservices system. One of the main reasons for
 Boot is the team's lack of experience with Node.js. Additionally, last year’s project was implemented using Spring Boot,
 which could facilitate development. If needed, Spring Boot provides flexibility for a future migration to microservices.
 
-Decision taken: [TO_BE_TAKEN]
+Decision taken: The team has decide to use Node.js microservices system.
 
 === Use of MongoDB
 
@@ -79,8 +79,78 @@ Description: The game will integrate an AI model to provide hints to players.
 The chosen model must be capable of interpreting image-based questions and
 generating meaningful hints.
 
-Decision taken: The team has decided to integrate
-the Empathy AI model for generating hints in the game.
+Decision taken: The team has decided to integrate the Empathy AI model for generating hints in the game.
+
+=== Game modes
+
+Date Recorded: 3/03/2025
+
+Scope: backend, frontend
+
+Description: Discusion on wich game modes the application will have.
+
+Decision taken: The team has decided to implement: normal game mode, expert domain, time attack and endless marathon.
+
+=== Creating Game Service
+
+Date Recorded: 14/03/2025
+
+Scope: backend
+
+Description: Discusion on where to implement the game functionallity.
+
+Decision taken: The gameservice will be a new module in the future, the one who will be in charge of tracking scores of players in different gamemodes.
+
+=== Generate questions 
+
+Date Recorded: 14/03/2025
+
+Scope: backend
+
+Description: Discusion how many questions the backend will retrieved.
+
+Decision taken: Decided that to ease the system's performance, the questions will be retrieved by id in batches of 5.
+
+=== Generate questions 
+
+Date Recorded: 28/03/2025
+
+Scope: frontend
+
+Description: Discusion of the route strategy of the frontend and error page.
+
+Decision taken: Decided to create an Error page that by default is the endpoint where the user gets redirected if he/she tries to access a site in the application that is not available and  decided to keep the route strategy that we held at first, treating all the different game modes as one in terms of routing.
+
+=== Use of JWT tokens
+
+Date Recorded: 4/04/2025
+
+Scope: backend, game service, auth service
+
+Description: When the user logs into the application a token will be generated. We will use this token to make sure that the user is log in when we save a score after a game or when we access the user statistics.
+
+Decision taken: The team has decided to integrate the JWT token functionallity to the game service.
+
+
+=== Implementation of https
+
+Date Recorded: 4/04/2025
+
+Scope: backend, gateway service
+
+Description: The application will have https. It will be implemnted using NGINX that acts as a reverse proxy and is used primarily to eneable HTTPS.
+
+Decision taken: The team has decided to implement the functionallity
+
+=== Score when using hints
+
+Date Recorded: 28/04/2025
+
+Scope: backend, frontend
+
+Description: Discuss if we should penalize the user when he/she uses the hints provided by the ai.
+
+Decision taken: Decide not to penalize if asking to the ia via chat as using the time left for calculating the score already penalizes the user stalling.
 
 ifdef::arc42help[]
 [role="arc42help"]
