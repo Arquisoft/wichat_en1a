@@ -17,7 +17,7 @@ System_Boundary(quizGame, "WiChat Application") {
 System_Ext(wikidata, "WikiData API", "External resource to provide data for the questions and images")
 System_Ext(llm, "LLM API", "External resource to provide hints")
 
-Rel(user, wichat, "Uses")
+
 Rel(wichat, gateway, "Uses")
 Rel(gateway, llmChat, "Provides")
 Rel(gateway, auth, "Provides")
@@ -26,6 +26,7 @@ Rel(gateway, questionGen, "Provides")
 Rel(gateway, gameService, "Provides")
 Rel(llmChat, llm, "Connects to")
 Rel(user, mongodb, "Stores data in")
+Rel(auth, mongodb, "Stores data in")
 Rel(questionGen, mongodb, "Stores data in")
 Rel(gameService, mongodb, "Stores data in")
 Rel(questionGen, wikidata, "Collects data from")
