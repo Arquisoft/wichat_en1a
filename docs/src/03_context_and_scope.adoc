@@ -82,7 +82,7 @@ include::./diagrams/S3_C4_Technical_Context_Diagram.puml[]
 The system will be deployed over a virtual machine in a single Azure server (using **Docker**) containing all the functionalities separated in different modules:
 
 * **Wichat Application Proxy:**
-When interacting with the server, a proxy gateway will be tasked with redirecting incoming requests to the Wichat application client, which will also be deployed on the Azure web server.
+When interacting with the server, a Nginx proxy gateway will be tasked with redirecting incoming requests to the Wichat application client, which will also be deployed on the Azure web server.
 
 * **Wichat Application Client:**
 This client will be served to the user and communicates with the API through HTTPS calls and exchanges information through JSON objects. The client (Front-End of the application) will be developed in React (+ JavaScript).
