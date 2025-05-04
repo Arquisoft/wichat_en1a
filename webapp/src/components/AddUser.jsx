@@ -20,7 +20,7 @@ const AddUser = ({callback}) => {
       setSignupSuccess(true);
     } catch (error) {
       console.log(error);
-      setErrorCode(error.response.data.errorCode);
+      setErrorCode(error.response.data.error);
       setOpenSnackbar(true);
     }
   };
