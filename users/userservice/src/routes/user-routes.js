@@ -8,8 +8,7 @@ router.post('/adduser', [
     check('username').isLength({ min: 3 }).trim().escape()
 ], async (req, res) => {
     try {
-        const user = await createUser(req.body);
-        res.json(user);
+        const user = await createUser(req, res);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
