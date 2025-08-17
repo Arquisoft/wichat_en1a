@@ -11,6 +11,8 @@ Welcome to WiChat!
 This is a web service where you log in and can play several trivial-style games, and your score is saved, like a social network of sorts.
 The application is expected to feature four different game modes, a custom one, an ai chat in all of them and many more exciting features!
 
+Thanks to its design, the application can host up to 500 users concurrently without having any performance impact at all!
+
 Furthermore, upon playing, you will encounter your very own Ai Buddy!
 
 He's here to help, but remeber that as every friend, he may be wrong, so take his comments with a grain of salt!
